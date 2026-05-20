@@ -10,7 +10,7 @@ export const siteConfig = {
   githubHandle: "D33yan",
   linkedin: "https://www.linkedin.com/in/divine-nnaji-23b771393?utm_source=share_via&utm_content=profile&utm_medium=member_android",
   liveSite: "https://made-by-navie.vercel.app",
-  resumePath: "/resume.pdf",
+  resumePath: "/Divine_Nnaji_CV.docx",
   currentRole: "Data Science & AI Intern at NASRDA",
   typewriterRoles: [
     "Fullstack Engineer",
