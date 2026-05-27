@@ -29,6 +29,15 @@ export function CaseStudyModal({ project, isOpen, onClose }: CaseStudyModalProps
 
   if (!project.caseStudy) return null;
 
+  const handleLaunchDemo = (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (project.live) {
+      window.dispatchEvent(new CustomEvent("open-project-browser", {
+        detail: { url: project.live, title: project.title }
+      }));
+    }
+  };
+
   return (
     <AnimatePresence>
       {isOpen && (
@@ -92,18 +101,16 @@ export function CaseStudyModal({ project, isOpen, onClose }: CaseStudyModalProps
 
               {/* Connection to Live Link from the Case Study */}
               {project.live && (
-                <a
-                  href={project.live}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="group/live mt-6 flex items-center justify-between rounded-xl border border-[#64ffda]/30 bg-[#64ffda]/5 p-4 transition duration-300 hover:bg-[#64ffda]/10 hover:border-[#64ffda]/50"
+                <button
+                  onClick={handleLaunchDemo}
+                  className="w-full text-left group/live mt-6 flex items-center justify-between rounded-xl border border-[#64ffda]/30 bg-[#64ffda]/5 p-4 transition duration-300 hover:bg-[#64ffda]/10 hover:border-[#64ffda]/50 cursor-pointer"
                   data-cursor-hover
                 >
                   <div className="flex items-center gap-3">
                     <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#64ffda]/10 text-[#64ffda]">
                       <ExternalLink className="h-5 w-5" />
                     </div>
-                    <div className="text-left">
+                    <div>
                       <h4 className="text-sm font-semibold text-[#ccd6f6] group-hover/live:text-[#64ffda] transition-colors">
                         Launch Live Application
                       </h4>
@@ -115,7 +122,7 @@ export function CaseStudyModal({ project, isOpen, onClose }: CaseStudyModalProps
                   <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#112240] text-[#64ffda] border border-white/5 transition-transform duration-300 group-hover/live:translate-x-1 group-hover/live:border-[#64ffda]/30">
                     <span className="text-sm font-mono">→</span>
                   </div>
-                </a>
+                </button>
               )}
 
               {/* Case Study Image Gallery */}
@@ -222,16 +229,14 @@ export function CaseStudyModal({ project, isOpen, onClose }: CaseStudyModalProps
                 <span>Source Code</span>
               </a>
               {project.live ? (
-                <a
-                  href={project.live}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-2 rounded-lg bg-[#64ffda] px-4 py-2.5 text-sm font-medium text-[#0a0f1e] transition hover:bg-[#64ffda]/80"
+                <button
+                  onClick={handleLaunchDemo}
+                  className="flex items-center gap-2 rounded-lg bg-[#64ffda] px-4 py-2.5 text-sm font-medium text-[#0a0f1e] transition hover:bg-[#64ffda]/80 cursor-pointer"
                   data-cursor-hover
                 >
                   <span>Launch Demo</span>
                   <ExternalLink className="h-4 w-4" />
-                </a>
+                </button>
               ) : (
                 <span className="text-xs font-mono text-[#8892b0]">
                   Private Repository Demo

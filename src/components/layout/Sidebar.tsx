@@ -19,8 +19,9 @@ export function Sidebar() {
     >
       <div>
         <Link href="#hero" className="block">
-          <h1 className="text-lg font-bold tracking-tight text-[#ccd6f6]">{siteConfig.name}</h1>
+          <h1 suppressHydrationWarning className="text-lg font-bold tracking-tight text-[#ccd6f6]">{siteConfig.name}</h1>
           <p className="mt-2 font-mono text-sm text-[#64ffda]">
+
             <Typewriter phrases={siteConfig.typewriterRoles} />
           </p>
         </Link>

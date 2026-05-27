@@ -18,6 +18,8 @@ const Skills = dynamic(() => import("@/components/sections/Skills").then((m) => 
 const Education = dynamic(() => import("@/components/sections/Education").then((m) => m.Education));
 const Contact = dynamic(() => import("@/components/sections/Contact").then((m) => m.Contact));
 
+import { BuiltInBrowser } from "@/components/ui/BuiltInBrowser";
+
 function SectionFallback() {
   return <div className="min-h-[40vh]" aria-hidden />;
 }
@@ -29,6 +31,7 @@ export default function Home() {
       <CustomCursor />
       <CursorSpotlight />
       <BackToTop />
+      <BuiltInBrowser />
       <Sidebar />
       <MobileNav />
 
