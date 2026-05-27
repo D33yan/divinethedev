@@ -1,15 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import useEmblaCarousel from "embla-carousel-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { projects } from "@/lib/site";
 import { SectionHeading } from "@/components/ui/SectionHeading";
-import { ProjectCard } from "@/components/sections/ProjectCard";
 import { TerminalView } from "@/components/sections/TerminalView";
+import { ProjectDeck } from "@/components/sections/ProjectDeck";
 
 export function Projects() {
-  const [emblaRef] = useEmblaCarousel({ align: "start", loop: false });
   const [viewMode, setViewMode] = useState<"cards" | "terminal">("cards");
 
   return (
@@ -50,32 +47,9 @@ export function Projects() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -15 }}
             transition={{ duration: 0.25, ease: "easeInOut" }}
+            className="w-full flex items-center justify-center"
           >
-            {/* Desktop Vertical Layout */}
-            <div className="hidden flex-col gap-6 lg:flex">
-              {projects.map((project, i) => (
-                <motion.div
-                  key={project.id}
-                  initial={{ opacity: 0, y: 24 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, margin: "-60px" }}
-                  transition={{ delay: i * 0.08 }}
-                >
-                  <ProjectCard project={project} />
-                </motion.div>
-              ))}
-            </div>
-
-            {/* Mobile Carousel Layout */}
-            <div className="overflow-hidden lg:hidden" ref={emblaRef}>
-              <div className="flex gap-4">
-                {projects.map((project) => (
-                  <div key={project.id} className="min-w-[85vw] shrink-0 sm:min-w-[70vw]">
-                    <ProjectCard project={project} />
-                  </div>
-                ))}
-              </div>
-            </div>
+            <ProjectDeck />
           </motion.div>
         ) : (
           <motion.div
@@ -93,4 +67,5 @@ export function Projects() {
     </section>
   );
 }
+
 
