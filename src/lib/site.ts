@@ -59,6 +59,7 @@ export const experiences = [
     role: "Data Science & AI Intern",
     period: "April 12, 2026 – Present",
     location: "Abuja, Nigeria",
+    tech: ["Python", "NumPy", "Matplotlib", "Data Science", "Machine Learning", "AI Integration"],
     bullets: [
       "Performing data cleaning and preprocessing to prepare datasets for analysis and modelling",
       "Conducting exploratory data analysis (EDA) using Python, NumPy, and Matplotlib",
@@ -67,15 +68,45 @@ export const experiences = [
     ],
   },
   {
+    id: "freelance",
+    company: "Freelance",
+    role: "Contract Fullstack Engineer",
+    period: "June 2023 – Present",
+    location: "Remote",
+    tech: ["Next.js", "React Native", "Node.js", "Firebase", "n8n", "GoHighLevel", "Figma"],
+    bullets: [
+      "Architecting and deploying bespoke web and mobile applications for global clients, utilizing Next.js, React Native, Node.js, and Firebase architectures",
+      "Designing and implementing robust AI-powered workflows and multi-branch automation pipelines using n8n, Zapier, and Python scripts, optimizing client operations",
+      "Managing full product lifecycles from initial Figma UI/UX design wireframes to production deployment, database structures, and GoHighLevel CRM funnels",
+      "Consulting on search engine optimization (SEO), performance metrics, and lead generation campaigns to elevate client site conversions and user engagement",
+    ],
+  },
+  {
     id: "tech-beavers",
     company: "Tech Beavers",
     role: "Frontend Developer Trainee",
     period: "January 2025 – May 12, 2025",
     location: "Lagos, Nigeria",
+    tech: ["JavaScript", "HTML5", "CSS3", "React", "CI/CD", "Git", "GitHub"],
     bullets: [
       "Contributed to development and maintenance of the company's main website",
       "Handled CI/CD pipeline tasks and resolved tracked issues via ticketing system",
       "Gained hands-on experience with production-level frontend development workflows",
+    ],
+  },
+  {
+    id: "acadexpub-dev",
+    company: "AcadExpub",
+    role: "Independent Fullstack Developer",
+    period: "January 2024 – August 2024",
+    location: "Abuja, Nigeria",
+    tech: ["Next.js", "TypeScript", "Tailwind CSS", "shadcn/ui", "Firebase", "Firestore", "Storage"],
+    bullets: [
+      "Designed, engineered, and deployed AcadExpub in 2024 — a high-performance academic publishing and peer-distribution platform that centralizes course material sharing.",
+      "Architected a secure, multi-role authentication flow utilizing Firebase Auth custom claims and Next.js middleware routing guards to enforce absolute isolation between Student and Educator dashboard portals.",
+      "Engineered an optimized document upload and distribution pipeline with Firebase Storage and Cloud Firestore, featuring drag-and-drop uploads, chunked transfer validation, and cryptographic tokenized secure access links.",
+      "Developed a custom, interactive reference viewer and searchable archives catalog using React, Tailwind CSS, and shadcn/ui components, providing educators with instant course-level material controls.",
+      "Fine-tuned Next.js App Router data-fetching methods and client-side state caching, resulting in a 35% reduction in initial page load latency and achieving seamless 60fps responsive UI transitions."
     ],
   },
 ] as const;
@@ -128,14 +159,14 @@ export const projects = [
     tag: "Web App",
     featured: true,
     github: "https://github.com/D33yan",
-    live: null,
+    live: "https://acadexpub.vercel.app",
     badge: null,
     caseStudy: {
       problem: "Academic institutions lacked a centralized, intuitive portal for lecturers to distribute course material and for students to reference academic literature. This resulted in fragmented communication and lost study materials.",
       approach: "Divine structured a comprehensive, role-based application logic with separate portals for educators and students. He utilized Next.js App Router and Firebase for real-time storage, secure document routing, and instant updates.",
       built: "A modern publishing platform with secure multi-role authentication, structured file submission pipelines, and dynamic reference feeds. The frontend was styled beautifully with Tailwind CSS and premium shadcn/ui components for maximum visual accessibility.",
       result: "The platform delivered a unified and reliable environment where students effortlessly search and retrieve lecture assets. It bridged the administrative gap between faculty and students, optimizing material distribution.",
-      images: []
+      images: ["/acadexpub.png", "/acadexpub2.png"]
     }
   },
   {

@@ -91,16 +91,16 @@ export function TerminalView({ onSwitchToCards }: TerminalViewProps) {
       case "help":
         output = [
           { text: "AVAILABLE SHELL COMMANDS:", type: "success" },
-          { text: "  ls / projects       - List all development projects by ID", type: "primary" },
-          { text: "  cat <project_id>    - Display detailed retro Case Study for a project", type: "primary" },
-          { text: "  open <project_id>   - Launch the live deployment URL for a project", type: "primary" },
-          { text: "  source <project_id> - Open the GitHub code repository for a project", type: "primary" },
-          { text: "  skills              - Show interactive terminal skills profile & bars", type: "primary" },
-          { text: "  about               - Print server specifications and bio stats", type: "primary" },
-          { text: "  contact             - Print professional contact links & details", type: "primary" },
-          { text: "  gui                 - Switch view back to visual slider cards", type: "primary" },
-          { text: "  clear               - Clear terminal screen buffer", type: "primary" },
-          { text: "  help                - Show this command log utility", type: "primary" },
+          { text: "  ls / projects           - List all development projects by ID", type: "primary" },
+          { text: "  cat <project_id>        - Display detailed retro Case Study for a project", type: "primary" },
+          { text: "  open / run <project_id> - Launch the project inside the Sandbox Browser", type: "primary" },
+          { text: "  source / code <id>      - Open the GitHub code repository in new tab", type: "primary" },
+          { text: "  skills                  - Show interactive terminal skills profile & bars", type: "primary" },
+          { text: "  about                   - Print server specifications and bio stats", type: "primary" },
+          { text: "  contact                 - Print professional contact links & details", type: "primary" },
+          { text: "  gui                     - Switch view back to visual slider cards", type: "primary" },
+          { text: "  clear                   - Clear terminal screen buffer", type: "primary" },
+          { text: "  help                    - Show this command log utility", type: "primary" },
         ];
         break;
 
@@ -156,9 +156,10 @@ export function TerminalView({ onSwitchToCards }: TerminalViewProps) {
         break;
       }
 
-      case "open": {
+      case "open":
+      case "run": {
         if (!arg) {
-          output = [{ text: "Error: No project specified. Usage: open <project_id>", type: "error" }];
+          output = [{ text: `Error: No project specified. Usage: ${command} <project_id>`, type: "error" }];
           break;
         }
 
@@ -184,9 +185,11 @@ export function TerminalView({ onSwitchToCards }: TerminalViewProps) {
         break;
       }
 
-      case "source": {
+      case "source":
+      case "view":
+      case "code": {
         if (!arg) {
-          output = [{ text: "Error: No project specified. Usage: source <project_id>", type: "error" }];
+          output = [{ text: `Error: No project specified. Usage: ${command} <project_id>`, type: "error" }];
           break;
         }
 

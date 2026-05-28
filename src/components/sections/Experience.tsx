@@ -49,6 +49,21 @@ export function Experience() {
             <p className="mt-2 font-mono text-sm text-[#8892b0]">
               {current.period} · {current.location}
             </p>
+            
+            {/* Role-specific Tech stack pills */}
+            {current.tech && (
+              <div className="mt-4 flex flex-wrap gap-2">
+                {current.tech.map((t) => (
+                  <span
+                    key={t}
+                    className="rounded-full bg-[#64ffda]/10 px-3 py-1 font-mono text-[10px] text-[#64ffda] border border-[#64ffda]/20 shadow-[0_0_10px_rgba(100,255,218,0.05)]"
+                  >
+                    {t}
+                  </span>
+                ))}
+              </div>
+            )}
+
             <ul className="mt-6 space-y-3">
               {current.bullets.map((bullet) => (
                 <li key={bullet} className="flex gap-3 text-[#8892b0]">
