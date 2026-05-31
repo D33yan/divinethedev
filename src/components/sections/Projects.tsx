@@ -5,6 +5,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { TerminalView } from "@/components/sections/TerminalView";
 import { ProjectDeck } from "@/components/sections/ProjectDeck";
+import { ProjectCard } from "@/components/sections/ProjectCard";
+import { projects } from "@/lib/site";
 
 export function Projects() {
   const [viewMode, setViewMode] = useState<"cards" | "terminal">("cards");
@@ -47,9 +49,18 @@ export function Projects() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -15 }}
             transition={{ duration: 0.25, ease: "easeInOut" }}
-            className="w-full flex items-center justify-center"
+            className="w-full"
           >
-            <ProjectDeck />
+            {/* Desktop grid layout */}
+            <div className="hidden lg:grid lg:grid-cols-2 xl:grid-cols-3 gap-6 w-full max-w-6xl mx-auto">
+              {projects.map((project) => (
+                <ProjectCard key={project.id} project={project as any} />
+              ))}
+            </div>
+            {/* Mobile swipable stack layout */}
+            <div className="lg:hidden w-full flex items-center justify-center">
+              <ProjectDeck />
+            </div>
           </motion.div>
         ) : (
           <motion.div

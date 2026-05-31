@@ -730,7 +730,7 @@ export function FuturisticGlobe() {
           pointerEvents: "none",
           transition: "opacity 0.15s ease-out, transform 0.08s ease-out",
         }}
-        className="z-20 w-52 rounded border border-[#64ffda]/30 bg-[#0a0f1e]/90 p-3 shadow-[0_0_20px_rgba(100,255,218,0.15)] backdrop-blur-md"
+        className="z-20 w-52 rounded border border-[#64ffda]/30 bg-navy/90 p-3 shadow-[0_0_20px_rgba(100,255,218,0.15)] backdrop-blur-md"
       >
         {/* HUD Corner Caps */}
         <div className="absolute -top-px -left-px h-1.5 w-1.5 border-t border-l border-[#64ffda]" />

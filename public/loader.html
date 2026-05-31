@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>divine_the_dev — init</title>
+  <style>
+    /* Reset & Core Setup */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: #000000;
+      color: rgba(255, 255, 255, 0.85);
+      font-family: "Courier New", Courier, monospace;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      perspective: 1200px; /* 3D Space perspective */
+    }
+
+    /* Cyber Scanline CRT Overlay */
+    .scanlines {
+      pointer-events: none;
+      position: fixed;
+      inset: 0;
+      z-index: 999;
+      background: linear-gradient(
+        rgba(18, 16, 16, 0) 50%, 
+        rgba(0, 0, 0, 0.25) 50%
+      );
+      background-size: 100% 4px;
+      opacity: 0.85;
+    }
+
+    .vignette {
+      pointer-events: none;
+      position: fixed;
+      inset: 0;
+      z-index: 998;
+      background: radial-gradient(
+        circle,
+        rgba(0, 0, 0, 0) 45%,
+        rgba(0, 0, 0, 0.7) 100%
+      );
+    }
+
+    /* Canvas Grid & Background Elements */
+    #gridCanvas {
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      transform: translateZ(-100px) scale(1.1); /* Layered 3D depth */
+      transition: transform 0.1s ease-out;
+    }
+
+    #glitchCanvas {
+      position: fixed;
+      inset: 0;
+      z-index: 990;
+      pointer-events: none;
+    }
+
+    /* 3D Scene Wrapper */
+    .scene-container {
+      position: relative;
+      z-index: 10;
+      transform-style: preserve-3d;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 32px;
+    }
+
+    /* Centered Futuristic 3D Terminal Card */
+    .terminal-card {
+      width: 380px;
+      background: #000000;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 10px;
+      padding: 20px 24px;
+      transform-style: preserve-3d;
+      transition: transform 0.1s ease-out, border-color 0.3s ease;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.9),
+                  0 0 40px rgba(167, 139, 250, 0.05),
+                  inset 0 0 20px rgba(255, 255, 255, 0.02);
+      position: relative;
+    }
+
+    /* Glow Edge Ring (Shifting futuristic ambient glow) */
+    .terminal-card::after {
+      content: "";
+      position: absolute;
+      inset: -1px;
+      border-radius: 10px;
+      padding: 1px;
+      background: linear-gradient(135deg, rgba(167,139,250,0.15), rgba(0,255,159,0.15));
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events: none;
+      opacity: 0.8;
+    }
+
+    /* Terminal Chrome Headers */
+    .terminal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-b: 1px solid rgba(255, 255, 255, 0.08);
+      padding-bottom: 12px;
+      margin-bottom: 18px;
+      transform: translateZ(25px); /* Lift element up in 3D space */
+    }
+
+    .window-controls {
+      display: flex;
+      gap: 6px;
+    }
+
+    .control-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+    }
+
+    .dot-red { background-color: #ff5f57; }
+    .dot-yellow { background-color: #febc2e; }
+    .dot-green { background-color: #28c840; }
+
+    .header-title {
+      font-size: 10px;
+      color: rgba(255, 255, 255, 0.3);
+      letter-spacing: 1px;
+      text-transform: lowercase;
+    }
+
+    /* Console Terminal Output Logs */
+    .terminal-logs {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      min-height: 110px;
+      transform: translateZ(15px);
+    }
+
+    .log-line {
+      font-size: 11px;
+      line-height: 2;
+      opacity: 0;
+      transform: translateX(-8px);
+      transition: opacity 0.25s ease-out, transform 0.25s ease-out;
+      white-space: pre-wrap;
+    }
+
+    .log-line.active {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    /* Custom Syntax Coloring */
+    .color-default { color: rgba(255, 255, 255, 0.35); }
+    .color-accent { color: #a78bfa; font-weight: bold; }
+    .color-success { color: #00ff9f; }
+    .color-filename { color: #f5c518; }
+
+    /* Identity Solve Reveal Block */
+    .identity-block {
+      margin-top: 14px;
+      padding-top: 14px;
+      border-t: 1px dashed rgba(255, 255, 255, 0.06);
+      transform: translateZ(28px);
+    }
+
+    .identity-main {
+      font-size: 16px;
+      font-weight: bold;
+      letter-spacing: 0.5px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      position: relative;
+    }
+
+    .solved-green { color: #00ff9f; text-shadow: 0 0 10px rgba(0, 255, 159, 0.4); }
+    .solved-white { color: #ffffff; }
+
+    .cursor {
+      display: inline-block;
+      width: 3px;
+      height: 15px;
+      background-color: #00ff9f;
+      margin-left: 4px;
+      box-shadow: 0 0 8px rgba(0, 255, 159, 0.7);
+      animation: blink 0.7s infinite steps(1);
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+
+    .identity-sub {
+      font-size: 11px;
+      color: rgba(167, 139, 250, 0.7);
+      letter-spacing: 5px;
+      text-transform: lowercase;
+      margin-top: 5px;
+      opacity: 0;
+      transform: translateY(3px);
+      transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+    }
+
+    .identity-sub.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* High-End Linear Loading Bar */
+    .loading-container {
+      margin-top: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      transform: translateZ(20px);
+    }
+
+    .track-wrapper {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .percentage-counter {
+      font-size: 10px;
+      color: #00ff9f;
+      font-weight: bold;
+      text-shadow: 0 0 6px rgba(0, 255, 159, 0.2);
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 3px;
+      background-color: rgba(255, 255, 255, 0.07);
+      border-radius: 2px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .progress-fill {
+      width: 0%;
+      height: 100%;
+      background: linear-gradient(90deg, #a78bfa, #00ff9f);
+      border-radius: 2px;
+      transition: width 0.1s ease-out;
+      box-shadow: 0 0 10px rgba(0, 255, 159, 0.3);
+    }
+
+    /* Interactive Replay Controls */
+    .replay-trigger {
+      display: inline-block;
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.12);
+      cursor: pointer;
+      padding: 10px 18px;
+      border-radius: 4px;
+      border: 1px solid transparent;
+      transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+      user-select: none;
+      transform: translateZ(5px);
+    }
+
+    .replay-trigger:hover {
+      color: rgba(0, 255, 159, 0.8);
+      text-shadow: 0 0 8px rgba(0, 255, 159, 0.3);
+      background-color: rgba(0, 255, 159, 0.02);
+      border-color: rgba(0, 255, 159, 0.15);
+    }
+
+    /* Screen Glitch shake triggers */
+    .shake-glitch {
+      animation: card-shake 0.15s infinite;
+    }
+
+    @keyframes card-shake {
+      0%, 100% { transform: translate(0, 0) rotate(0deg); }
+      20% { transform: translate(-2px, 1px) rotate(-0.5deg); }
+      40% { transform: translate(1px, -1px) rotate(0.3deg); }
+      60% { transform: translate(-1px, -2px) rotate(-0.2deg); }
+      80% { transform: translate(2px, 2px) rotate(0.4deg); }
+    }
+  </style>
+</head>
+<body>
+  <!-- HUD System Overlays -->
+  <div class="scanlines" aria-hidden="true"></div>
+  <div class="vignette" aria-hidden="true"></div>
+
+  <!-- Background Animated Canvas Grid -->
+  <canvas id="gridCanvas"></canvas>
+
+  <!-- High-Frequency Screen Slice Glitch Canvas -->
+  <canvas id="glitchCanvas"></canvas>
+
+  <!-- 3D Parallax Active Scene Space -->
+  <div class="scene-container">
+    <article class="terminal-card" id="card">
+      <!-- Top Chrome Bar -->
+      <div class="terminal-header">
+        <div class="window-controls" aria-hidden="true">
+          <span class="control-dot dot-red"></span>
+          <span class="control-dot dot-yellow"></span>
+          <span class="control-dot dot-green"></span>
+        </div>
+        <div class="header-title">divine_the_dev — init</div>
+      </div>
+
+      <!-- Live logs feed -->
+      <div class="terminal-logs" id="logsFeed">
+        <!-- Lines injected dynamically to ensure exact delay timers -->
+      </div>
+
+      <!-- Identity solving block -->
+      <div class="identity-block">
+        <div class="identity-main">
+          <span id="scrambleWord"></span>
+          <span class="cursor" id="terminalCursor"></span>
+        </div>
+        <div class="identity-sub" id="subLabel">the dev</div>
+      </div>
+
+      <!-- Dynamic loading bar -->
+      <div class="loading-container">
+        <div class="track-wrapper">
+          <span class="percentage-counter" id="progressPercentage">0%</span>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill" id="progressBar"></div>
+        </div>
+      </div>
+    </article>
+
+    <!-- Console reset trigger -->
+    <button class="replay-trigger" id="replayBtn" aria-label="Replay initialization sequence">
+      [ replay ]
+    </button>
+  </div>
+
+  <script>
+    // System Configurations
+    const LOG_LINES = [
+      { html: '<span class="color-accent">$ node init.js --name "Divine"</span>', progress: 10 },
+      { html: '<span class="color-default">▸ resolving identity...</span>', progress: 30 },
+      { html: '<span class="color-default">▸ compiling </span><span class="color-filename">greatness.ts</span><span class="color-default"> </span><span class="color-success">✓</span>', progress: 55 },
+      { html: '<span class="color-default">▸ injecting destiny into runtime</span>', progress: 75 },
+      { html: '<span class="color-success">▸ BUILD SUCCESSFUL — no errors found</span>', progress: 90 }
+    ];
+
+    const TARGET_NAME = "Divine";
+    const SCRAMBLE_CHARS = "01_$#@!%&{}[]<>";
+    
+    // Canvas & Core DOM Nodes
+    const gridCanvas = document.getElementById("gridCanvas");
+    const gridCtx = gridCanvas.getContext("2d");
+    const glitchCanvas = document.getElementById("glitchCanvas");
+    const glitchCtx = glitchCanvas.getContext("2d");
+    
+    const card = document.getElementById("card");
+    const logsFeed = document.getElementById("logsFeed");
+    const scrambleWord = document.getElementById("scrambleWord");
+    const subLabel = document.getElementById("subLabel");
+    const progressBar = document.getElementById("progressBar");
+    const progressPercentage = document.getElementById("progressPercentage");
+    const replayBtn = document.getElementById("replayBtn");
+    
+    let gridWidth, gridHeight;
+    let particles = [];
+    let animationFrameId;
+    let glitchActive = false;
+
+    // 1. Grid Canvas Dimensions & Particle Setup
+    function initCanvas() {
+      gridWidth = gridCanvas.width = window.innerWidth;
+      gridHeight = gridCanvas.height = window.innerHeight;
+      glitchCanvas.width = window.innerWidth;
+      glitchCanvas.height = window.innerHeight;
+      
+      // Seed grid background floating particles
+      particles = [];
+      const colCount = Math.floor(gridWidth / 28);
+      for (let i = 0; i < colCount; i += 2) {
+        particles.push({
+          x: i * 28,
+          y: Math.random() * gridHeight,
+          speed: 0.5 + Math.random() * 1.5,
+          char: Math.random() > 0.5 ? "1" : "0",
+          alpha: 0.05 + Math.random() * 0.15,
+          scale: 0.7 + Math.random() * 0.5
+        });
+      }
+    }
+
+    window.addEventListener("resize", () => {
+      initCanvas();
+    });
+    
+    // 2. High-Performance Grid & Particle Loop
+    function drawGridAndParticles() {
+      gridCtx.clearRect(0, 0, gridWidth, gridHeight);
+      
+      // Draw grid lines
+      gridCtx.strokeStyle = "rgba(255, 255, 255, 0.04)";
+      gridCtx.lineWidth = 0.5;
+      
+      // Vertical lines
+      for (let x = 0; x < gridWidth; x += 28) {
+        gridCtx.beginPath();
+        gridCtx.moveTo(x, 0);
+        gridCtx.lineTo(x, gridHeight);
+        gridCtx.stroke();
+      }
+      
+      // Horizontal lines
+      for (let y = 0; y < gridHeight; y += 28) {
+        gridCtx.beginPath();
+        gridCtx.moveTo(0, y);
+        gridCtx.lineTo(gridWidth, y);
+        gridCtx.stroke();
+      }
+      
+      // Update and draw cyber code particles drifting upward along grid lines
+      gridCtx.font = "9px monospace";
+      particles.forEach((p) => {
+        gridCtx.fillStyle = `rgba(0, 255, 159, ${p.alpha})`;
+        gridCtx.fillText(p.char, p.x + 8, p.y);
+        
+        p.y -= p.speed;
+        if (p.y < 0) {
+          p.y = gridHeight;
+          p.char = Math.random() > 0.5 ? "1" : "0";
+        }
+      });
+      
+      animationFrameId = requestAnimationFrame(drawGridAndParticles);
+    }
+
+    // 3. Glitch Slicer Overlay Generator
+    function triggerGlitch(duration) {
+      if (glitchActive) return;
+      glitchActive = true;
+      
+      card.classList.add("shake-glitch");
+      
+      const startTime = performance.now();
+      
+      function renderSlices(timestamp) {
+        const elapsed = timestamp - startTime;
+        glitchCtx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+        
+        if (elapsed < duration) {
+          // Render 4 dynamic horizontal color glitch slices
+          for (let i = 0; i < 4; i++) {
+            const h = 2 + Math.random() * 8; // Height 2px-10px
+            const y = Math.random() * window.innerHeight;
+            const xOffset = -15 + Math.random() * 30; // Random X offset
+            
+            // Alternating green/white transparency slices
+            const color = Math.random() > 0.5 ? "rgba(0, 255, 159, 0.18)" : "rgba(255, 255, 255, 0.18)";
+            glitchCtx.fillStyle = color;
+            glitchCtx.fillRect(xOffset, y, window.innerWidth, h);
+          }
+          requestAnimationFrame(renderSlices);
+        } else {
+          glitchCtx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+          card.classList.remove("shake-glitch");
+          glitchActive = false;
+        }
+      }
+      requestAnimationFrame(renderSlices);
+    }
+
+    // 4. Interactive 3D Card Parallax Tilt
+    window.addEventListener("mousemove", (e) => {
+      // Calculate cursor position relative to window center (-0.5 to 0.5)
+      const dx = (e.clientX - window.innerWidth / 2) / window.innerWidth;
+      const dy = (e.clientY - window.innerHeight / 2) / window.innerHeight;
+      
+      // Tilt card
+      const tiltX = -dy * 25; // X rotation based on vertical mouse movement
+      const tiltY = dx * 25;  // Y rotation based on horizontal mouse movement
+      card.style.transform = `rotateX(${tiltX}deg) rotateY(${tiltY}deg)`;
+      
+      // Translate background grid slightly in opposite direction
+      gridCanvas.style.transform = `translate3d(${-dx * 45}px, ${-dy * 45}px, -100px) scale(1.15)`;
+    });
+
+    // 5. Loading Sequencer & Scrambler Engine
+    let activeTimers = [];
+    
+    function setSafeTimeout(callback, delay) {
+      const id = setTimeout(callback, delay);
+      activeTimers.push(id);
+      return id;
+    }
+
+    function updateProgressBar(progressVal) {
+      progressBar.style.width = `${progressVal}%`;
+      progressPercentage.textContent = `${Math.floor(progressVal)}%`;
+    }
+
+    function runIdentitySolveReveal() {
+      let currentResolved = "";
+      const nameLength = TARGET_NAME.length;
+      
+      function solveLetter(letterIndex) {
+        if (letterIndex >= nameLength) {
+          // Solve Sequence Concludes!
+          updateProgressBar(100);
+          
+          setSafeTimeout(() => {
+            subLabel.classList.add("visible");
+            triggerGlitch(220); // Complete sequence finish glitch
+          }, 200);
+          return;
+        }
+        
+        let cycle = 0;
+        const targetChar = TARGET_NAME[letterIndex];
+        
+        function scrambleCycle() {
+          if (cycle < 3) {
+            // Scrambling: Pick random char
+            const randChar = SCRAMBLE_CHARS[Math.floor(Math.random() * SCRAMBLE_CHARS.length)];
+            renderNameString(currentResolved + randChar);
+            cycle++;
+            setSafeTimeout(scrambleCycle, 55);
+          } else {
+            // Settle correct character
+            currentResolved += targetChar;
+            renderNameString(currentResolved);
+            
+            // Trigger quick glitch click and advance
+            triggerGlitch(80);
+            
+            // Sync loading bar increments
+            const stepProgress = 90 + ((letterIndex + 1) / nameLength) * 10;
+            updateProgressBar(stepProgress);
+            
+            setSafeTimeout(() => {
+              solveLetter(letterIndex + 1);
+            }, 100);
+          }
+        }
+        scrambleCycle();
+      }
+      solveLetter(0);
+    }
+
+    function renderNameString(str) {
+      let outputHTML = "";
+      for (let i = 0; i < str.length; i++) {
+        if (i === 0) {
+          outputHTML += `<span class="solved-green">${str[i]}</span>`;
+        } else {
+          // If the letter matches the target case solved letters, color it white
+          if (TARGET_NAME[i] && str[i] === TARGET_NAME[i]) {
+            outputHTML += `<span class="solved-white">${str[i]}</span>`;
+          } else {
+            outputHTML += `<span class="color-default">${str[i]}</span>`;
+          }
+        }
+      }
+      scrambleWord.innerHTML = outputHTML;
+    }
+
+    function playSequence() {
+      // Clear all active timers & reset states
+      activeTimers.forEach(clearTimeout);
+      activeTimers = [];
+      
+      logsFeed.innerHTML = "";
+      scrambleWord.innerHTML = "";
+      subLabel.classList.remove("visible");
+      updateProgressBar(0);
+      
+      // Inject logs sequentially
+      let currentDelay = 0;
+      LOG_LINES.forEach((line, index) => {
+        currentDelay += 300 + Math.random() * 100; // 300-400ms staggered delay
+        
+        setSafeTimeout(() => {
+          const row = document.createElement("div");
+          row.className = "log-line";
+          row.innerHTML = line.html;
+          logsFeed.appendChild(row);
+          
+          // Force reflow and add active class to trigger smooth CSS translation slide
+          row.offsetHeight; 
+          row.classList.add("active");
+          
+          updateProgressBar(line.progress);
+        }, currentDelay);
+      });
+      
+      // Kick off Scrambler solver reveal
+      setSafeTimeout(() => {
+        runIdentitySolveReveal();
+      }, currentDelay + 450);
+    }
+
+    // Interactive reset click
+    replayBtn.addEventListener("click", () => {
+      playSequence();
+    });
+
+    // Boot system
+    initCanvas();
+    drawGridAndParticles();
+    playSequence();
+  </script>
+</body>
+</html>

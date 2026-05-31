@@ -48,7 +48,7 @@ export function CaseStudyModal({ project, isOpen, onClose }: CaseStudyModalProps
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="absolute inset-0 bg-[#020617]/70 backdrop-blur-sm"
+            className="absolute inset-0 bg-black/70 backdrop-blur-sm"
           />
 
           {/* Slide-over Drawer Panel */}
@@ -57,7 +57,7 @@ export function CaseStudyModal({ project, isOpen, onClose }: CaseStudyModalProps
             animate={{ x: 0 }}
             exit={{ x: "100%" }}
             transition={{ type: "spring", damping: 30, stiffness: 220 }}
-            className="relative flex h-full w-full flex-col border-l border-white/10 bg-[#0a0f1e]/95 backdrop-blur-2xl p-6 shadow-2xl sm:p-8 md:max-w-2xl"
+            className="relative flex h-full w-full flex-col border-l border-white/10 bg-navy/95 backdrop-blur-2xl p-6 shadow-2xl sm:p-8 md:max-w-2xl"
           >
             {/* Elegant Top Nav Controls */}
             <div className="flex items-center justify-between pb-6 border-b border-white/10">
@@ -92,7 +92,7 @@ export function CaseStudyModal({ project, isOpen, onClose }: CaseStudyModalProps
                 {project.tech.map((t) => (
                   <span
                     key={t}
-                    className="rounded-full bg-[#112240]/60 px-3 py-1 font-mono text-xs text-[#8892b0] border border-white/5"
+                    className="rounded-full bg-navy-light/60 px-3 py-1 font-mono text-xs text-[#8892b0] border border-white/5"
                   >
                     {t}
                   </span>
@@ -119,7 +119,7 @@ export function CaseStudyModal({ project, isOpen, onClose }: CaseStudyModalProps
                       </p>
                     </div>
                   </div>
-                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#112240] text-[#64ffda] border border-white/5 transition-transform duration-300 group-hover/live:translate-x-1 group-hover/live:border-[#64ffda]/30">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-navy-light text-[#64ffda] border border-white/5 transition-transform duration-300 group-hover/live:translate-x-1 group-hover/live:border-[#64ffda]/30">
                     <span className="text-sm font-mono">→</span>
                   </div>
                 </button>
@@ -135,7 +135,11 @@ export function CaseStudyModal({ project, isOpen, onClose }: CaseStudyModalProps
                     {(project.caseStudy.images as readonly string[]).map((img, index) => (
                       <div
                         key={index}
-                        className="relative aspect-video w-[280px] shrink-0 overflow-hidden rounded-xl border border-white/10 bg-[#112240] snap-start transition duration-300 hover:border-[#64ffda]/30 sm:w-[360px]"
+                        className={`relative shrink-0 overflow-hidden rounded-xl border border-white/10 bg-navy-light snap-start transition duration-300 hover:border-[#64ffda]/30 ${
+                          project.tag.toLowerCase().includes("mobile")
+                            ? "aspect-[9/16] w-[160px] sm:w-[200px]"
+                            : "aspect-video w-[280px] sm:w-[360px]"
+                        }`}
                       >
                         <img
                           src={img}
@@ -155,7 +159,7 @@ export function CaseStudyModal({ project, isOpen, onClose }: CaseStudyModalProps
               {/* Grid or flex list of case study sections */}
               <div className="mt-10 space-y-8">
                 {/* 1. The Problem */}
-                <div className="group relative rounded-xl border border-white/5 bg-[#112240]/25 p-5 transition hover:border-[#f43f5e]/30 hover:bg-[#112240]/40">
+                <div className="group relative rounded-xl border border-white/5 bg-navy-light/25 p-5 transition hover:border-[#f43f5e]/30 hover:bg-navy-light/40">
                   <div className="flex items-center gap-3">
                     <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#f43f5e]/10 text-[#f43f5e]">
                       <AlertCircle className="h-5 w-5" />
@@ -170,7 +174,7 @@ export function CaseStudyModal({ project, isOpen, onClose }: CaseStudyModalProps
                 </div>
 
                 {/* 2. The Approach */}
-                <div className="group relative rounded-xl border border-white/5 bg-[#112240]/25 p-5 transition hover:border-[#0ea5e9]/30 hover:bg-[#112240]/40">
+                <div className="group relative rounded-xl border border-white/5 bg-navy-light/25 p-5 transition hover:border-[#0ea5e9]/30 hover:bg-navy-light/40">
                   <div className="flex items-center gap-3">
                     <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#0ea5e9]/10 text-[#0ea5e9]">
                       <Compass className="h-5 w-5" />
@@ -185,7 +189,7 @@ export function CaseStudyModal({ project, isOpen, onClose }: CaseStudyModalProps
                 </div>
 
                 {/* 3. What Was Built */}
-                <div className="group relative rounded-xl border border-white/5 bg-[#112240]/25 p-5 transition hover:border-[#a855f7]/30 hover:bg-[#112240]/40">
+                <div className="group relative rounded-xl border border-white/5 bg-navy-light/25 p-5 transition hover:border-[#a855f7]/30 hover:bg-navy-light/40">
                   <div className="flex items-center gap-3">
                     <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#a855f7]/10 text-[#a855f7]">
                       <Terminal className="h-5 w-5" />
@@ -200,7 +204,7 @@ export function CaseStudyModal({ project, isOpen, onClose }: CaseStudyModalProps
                 </div>
 
                 {/* 4. The Result */}
-                <div className="group relative rounded-xl border border-white/5 bg-[#112240]/25 p-5 transition hover:border-[#10b981]/30 hover:bg-[#112240]/40">
+                <div className="group relative rounded-xl border border-white/5 bg-navy-light/25 p-5 transition hover:border-[#10b981]/30 hover:bg-navy-light/40">
                   <div className="flex items-center gap-3">
                     <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#10b981]/10 text-[#10b981]">
                       <Trophy className="h-5 w-5" />
@@ -222,7 +226,7 @@ export function CaseStudyModal({ project, isOpen, onClose }: CaseStudyModalProps
                 href={project.github}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-2 rounded-lg bg-[#112240] px-4 py-2.5 text-sm font-medium text-[#ccd6f6] border border-white/5 transition hover:border-[#64ffda]/30 hover:text-[#64ffda]"
+                className="flex items-center gap-2 rounded-lg bg-navy-light px-4 py-2.5 text-sm font-medium text-[#ccd6f6] border border-white/5 transition hover:border-[#64ffda]/30 hover:text-[#64ffda]"
                 data-cursor-hover
               >
                 <SiGithub className="h-4 w-4" />
@@ -231,7 +235,7 @@ export function CaseStudyModal({ project, isOpen, onClose }: CaseStudyModalProps
               {project.live ? (
                 <button
                   onClick={handleLaunchDemo}
-                  className="flex items-center gap-2 rounded-lg bg-[#64ffda] px-4 py-2.5 text-sm font-medium text-[#0a0f1e] transition hover:bg-[#64ffda]/80 cursor-pointer"
+                  className="flex items-center gap-2 rounded-lg bg-[#64ffda] px-4 py-2.5 text-sm font-medium text-black transition hover:bg-[#64ffda]/80 cursor-pointer"
                   data-cursor-hover
                 >
                   <span>Launch Demo</span>

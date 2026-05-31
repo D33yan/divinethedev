@@ -21,7 +21,7 @@ export function TerminalView({ onSwitchToCards }: TerminalViewProps) {
   const [lines, setLines] = useState<TerminalLine[]>([
     { text: "NAVIE-OS [Version 1.0.4] Core Shell Terminal", type: "header" },
     { text: "(c) 2026 Divine Chibueze Nnaji. All rights reserved.", type: "system" },
-    { text: "System diagnostic: STABLE // NASRDA Data Science & AI node connected.", type: "system" },
+    { text: "System diagnostic: STABLE // Core Data Science & AI node connected.", type: "system" },
     { text: "Type 'help' to view available commands, or 'gui' to return to visual mode.", type: "success" },
     { text: "", type: "system" },
   ]);
@@ -282,7 +282,7 @@ export function TerminalView({ onSwitchToCards }: TerminalViewProps) {
       />
 
       {/* Terminal Window Header (macOS Retro Shell style) */}
-      <div className="relative flex h-10 w-full shrink-0 items-center justify-between border-b border-white/5 bg-[#0a0f1e]/90 px-4">
+      <div className="relative flex h-10 w-full shrink-0 items-center justify-between border-b border-white/5 bg-navy/90 px-4">
         {/* macOS Window Controls */}
         <div className="flex gap-2">
           <div className="h-3 w-3 rounded-full bg-[#ff5252]/80 hover:bg-[#ff5252]" />

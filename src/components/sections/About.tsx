@@ -22,7 +22,7 @@ export function About() {
               <motion.span
                 key={tech}
                 whileHover={{ scale: 1.05, borderColor: "rgba(100,255,218,0.5)" }}
-                className="rounded-full border border-white/10 bg-[#112240]/60 px-3 py-1.5 font-mono text-xs text-[#ccd6f6] transition-colors hover:text-[#64ffda]"
+                className="rounded-full border border-white/10 bg-navy-light/60 px-3 py-1.5 font-mono text-xs text-[#ccd6f6] transition-colors hover:text-[#64ffda]"
               >
                 {tech}
               </motion.span>
@@ -39,9 +39,9 @@ export function About() {
         >
           <div className="absolute -inset-3 rotate-3 rounded-lg border-2 border-[#64ffda]/40" aria-hidden />
           <motion.div className="absolute -inset-3 -rotate-2 rounded-lg border border-white/10" aria-hidden />
-          <div className="relative aspect-square overflow-hidden rounded-lg border border-white/10 bg-[#112240]">
+          <div className="relative aspect-square overflow-hidden rounded-lg border border-white/10 bg-navy-light">
             <Image
-              src="/profile.svg"
+              src="/portfolioprofile1.png"
               alt="Divine Chibueze Nnaji"
               fill
               className="object-cover"

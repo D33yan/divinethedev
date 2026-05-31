@@ -8,13 +8,14 @@ import { navSections, siteConfig } from "@/lib/site";
 import { Typewriter } from "@/components/ui/Typewriter";
 import { useActiveSection } from "@/hooks/useActiveSection";
 import { Magnetic } from "@/components/ui/Magnetic";
+import { ThemeToggle } from "@/components/effects/ThemeToggle";
 
 export function Sidebar() {
   const active = useActiveSection();
 
   return (
     <aside
-      className="fixed top-0 left-0 z-40 hidden h-screen w-[min(320px,28vw)] flex-col justify-between border-r border-white/10 bg-[#0a0f1e]/95 px-8 py-12 backdrop-blur-xl lg:flex"
+      className="fixed top-0 left-0 z-40 hidden h-screen w-[min(320px,28vw)] flex-col justify-between border-r border-white/10 bg-navy/95 px-8 py-12 backdrop-blur-xl lg:flex"
       aria-label="Site sidebar"
     >
       <div>
@@ -55,7 +56,8 @@ export function Sidebar() {
         ))}
       </nav>
 
-      <div className="flex gap-4">
+      <div className="flex items-center gap-4">
+        <ThemeToggle />
         <Magnetic strength={0.4}>
           <a
             href={siteConfig.github}

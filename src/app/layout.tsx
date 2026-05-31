@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
-import { Fira_Code, Inter } from "next/font/google";
+import { Fira_Code, Outfit } from "next/font/google";
 import "./globals.css";
 import { siteConfig } from "@/lib/site";
 
-const inter = Inter({
-  variable: "--font-inter",
+const outfit = Outfit({
+  variable: "--font-outfit",
   subsets: ["latin"],
   display: "swap",
 });
@@ -34,7 +34,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${inter.variable} ${firaCode.variable}`}>
+    <html lang="en" className={`${outfit.variable} ${firaCode.variable}`}>
       <body className="font-sans antialiased">
         <div className="grain-overlay" aria-hidden />
         {children}

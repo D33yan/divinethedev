@@ -49,7 +49,7 @@ function ContactContent() {
         <div className="flex flex-col gap-4 pt-4">
           <a
             href={`mailto:${siteConfig.email}`}
-            className="flex items-center gap-3 rounded-xl border border-white/5 bg-[#112240]/45 p-4 transition duration-300 hover:border-[#64ffda]/30 hover:bg-[#112240]/70 group"
+            className="flex items-center gap-3 rounded-xl border border-white/5 bg-navy-light/45 p-4 transition duration-300 hover:border-[#64ffda]/30 hover:bg-navy-light/70 group"
             data-cursor-hover
           >
             <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#64ffda]/10 text-[#64ffda] group-hover:scale-105 transition-transform">
@@ -69,7 +69,7 @@ function ContactContent() {
             href={siteConfig.linkedin}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-3 rounded-xl border border-white/5 bg-[#112240]/45 p-4 transition duration-300 hover:border-[#64ffda]/30 hover:bg-[#112240]/70 group"
+            className="flex items-center gap-3 rounded-xl border border-white/5 bg-navy-light/45 p-4 transition duration-300 hover:border-[#64ffda]/30 hover:bg-navy-light/70 group"
             data-cursor-hover
           >
             <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#64ffda]/10 text-[#64ffda] group-hover:scale-105 transition-transform">
@@ -89,7 +89,7 @@ function ContactContent() {
             href={siteConfig.github}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-3 rounded-xl border border-white/5 bg-[#112240]/45 p-4 transition duration-300 hover:border-[#64ffda]/30 hover:bg-[#112240]/70 group"
+            className="flex items-center gap-3 rounded-xl border border-white/5 bg-navy-light/45 p-4 transition duration-300 hover:border-[#64ffda]/30 hover:bg-navy-light/70 group"
             data-cursor-hover
           >
             <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#64ffda]/10 text-[#64ffda] group-hover:scale-105 transition-transform">
@@ -109,7 +109,7 @@ function ContactContent() {
 
       {/* Right Column: Premium Glassmorphic Form */}
       <div className="lg:col-span-7">
-        <div className="rounded-2xl border border-white/10 bg-[#0a0f1e]/80 p-6 sm:p-8 shadow-xl backdrop-blur-md">
+        <div className="rounded-2xl border border-white/10 bg-navy/80 p-6 sm:p-8 shadow-xl backdrop-blur-md">
           {status === "success" ? (
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
@@ -147,7 +147,7 @@ function ContactContent() {
                   value={formState.name}
                   onChange={(e) => setFormState({ ...formState, name: e.target.value })}
                   placeholder="Your Name"
-                  className="w-full rounded-xl border border-white/10 bg-[#112240]/40 px-4 py-3.5 text-sm text-[#ccd6f6] placeholder-[#8892b0]/50 outline-none transition focus:border-[#64ffda]/50 focus:bg-[#112240]/70"
+                  className="w-full rounded-xl border border-white/10 bg-navy-light/40 px-4 py-3.5 text-sm text-[#ccd6f6] placeholder-[#8892b0]/50 outline-none transition focus:border-[#64ffda]/50 focus:bg-navy-light/70"
                 />
               </div>
 
@@ -165,7 +165,7 @@ function ContactContent() {
                   value={formState.email}
                   onChange={(e) => setFormState({ ...formState, email: e.target.value })}
                   placeholder="name@example.com"
-                  className="w-full rounded-xl border border-white/10 bg-[#112240]/40 px-4 py-3.5 text-sm text-[#ccd6f6] placeholder-[#8892b0]/50 outline-none transition focus:border-[#64ffda]/50 focus:bg-[#112240]/70"
+                  className="w-full rounded-xl border border-white/10 bg-navy-light/40 px-4 py-3.5 text-sm text-[#ccd6f6] placeholder-[#8892b0]/50 outline-none transition focus:border-[#64ffda]/50 focus:bg-navy-light/70"
                 />
               </div>
 
@@ -183,7 +183,7 @@ function ContactContent() {
                   value={formState.message}
                   onChange={(e) => setFormState({ ...formState, message: e.target.value })}
                   placeholder="Hi Divine, let's talk about..."
-                  className="w-full rounded-xl border border-white/10 bg-[#112240]/40 px-4 py-3.5 text-sm text-[#ccd6f6] placeholder-[#8892b0]/50 outline-none transition focus:border-[#64ffda]/50 focus:bg-[#112240]/70 resize-none"
+                  className="w-full rounded-xl border border-white/10 bg-navy-light/40 px-4 py-3.5 text-sm text-[#ccd6f6] placeholder-[#8892b0]/50 outline-none transition focus:border-[#64ffda]/50 focus:bg-navy-light/70 resize-none"
                 />
               </div>
 
@@ -196,7 +196,7 @@ function ContactContent() {
               <button
                 type="submit"
                 disabled={status === "submitting"}
-                className="group/btn flex w-full items-center justify-center gap-2 rounded-xl bg-[#64ffda] px-6 py-4 text-sm font-semibold text-[#0a0f1e] transition duration-300 hover:bg-[#64ffda]/80 disabled:opacity-50"
+                className="group/btn flex w-full items-center justify-center gap-2 rounded-xl bg-[#64ffda] px-6 py-4 text-sm font-semibold text-black transition duration-300 hover:bg-[#64ffda]/80 disabled:opacity-50"
               >
                 {status === "submitting" ? (
                   <span>Sending Message...</span>
@@ -256,7 +256,7 @@ export function Contact() {
               animate={{ y: 0 }}
               exit={{ y: "100%" }}
               transition={{ type: "spring", damping: 28, stiffness: 280 }}
-              className="fixed right-0 bottom-0 left-0 z-[70] max-h-[90vh] overflow-y-auto rounded-t-2xl border-t border-[#64ffda]/20 bg-[#0a0f1e] p-6 pb-12 md:hidden"
+              className="fixed right-0 bottom-0 left-0 z-[70] max-h-[90vh] overflow-y-auto rounded-t-2xl border-t border-[#64ffda]/20 bg-navy p-6 pb-12 md:hidden"
               role="dialog"
               aria-modal
               aria-label="Contact"

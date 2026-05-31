@@ -5,6 +5,7 @@ import { Menu, X } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { navSections, siteConfig } from "@/lib/site";
+import { ThemeToggle } from "@/components/effects/ThemeToggle";
 
 export function MobileNav() {
   const [open, setOpen] = useState(false);
@@ -17,19 +18,22 @@ export function MobileNav() {
   }, [open]);
 
   return (
-    <header className="fixed top-0 right-0 left-0 z-50 flex items-center justify-between border-b border-white/10 bg-[#0a0f1e]/90 px-5 py-4 backdrop-blur-xl lg:hidden">
+    <header className="fixed top-0 right-0 left-0 z-50 flex items-center justify-between border-b border-white/10 bg-navy/90 px-5 py-4 backdrop-blur-xl lg:hidden">
       <Link href="#hero" className="font-bold text-[#ccd6f6]" onClick={() => setOpen(false)}>
         Navie
       </Link>
-      <button
-        type="button"
-        className="flex min-h-[44px] min-w-[44px] items-center justify-center text-[#64ffda]"
-        onClick={() => setOpen((o) => !o)}
-        aria-expanded={open}
-        aria-label={open ? "Close menu" : "Open menu"}
-      >
-        {open ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-      </button>
+      <div className="flex items-center gap-3">
+        <ThemeToggle />
+        <button
+          type="button"
+          className="flex min-h-[44px] min-w-[44px] items-center justify-center text-[#64ffda]"
+          onClick={() => setOpen((o) => !o)}
+          aria-expanded={open}
+          aria-label={open ? "Close menu" : "Open menu"}
+        >
+          {open ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+        </button>
+      </div>
 
       <AnimatePresence>
         {open && (
@@ -38,7 +42,7 @@ export function MobileNav() {
             animate={{ x: 0 }}
             exit={{ x: "100%" }}
             transition={{ type: "spring", damping: 28, stiffness: 280 }}
-            className="fixed inset-0 top-0 z-40 flex flex-col justify-center bg-[#0a0f1e] px-10"
+            className="fixed inset-0 top-0 z-40 flex flex-col justify-center bg-navy px-10"
             aria-label="Mobile navigation"
           >
             <div className="mb-8">

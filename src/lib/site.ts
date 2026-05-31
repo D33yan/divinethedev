@@ -11,7 +11,7 @@ export const siteConfig = {
   linkedin: "https://www.linkedin.com/in/divine-nnaji-23b771393?utm_source=share_via&utm_content=profile&utm_medium=member_android",
   liveSite: "https://made-by-navie.vercel.app",
   resumePath: "/Divine_Nnaji_CV.docx",
-  currentRole: "Data Science & AI Intern at NASRDA",
+  currentRole: "Fullstack Software Engineer & AI Builder",
   typewriterRoles: [
     "Fullstack Engineer",
     "AI Integration Specialist",
@@ -20,7 +20,7 @@ export const siteConfig = {
   ],
   sidebarBio:
     "I build web apps, mobile experiences, and AI-powered tools — with a strong eye for design and a love for automation.",
-  aboutBio: `I'm a creative, detail-oriented Fullstack Software Engineer with hands-on experience building web and mobile applications, AI-powered tools, and automation workflows. I have a strong eye for UI/UX and a growing specialisation in AI integration and workflow automation. Currently interning at Nigeria's National Space Research and Development Agency (NASRDA) in a Data Science & AI capacity.`,
+  aboutBio: `I'm a creative, detail-oriented Fullstack Software Engineer with hands-on experience building web and mobile applications, AI-powered tools, and automation workflows. I have a strong eye for UI/UX and a growing specialisation in AI integration and workflow automation.`,
 } as const;
 
 export const navSections = [
@@ -56,7 +56,7 @@ export const experiences = [
   {
     id: "nasrda",
     company: "NASRDA",
-    role: "Data Science & AI Intern",
+    role: "Data Scientist & AI Engineer",
     period: "April 12, 2026 – Present",
     location: "Abuja, Nigeria",
     tech: ["Python", "NumPy", "Matplotlib", "Data Science", "Machine Learning", "AI Integration"],
@@ -128,7 +128,14 @@ export const projects = [
       approach: "Divine engineered a robust mobile architecture combining React Native with Firebase for instantaneous state synchronization. He designed a custom real-time bidding algorithm that handles quick bid validation, dynamic timer updates, and race-condition prevention during peak activity.",
       built: "A native mobile application featuring fully synchronized WebSocket and Firebase live feeds, automated anti-sniping bid extensions, and a secure user rating and ranking system. The app automates winner determination and instantly compiles bid histories.",
       result: "The system achieved a seamless, low-latency auction environment that successfully automates the contract award process. It eliminates bid manipulation and human error, providing users with a highly reliable mobile bidding experience.",
-      images: ["/images/rebid_preview.png"]
+      images: [
+        "/rebid-app-images/pic1.jpeg",
+        "/rebid-app-images/pic2.jpeg",
+        "/rebid-app-images/3.jpeg",
+        "/rebid-app-images/pic4.jpeg",
+        "/rebid-app-images/pic5.jpeg",
+        "/rebid-app-images/pic6.jpeg"
+      ]
     }
   },
   {
