@@ -28,6 +28,7 @@ export function TerminalView({ onSwitchToCards }: TerminalViewProps) {
 
   const [history, setHistory] = useState<string[]>([]);
   const [historyIndex, setHistoryIndex] = useState(-1);
+  const [isHacking, setIsHacking] = useState(false);
 
   // Auto scroll to bottom
   useEffect(() => {
@@ -81,7 +82,13 @@ export function TerminalView({ onSwitchToCards }: TerminalViewProps) {
 
   // Shell Command Execution Engine
   const executeCommand = (cmdStr: string, currentLines: TerminalLine[]) => {
-    const parts = cmdStr.toLowerCase().split(" ");
+    // Strip optional leading slash to support both "/help" and "help"
+    let normalized = cmdStr.trim();
+    if (normalized.startsWith("/")) {
+      normalized = normalized.substring(1);
+    }
+
+    const parts = normalized.toLowerCase().split(" ");
     const command = parts[0];
     const arg = parts[1];
 
@@ -98,6 +105,8 @@ export function TerminalView({ onSwitchToCards }: TerminalViewProps) {
           { text: "  skills                  - Show interactive terminal skills profile & bars", type: "primary" },
           { text: "  about                   - Print server specifications and bio stats", type: "primary" },
           { text: "  contact                 - Print professional contact links & details", type: "primary" },
+          { text: "  resume / cv             - Automate CV / Resume document secure download", type: "primary" },
+          { text: "  hack                    - Activate dynamic system overrides simulation", type: "primary" },
           { text: "  gui                     - Switch view back to visual slider cards", type: "primary" },
           { text: "  clear                   - Clear terminal screen buffer", type: "primary" },
           { text: "  help                    - Show this command log utility", type: "primary" },
@@ -219,6 +228,11 @@ export function TerminalView({ onSwitchToCards }: TerminalViewProps) {
           { text: "  Automation  [████████████████] n8n Orchestrator, Make, Zapier webhooks", type: "primary" },
           { text: "  Platforms   [████████████]     GoHighLevel, WordPress, Firebase", type: "primary" },
           { text: "  Design      [████████████]     Figma, UI/UX Wireframing, Adobe suite", type: "primary" },
+          { text: "", type: "system" },
+          { text: "EARLYCODE SYSTEM CERTIFICATIONS CATALOGED:", type: "success" },
+          { text: "  ▸ Python Programming        (May–June 2022)", type: "secondary" },
+          { text: "  ▸ Fullstack Web Development (Oct 2022 – Feb 2023)", type: "secondary" },
+          { text: "  ▸ App Development           (July–Sept 2023)", type: "secondary" },
         ];
         break;
 
@@ -239,14 +253,46 @@ export function TerminalView({ onSwitchToCards }: TerminalViewProps) {
         break;
 
       case "contact":
+        if (arg === "mail" || arg === "email") {
+          window.open(`mailto:${siteConfig.email}`, "_self");
+          output = [{ text: `Launching local mail application for: ${siteConfig.email}`, type: "success" }];
+          break;
+        }
+        if (arg === "phone" || arg === "call") {
+          window.open(`tel:${siteConfig.phone}`, "_self");
+          output = [{ text: `Launching local dialer system for: ${siteConfig.phone}`, type: "success" }];
+          break;
+        }
+
         output = [
           { text: "COMMUNICATION PROTOCOL CHANNELS:", type: "success" },
           { text: `  Secure Mail:  ${siteConfig.email}`, type: "primary" },
           { text: `  Phone Comm:   ${siteConfig.phone}`, type: "primary" },
           { text: `  GitHub Node:  ${siteConfig.github}`, type: "primary" },
           { text: `  LinkedIn:     ${siteConfig.linkedin}`, type: "primary" },
+          { text: "", type: "system" },
+          { text: "CONSOLE TRIGGERS:", type: "success" },
+          { text: "  Type 'contact mail'  - Instantly compose email to Divine", type: "secondary" },
+          { text: "  Type 'contact phone' - Auto dial cell line", type: "secondary" },
         ];
         break;
+
+      case "resume":
+      case "cv":
+        output = [{ text: "Establishing secure CV data download tunnel...", type: "success" }];
+        setTimeout(() => {
+          const link = document.createElement("a");
+          link.href = siteConfig.resumePath;
+          link.download = "Divine_Nnaji_CV.docx";
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+        }, 600);
+        break;
+
+      case "hack":
+        setIsHacking(true);
+        return;
 
       case "clear":
         setLines([]);
@@ -280,6 +326,11 @@ export function TerminalView({ onSwitchToCards }: TerminalViewProps) {
           backgroundSize: "100% 4px",
         }}
       />
+
+      {/* Falling Matrix green rain digital code animation overlay */}
+      {isHacking && (
+        <MatrixOverlay onClose={() => setIsHacking(false)} />
+      )}
 
       {/* Terminal Window Header (macOS Retro Shell style) */}
       <div className="relative flex h-10 w-full shrink-0 items-center justify-between border-b border-white/5 bg-navy/90 px-4">
@@ -352,6 +403,122 @@ export function TerminalView({ onSwitchToCards }: TerminalViewProps) {
 
         {/* Dummy bottom element for autoscroll */}
         <div ref={bottomRef} />
+      </div>
+    </div>
+  );
+}
+
+/* ==========================================================================
+   Matrix Falling Digital Code Rain Animation Overlay
+   ========================================================================== */
+function MatrixOverlay({ onClose }: { onClose: () => void }) {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [status, setStatus] = useState("DECRYPTING IDENTITY ARCHIVE...");
+  const [progress, setProgress] = useState(0);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    // Responsive size boundary mapping
+    canvas.width = canvas.parentElement?.clientWidth || window.innerWidth;
+    canvas.height = canvas.parentElement?.clientHeight || 520;
+
+    const columns = Math.floor(canvas.width / 14);
+    const drops: number[] = Array(columns).fill(1);
+    const chars = "ｦｧｨｩｪｫｬｭｮｯｰｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜﾝ1023456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+    let animationId: number;
+    const draw = () => {
+      ctx.fillStyle = "rgba(0, 0, 0, 0.07)";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      ctx.fillStyle = "#00ff9f";
+      ctx.font = "11px monospace";
+
+      for (let i = 0; i < drops.length; i++) {
+        const text = chars[Math.floor(Math.random() * chars.length)];
+        const x = i * 14;
+        const y = drops[i] * 14;
+
+        ctx.fillText(text, x, y);
+
+        if (y > canvas.height && Math.random() > 0.975) {
+          drops[i] = 0;
+        }
+        drops[i]++;
+      }
+      animationId = requestAnimationFrame(draw);
+    };
+
+    draw();
+
+    // Secondary progress ticker
+    const progressInterval = setInterval(() => {
+      setProgress((prev) => {
+        if (prev >= 100) {
+          clearInterval(progressInterval);
+          return 100;
+        }
+        return prev + 1;
+      });
+    }, 45);
+
+    const statusTimeout = setTimeout(() => {
+      setStatus("DECRYPTION COMPLETE // Greatness.ts Compiled successfully.");
+    }, 2800);
+
+    const exitTimeout = setTimeout(() => {
+      onClose();
+    }, 5200);
+
+    return () => {
+      cancelAnimationFrame(animationId);
+      clearInterval(progressInterval);
+      clearTimeout(statusTimeout);
+      clearTimeout(exitTimeout);
+    };
+  }, [onClose]);
+
+  return (
+    <div className="absolute inset-0 z-50 flex flex-col bg-black font-mono text-xs select-none">
+      <canvas ref={canvasRef} className="absolute inset-0 w-full h-full opacity-60" />
+      
+      <div className="relative z-10 flex flex-col items-center justify-center h-full bg-black/40 px-6 text-center">
+        <div className="rounded-xl border border-[#00ff9f]/30 bg-black/90 p-6 shadow-[0_0_30px_rgba(0,255,159,0.25)] max-w-sm w-full">
+          <div className="flex justify-between items-center mb-4 border-b border-[#00ff9f]/20 pb-2">
+            <span className="text-[#00ff9f] uppercase tracking-wider text-[10px] font-bold">SYSTEM OVERRIDE DETECTED</span>
+            <div className="flex gap-1.5">
+              <span className="h-1.5 w-1.5 rounded-full bg-[#ff5252] animate-ping" />
+              <span className="h-1.5 w-1.5 rounded-full bg-[#00ff9f]" />
+            </div>
+          </div>
+          
+          <pre className="text-left text-[#00ff9f] text-[10px] leading-relaxed mb-4 overflow-hidden">
+            {`[OS RUNTIME CORRUPTED]
+▸ resolving identity...
+▸ injecting destiny into runtime
+▸ bypass check: SUCCESSFUL
+▸ decrypted nodes: 102/102`}
+          </pre>
+          
+          <div className="text-[#00ff9f] font-bold text-xs uppercase tracking-wide animate-pulse">
+            {status}
+          </div>
+          
+          {/* Progress Bar */}
+          <div className="mt-4 h-1.5 w-full bg-neutral-900 rounded-full border border-[#00ff9f]/10 overflow-hidden">
+            <div 
+              className="h-full bg-gradient-to-r from-[#00ff9f] to-[#64ffda] transition-all duration-75"
+              style={{ width: `${progress}%` }}
+            />
+          </div>
+          <div className="mt-2 text-right text-[10px] text-[#00ff9f]/60">
+            {progress}% SECURE DATA TUNNEL ESTABLISHED
+          </div>
+        </div>
       </div>
     </div>
   );

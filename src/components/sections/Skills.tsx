@@ -100,6 +100,12 @@ export function Skills() {
                       whileHover={{ scale: 1.03 }}
                       style={{ "--hover-color": iconData.color } as React.CSSProperties}
                       className="group flex items-center gap-2 rounded-lg border border-white/5 bg-navy-light/40 px-3 py-1.5 transition-all duration-300 hover:bg-navy-light/80 hover:border-[#64ffda]/30 cursor-default"
+                      onMouseEnter={() => {
+                        window.dispatchEvent(new CustomEvent("highlight-skill", { detail: skill }));
+                      }}
+                      onMouseLeave={() => {
+                        window.dispatchEvent(new CustomEvent("highlight-skill", { detail: null }));
+                      }}
                     >
                       <IconComponent
                         className="h-4 w-4 text-[#8892b0] transition-colors duration-300 group-hover:text-[var(--hover-color)] group-hover:drop-shadow-[0_0_6px_var(--hover-color)]"

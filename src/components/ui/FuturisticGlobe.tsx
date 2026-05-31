@@ -117,6 +117,21 @@ export function FuturisticGlobe() {
     let width = 0;
     let height = 0;
     let devicePixelRatio = 1;
+    let isInViewport = true;
+
+    // Viewport sensing intersection observer to pause render loops when off-screen
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        const wasInViewport = isInViewport;
+        isInViewport = entry.isIntersecting;
+        if (isInViewport && !wasInViewport) {
+          cancelAnimationFrame(animationId);
+          animate();
+        }
+      },
+      { threshold: 0.05 }
+    );
+    observer.observe(canvas);
 
     // Responsive scaling
     const resizeCanvas = () => {
@@ -257,6 +272,8 @@ export function FuturisticGlobe() {
 
     // 5. Main continuous animation loop
     const animate = () => {
+      if (!isInViewport) return;
+      
       const state = stateRef.current;
       ctx.clearRect(0, 0, width, height);
 
@@ -460,13 +477,70 @@ export function FuturisticGlobe() {
       animationId = requestAnimationFrame(animate);
     };
 
+    // External Skills synchronization listener
+    const handleHighlightSkill = (e: Event) => {
+      const targetName = (e as CustomEvent).detail;
+      const state = stateRef.current;
+      const tooltip = tooltipRef.current;
+      
+      if (!targetName) {
+        state.hoveredNodeName = null;
+        if (tooltip) {
+          tooltip.style.opacity = "0";
+          tooltip.style.pointerEvents = "none";
+        }
+        return;
+      }
+
+      const foundNode = state.nodes.find(
+        (n) => n.name.toLowerCase().trim() === targetName.toLowerCase().trim()
+      );
+
+      if (foundNode) {
+        state.hoveredNodeName = foundNode.name;
+        
+        // Beautiful premium dynamic tilt: pull the globe slightly towards the hovered skill
+        state.targetYawOffset = -foundNode.x3d * 0.002;
+        state.targetPitchOffset = foundNode.y3d * 0.002;
+
+        if (tooltip) {
+          tooltip.style.transform = `translate(${foundNode.x2d}px, ${foundNode.y2d - 85}px) translateX(-50%)`;
+          tooltip.style.opacity = "1";
+          tooltip.style.pointerEvents = "auto";
+          
+          const titleEl = tooltip.querySelector(".tech-title");
+          const catEl = tooltip.querySelector(".tech-category");
+          const descEl = tooltip.querySelector(".tech-desc");
+          const indEl = tooltip.querySelector(".tech-indicator") as HTMLDivElement;
+          
+          if (titleEl) titleEl.textContent = foundNode.name;
+          if (titleEl) (titleEl as HTMLElement).style.color = foundNode.color;
+          if (catEl) catEl.textContent = foundNode.category;
+          if (descEl) descEl.textContent = foundNode.desc;
+          if (indEl) {
+            indEl.style.backgroundColor = foundNode.color;
+            indEl.style.boxShadow = `0 0 10px ${foundNode.color}`;
+          }
+        }
+      } else {
+        state.hoveredNodeName = null;
+        if (tooltip) {
+          tooltip.style.opacity = "0";
+          tooltip.style.pointerEvents = "none";
+        }
+      }
+    };
+
+    window.addEventListener("highlight-skill", handleHighlightSkill);
     animate();
 
     return () => {
+      observer.disconnect();
       window.removeEventListener("resize", resizeCanvas);
       window.removeEventListener("mousemove", handleGlobalMouseMove);
       canvas.removeEventListener("mousedown", handleCanvasMouseDown);
       window.removeEventListener("mouseup", handleWindowMouseUp);
+      window.removeEventListener("highlight-skill", handleHighlightSkill);
       cancelAnimationFrame(animationId);
     };
   }, []);

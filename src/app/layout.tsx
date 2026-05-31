@@ -25,6 +25,20 @@ export const metadata: Metadata = {
     description: siteConfig.sidebarBio,
     url: siteConfig.liveSite,
     type: "website",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: `${siteConfig.name} - Fullstack Developer Portfolio Preview`,
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: `${siteConfig.name} | ${siteConfig.title}`,
+    description: siteConfig.sidebarBio,
+    images: ["/og-image.png"],
   },
 };
 
