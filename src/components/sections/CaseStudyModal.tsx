@@ -35,6 +35,7 @@ export function CaseStudyModal({ project, isOpen, onClose }: CaseStudyModalProps
       window.dispatchEvent(new CustomEvent("open-project-browser", {
         detail: { url: project.live, title: project.title }
       }));
+      onClose(); // Instantly close case study slide-over to reveal active sandbox!
     }
   };
 

@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { Mail } from "lucide-react";
+import { Mail, X } from "lucide-react";
 import { SiGithub } from "react-icons/si";
 import { FaLinkedin } from "react-icons/fa";
 import { useState } from "react";
@@ -261,6 +261,16 @@ export function Contact() {
               aria-modal
               aria-label="Contact"
             >
+              {/* Tap target close trigger for mobile screens */}
+              <button
+                type="button"
+                onClick={() => setSheetOpen(false)}
+                className="absolute top-4 right-4 z-10 flex h-8 w-8 items-center justify-center rounded-full border border-white/10 bg-white/5 text-[#8892b0] hover:text-[#64ffda] hover:border-[#64ffda]/30 transition cursor-pointer"
+                aria-label="Close contact form"
+              >
+                <X className="h-4 w-4" />
+              </button>
+
               <div className="mx-auto mb-6 h-1.5 w-12 rounded-full bg-white/20" />
               <ContactContent />
             </motion.div>

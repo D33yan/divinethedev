@@ -163,10 +163,19 @@ export function BuiltInBrowser() {
 
                 <button
                   onClick={handleOpenExternal}
-                  className="flex h-8 px-3 items-center gap-1.5 rounded-lg border border-[#64ffda]/20 bg-[#64ffda]/5 font-mono text-[10px] sm:text-xs text-[#64ffda] hover:bg-[#64ffda]/15 transition"
+                  className="flex h-8 px-3 items-center gap-1.5 rounded-lg border border-[#64ffda]/20 bg-[#64ffda]/5 font-mono text-[10px] sm:text-xs text-[#64ffda] hover:bg-[#64ffda]/15 transition cursor-pointer"
                 >
                   <ExternalLink className="h-3.5 w-3.5" />
                   <span>LAUNCH</span>
+                </button>
+
+                <button
+                  onClick={handleClose}
+                  className="flex h-8 w-8 items-center justify-center rounded-lg border border-white/10 text-[#8892b0] hover:bg-white/5 hover:text-[#64ffda] hover:border-[#64ffda]/30 transition cursor-pointer"
+                  title="Close sandbox browser"
+                  aria-label="Close sandbox browser"
+                >
+                  <X className="h-4 w-4" />
                 </button>
               </div>
 
