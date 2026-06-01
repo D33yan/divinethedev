@@ -284,6 +284,8 @@ export function TerminalView({ onSwitchToCards }: TerminalViewProps) {
           const link = document.createElement("a");
           link.href = siteConfig.resumePath;
           link.download = "Divine_Nnaji_CV.docx";
+          link.target = "_blank";
+          link.rel = "noopener noreferrer";
           document.body.appendChild(link);
           link.click();
           document.body.removeChild(link);
