@@ -119,7 +119,7 @@ export const projects = [
     tech: ["React Native", "Expo", "Supabase", "Express.js"],
     tag: "Mobile App",
     featured: true,
-    github: "https://github.com/D33yan",
+    github: "https://github.com/D33yan/rebid-app",
     live: null,
     badge: null,
     caseStudy: {
@@ -141,19 +141,26 @@ export const projects = [
     id: "typhoidguard",
     title: "TyphoidGuard",
     description:
-      "A web-based health screening tool that predicts typhoid fever likelihood through an interactive symptom survey, powered by an ML classification model trained on Kaggle datasets, achieving 98% accuracy.",
-    tech: ["Python", "Scikit-learn", "Next.js"],
+      "An advanced clinical triage simulator powered by a custom-trained Neural Network (Multi-Layer Perceptron) running entirely client-side with zero runtime dependencies.",
+    tech: ["Next.js", "TypeScript", "Python", "TensorFlow", "Scikit-learn"],
     tag: "AI / ML",
     featured: true,
     github: "https://github.com/D33yan/typhoidchecker",
-    live: "https://typhoidchecker.vercel.app",
-    badge: "98% Accuracy",
+    live: "https://typhoidguard.vercel.app/",
+    badge: "98% Accuracy · Edge ML",
     caseStudy: {
-      problem: "Individuals in remote or underserved regions frequently lack immediate access to medical testing facilities for early typhoid fever screening. This delay in diagnostics often leads to worsened health outcomes due to unmonitored symptoms.",
-      approach: "Sourcing diverse, high-quality symptom datasets from Kaggle, Divine executed meticulous data cleaning and feature engineering. He trained and benchmarked multiple machine learning classification models to select the most performant predictor.",
-      built: "An interactive Next.js web application integrated with a high-accuracy Python machine learning backend that predicts classification probabilities. The portal guides users through a structured symptom questionnaire and outputs instant risk assessments.",
-      result: "The classifier reached an exceptional 98% accuracy in diagnosing potential infections. This deployment provides a highly accessible, rapid screening tool directly via any standard web browser.",
-      images: ["/images/typhoidguard_preview.png"]
+      problem: "Integrating machine learning models into web applications traditionally requires maintaining a bulky, high-latency Python backend (FastAPI/Flask) or downloading heavy runtime frameworks (like @tensorflow/tfjs ~30MB) into the browser. This causes significant performance bottlenecks, expensive hosting fees, cold-start latencies, and serious patient data privacy concerns due to transmitting health data over public networks.",
+      approach: "By exploiting the compact structure of a specialized clinical model (a 3-layer dense neural network with 7 clinical inputs), Divine engineered a Zero-Dependency Static Edge Inference architecture. He trained a 3-layer Sequential Neural Network classifier in Python (TensorFlow/Keras) with a StandardScaler. During compilation, a custom Python exporter serialized each dense layer's weight matrices, biases, and scale coefficients into a tight, 15 KB JSON configuration. He then wrote a custom, pure-math feedforward matrix multiplication engine in raw TypeScript to parse this JSON and run predictions locally.",
+      built: "An interactive Next.js clinical triage portal styled with a sterile, surgical white design system. The service normalizes user inputs using the scikit-learn standardizer parameters (x - mean) / scale, propagates predictions through dense layers using custom-implemented ReLU and Sigmoid activations in TypeScript, and features an optimized 'Print Triage Report' utility utilizing CSS print-specific media queries for physical hospital handoffs.",
+      result: "Validation testing achieved 100% mathematical parity matching the original Keras model exactly (0.0000% difference), with under 0.1ms local inference latency directly in the user's browser. Since patient data never leaves the local browser sandbox, the application provides a 100% HIPAA-compliant, serverless screening tool costing $0/month in hosting.",
+      images: [
+        "/typhoid syptomchechecker images/typhoidchecker1.png",
+        "/typhoid syptomchechecker images/typhoidchecker2.png",
+        "/typhoid syptomchechecker images/typhoidchecker3.png",
+        "/typhoid syptomchechecker images/typhoidchecker4.png",
+        "/typhoid syptomchechecker images/typhoidcheckermobile.png",
+        "/typhoid syptomchechecker images/typhoidcheckermobile2.png"
+      ]
     }
   },
   {
@@ -164,15 +171,18 @@ export const projects = [
     tech: ["Next.js", "TypeScript", "Tailwind CSS", "shadcn/ui", "Firebase"],
     tag: "Web App",
     featured: true,
-    github: "https://github.com/D33yan",
-    live: "https://acadexpub.vercel.app",
+    github: "https://github.com/D33yan/acadexpub",
+    live: "https://acadexpub.vercel.app/",
     badge: null,
     caseStudy: {
       problem: "Academic institutions lacked a centralized, intuitive portal for lecturers to distribute course material and for students to reference academic literature. This resulted in fragmented communication and lost study materials.",
       approach: "Divine structured a comprehensive, role-based application logic with separate portals for educators and students. He utilized Next.js App Router and Firebase for real-time storage, secure document routing, and instant updates.",
       built: "A modern publishing platform with secure multi-role authentication, structured file submission pipelines, and dynamic reference feeds. The frontend was styled beautifully with Tailwind CSS and premium shadcn/ui components for maximum visual accessibility.",
       result: "The platform delivered a unified and reliable environment where students effortlessly search and retrieve lecture assets. It bridged the administrative gap between faculty and students, optimizing material distribution.",
-      images: ["/acadexpub.png", "/acadexpub2.png"]
+      images: [
+        "/acadexpub.png",
+        "/acadexpub2.png"
+      ]
     }
   },
   {
@@ -183,7 +193,7 @@ export const projects = [
     tech: ["GoHighLevel", "n8n"],
     tag: "Automation",
     featured: true,
-    github: "https://github.com/D33yan",
+    github: "https://github.com/D33yan/customer-onboarding-automation",
     live: null,
     badge: null,
     caseStudy: {
@@ -191,26 +201,34 @@ export const projects = [
       approach: "Divine mapped the entire user journey from the initial Instagram message to the final onboarding payment. He developed custom webhook listeners and multi-branch automation paths to segment leads dynamically.",
       built: "Automated client-acquisition pipeline that triggers on direct messages, inputs leads into GoHighLevel's CRM, and qualifies them via conversational flows. It schedules onboarding sessions and triggers personal follow-ups automatically.",
       result: "The automated sequence achieved consistent lead conversion while completely eliminating manual lead follow-up. The business recaptured dormant interest, saving hours of manual administrative labor daily.",
-      images: []
+      images: [
+        "/customer-onboarding-automation/customeronboardingautomationimage.png",
+        "/customer-onboarding-automation/customer-onboarding-automationimage2.png"
+      ]
     }
   },
   {
     id: "ecommerce-template",
-    title: "E-commerce Website Template",
+    title: "Amy Fabrics E-commerce Store",
     description:
       "Production-ready e-commerce frontend template showcasing modern UI patterns, responsive design, and clean component architecture.",
-    tech: ["Next.js", "TypeScript"],
+    tech: ["Next.js", "TypeScript", "Tailwind CSS", "shadcn/ui"],
     tag: "Web · Open Source",
     featured: false,
-    github: "https://github.com/D33yan/afabric-ecommercestore",
-    live: "https://afabric-ecommercestore.vercel.app/",
+    github: "https://github.com/D33yan/amyfabrics-store",
+    live: "https://amyfabrics-store.vercel.app/",
     badge: null,
     caseStudy: {
       problem: "Developers frequently lose valuable time rebuilding standard, highly interactive e-commerce visual components from scratch for new projects. There was a clear need for a highly optimized, modern codebase starter template.",
       approach: "He designed a modern component architecture focusing on reusability, performance, and responsive layout patterns. Using TypeScript, he created robust type-safe interfaces for cart management, product sorting, and navigation states.",
       built: "A production-ready Next.js frontend template with modular UI components, fluid animations, and a responsive structure. The template includes cart controls, checkout steps, search filters, and smooth page transitions out of the box.",
       result: "The project delivers an extremely performant and adaptable template that saves developers significant boilerplate time. It is fully ready to be integrated with any headless API or commerce database.",
-      images: []
+      images: [
+        "/Amy Fabrics images/amyfabrics1.png",
+        "/Amy Fabrics images/amyfabric2.png",
+        "/Amy Fabrics images/amyfabrics3.png",
+        "/Amy Fabrics images/amyfabricsfull.png"
+      ]
     }
   },
   {
@@ -222,14 +240,20 @@ export const projects = [
     tag: "Frontend Web App",
     featured: false,
     github: "https://github.com/D33yan/fitness-tracker",
-    live: "https://fitness-tracker-one-xi.vercel.app/",
+    live: "https://fittrackme-ashen.vercel.app/",
     badge: null,
     caseStudy: {
       problem: "Fitness enthusiasts struggled to find a simple, responsive, and distraction-free workout logging portal that functions perfectly without complex account setups.",
       approach: "Divine crafted an elegant frontend dashboard with client-side state management, local storage synchronization, and lightweight visual metrics.",
       built: "A fully responsive single-page application incorporating calorie goal trackers, weekly checklist routines, and custom SVG category cards.",
       result: "The tracker offers a seamless offline-first experience with near-zero latency, enabling users to log their workouts quickly and monitor progress in real-time.",
-      images: ["/images/fitness_tracker_preview.png"]
+      images: [
+        "/fittrack-images/fittrack1.png",
+        "/fittrack-images/fittrackmemobile.jpeg",
+        "/fittrack-images/fittrackmobileicon.png",
+        "/fittrack-images/fitteackmobileicon2.jpeg",
+        "/fittrack-images/fitteackmobileicon3.jpeg"
+      ]
     }
   }
 ] as const;
