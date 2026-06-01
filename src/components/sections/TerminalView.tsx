@@ -242,7 +242,7 @@ export function TerminalView({ onSwitchToCards }: TerminalViewProps) {
           { text: `SERVER NODE DATA: guest@navie-os:~# sysinfo`, type: "success" },
           { text: `Developer:       ${siteConfig.name} (${siteConfig.alias})`, type: "primary" },
           { text: `Title Focus:     ${siteConfig.title}`, type: "primary" },
-          { text: `Base Node:       ${siteConfig.location}`, type: "primary" },
+          { text: `Base Node:       Cloud Server Portal`, type: "primary" },
           { text: `Active Role:     ${siteConfig.currentRole}`, type: "primary" },
           { text: `Server Core:     AI Core Integration Engine`, type: "secondary" },
           { text: `Memory Buffer:   16 GB Cybernetic Stream`, type: "secondary" },

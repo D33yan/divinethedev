@@ -57,8 +57,7 @@ export function Hero() {
             <Typewriter phrases={siteConfig.typewriterRoles} className="text-[#ccd6f6]" />.
           </p>
           <p className="mb-10 max-w-xl text-base sm:text-lg leading-relaxed text-[#8892b0]">
-            {siteConfig.currentRole}. Building web apps, mobile experiences, and AI-powered tools from{" "}
-            {siteConfig.location}.
+            {siteConfig.currentRole}. Building web apps, mobile experiences, and AI-powered tools.
           </p>
 
           <div className="flex flex-wrap gap-4">
