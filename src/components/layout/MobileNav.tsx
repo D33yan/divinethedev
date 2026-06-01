@@ -3,6 +3,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 import { useEffect, useState } from "react";
 import { navSections, siteConfig } from "@/lib/site";
 import { ThemeToggle } from "@/components/effects/ThemeToggle";
@@ -19,8 +20,15 @@ export function MobileNav() {
 
   return (
     <header className="fixed top-0 right-0 left-0 z-50 flex items-center justify-between border-b border-white/10 bg-navy/90 px-5 py-4 backdrop-blur-xl lg:hidden">
-      <Link href="#hero" className="font-bold text-[#ccd6f6]" onClick={() => setOpen(false)}>
-        Navie
+      <Link href="#hero" className="flex items-center" onClick={() => setOpen(false)}>
+        <Image
+          src="/logo.png"
+          alt={siteConfig.name}
+          width={36}
+          height={36}
+          className="rounded-full object-cover border border-[#64ffda]/30 shadow-[0_0_10px_rgba(100,255,218,0.15)]"
+          priority
+        />
       </Link>
       <div className="flex items-center gap-3">
         <ThemeToggle />

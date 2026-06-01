@@ -19,7 +19,7 @@ export const metadata: Metadata = {
   title: `${siteConfig.name} | ${siteConfig.title}`,
   description: siteConfig.aboutBio.slice(0, 160),
   metadataBase: new URL(siteConfig.liveSite),
-  icons: { icon: "/favicon.svg" },
+  icons: { icon: "/logo.png" },
   openGraph: {
     title: `${siteConfig.name} (Navie)`,
     description: siteConfig.sidebarBio,

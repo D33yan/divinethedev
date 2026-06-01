@@ -67,20 +67,6 @@ export const experiences = [
     ],
   },
   {
-    id: "freelance",
-    company: "Freelance",
-    role: "Contract Fullstack Engineer",
-    period: "June 2023 – Present",
-    location: "Remote",
-    tech: ["Next.js", "React Native", "Node.js", "Firebase", "n8n", "GoHighLevel", "Figma"],
-    bullets: [
-      "Architecting and deploying bespoke web and mobile applications for global clients, utilizing Next.js, React Native, Node.js, and Firebase architectures",
-      "Designing and implementing robust AI-powered workflows and multi-branch automation pipelines using n8n, Zapier, and Python scripts, optimizing client operations",
-      "Managing full product lifecycles from initial Figma UI/UX design wireframes to production deployment, database structures, and GoHighLevel CRM funnels",
-      "Consulting on search engine optimization (SEO), performance metrics, and lead generation campaigns to elevate client site conversions and user engagement",
-    ],
-  },
-  {
     id: "tech-beavers",
     company: "Tech Beavers",
     role: "Frontend Developer Trainee",
@@ -108,6 +94,20 @@ export const experiences = [
       "Fine-tuned Next.js App Router data-fetching methods and client-side state caching, resulting in a 35% reduction in initial page load latency and achieving seamless 60fps responsive UI transitions."
     ],
   },
+  {
+    id: "freelance",
+    company: "Freelance",
+    role: "Contract Fullstack Engineer",
+    period: "June 2023 – Present",
+    location: "Remote",
+    tech: ["Next.js", "React Native", "Node.js", "Firebase", "n8n", "GoHighLevel", "Figma"],
+    bullets: [
+      "Architecting and deploying bespoke web and mobile applications for global clients, utilizing Next.js, React Native, Node.js, and Firebase architectures",
+      "Designing and implementing robust AI-powered workflows and multi-branch automation pipelines using n8n, Zapier, and Python scripts, optimizing client operations",
+      "Managing full product lifecycles from initial Figma UI/UX design wireframes to production deployment, database structures, and GoHighLevel CRM funnels",
+      "Consulting on search engine optimization (SEO), performance metrics, and lead generation campaigns to elevate client site conversions and user engagement",
+    ],
+  },
 ] as const;
 
 export const projects = [
@@ -116,7 +116,7 @@ export const projects = [
     title: "Rebid",
     description:
       "A mobile bidding platform where users post projects and receive competitive bids within a set time window, awarding the contract to the highest bidder.",
-    tech: ["React Native", "Node.js", "Firebase"],
+    tech: ["React Native", "Expo", "Supabase", "Express.js"],
     tag: "Mobile App",
     featured: true,
     github: "https://github.com/D33yan",
@@ -124,8 +124,8 @@ export const projects = [
     badge: null,
     caseStudy: {
       problem: "The mobile landscape lacked an accessible, real-time platform designed specifically for fast-paced, competitive bidding on listed items. Users faced delayed updates, lack of security against bid-sniping, and manual intervention in contract awards.",
-      approach: "Divine engineered a robust mobile architecture combining React Native with Firebase for instantaneous state synchronization. He designed a custom real-time bidding algorithm that handles quick bid validation, dynamic timer updates, and race-condition prevention during peak activity.",
-      built: "A native mobile application featuring fully synchronized WebSocket and Firebase live feeds, automated anti-sniping bid extensions, and a secure user rating and ranking system. The app automates winner determination and instantly compiles bid histories.",
+      approach: "Divine engineered a robust mobile architecture combining React Native/Expo with Supabase and an Express.js backend for instantaneous real-time bidding synchronization. He designed a custom transaction algorithm that handles quick bid validation, dynamic timer updates, and race-condition prevention during peak activity.",
+      built: "A native mobile application featuring fully synchronized WebSocket and Supabase real-time databases, automated anti-sniping bid extensions, and a secure user rating and ranking system. The app automates winner determination and instantly compiles bid histories.",
       result: "The system achieved a seamless, low-latency auction environment that successfully automates the contract award process. It eliminates bid manipulation and human error, providing users with a highly reliable mobile bidding experience.",
       images: [
         "/rebid-app-images/pic1.jpeg",

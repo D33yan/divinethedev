@@ -4,6 +4,7 @@ import { Mail } from "lucide-react";
 import { SiGithub } from "react-icons/si";
 import { FaLinkedin } from "react-icons/fa";
 import Link from "next/link";
+import Image from "next/image";
 import { navSections, siteConfig } from "@/lib/site";
 import { Typewriter } from "@/components/ui/Typewriter";
 import { useActiveSection } from "@/hooks/useActiveSection";
@@ -19,9 +20,16 @@ export function Sidebar() {
       aria-label="Site sidebar"
     >
       <div>
-        <Link href="#hero" className="block">
-          <h1 suppressHydrationWarning className="text-lg font-bold tracking-tight text-[#ccd6f6]">{siteConfig.name}</h1>
-          <p className="mt-2 font-mono text-sm text-[#64ffda]">
+        <Link href="#hero" className="block group/logo">
+          <Image
+            src="/logo.png"
+            alt={siteConfig.name}
+            width={56}
+            height={56}
+            className="rounded-full object-cover border-2 border-[#64ffda]/30 shadow-[0_0_15px_rgba(100,255,218,0.15)] transition-transform duration-300 group-hover/logo:scale-105"
+            priority
+          />
+          <p className="mt-4 font-mono text-sm text-[#64ffda]">
 
             <Typewriter phrases={siteConfig.typewriterRoles} />
           </p>
