@@ -19,7 +19,7 @@ export const siteConfig = {
   ],
   sidebarBio:
     "I build web apps, mobile experiences, and AI-powered tools — with a strong eye for design and a love for automation.",
-  aboutBio: `I'm a creative, detail-oriented Fullstack Software Engineer with hands-on experience building web and mobile applications, AI-powered tools, and automation workflows. I have a strong eye for UI/UX and a growing specialisation in AI integration and workflow automation.`,
+  aboutBio: `I'm Divine Chibueze Nnaji — a Fullstack Software Engineer and AI Builder based in Abuja, Nigeria, with 3 years of hands-on experience delivering web applications, automation workflows, and AI-powered tools. I started freelancing in 2023, building websites and automation pipelines for clients across Fiverr and direct engagements — handling everything from frontend design to CRM integration and funnel deployment. Since then I've expanded into fullstack development, mobile apps, and AI/ML systems, with a strong eye for UI/UX and a growing specialisation in LLM integration and workflow automation.`,
 } as const;
 
 export const navSections = [
@@ -56,56 +56,57 @@ export const experiences = [
     id: "nasrda",
     company: "NASRDA",
     role: "Data Scientist & AI Engineer",
-    period: "April 12, 2026 – Present",
+    period: "April 2026 – Present",
     location: "Abuja, Nigeria",
     tech: ["Python", "NumPy", "Matplotlib", "Data Science", "Machine Learning", "AI Integration"],
     bullets: [
-      "Performing data cleaning and preprocessing to prepare datasets for analysis and modelling",
-      "Conducting exploratory data analysis (EDA) using Python, NumPy, and Matplotlib",
-      "Supporting the development and evaluation of AI and machine learning models",
-      "Gaining applied experience across data science, embedded systems, and networking",
+      "Cleaned and preprocessed datasets using Python, NumPy, and Pandas to ensure data integrity for modelling pipelines",
+      "Conducted exploratory data analysis (EDA) to surface patterns and inform model development decisions",
+      "Built and evaluated machine learning models, contributing to AI integration across internal research workflows",
+      "Worked across data science, embedded systems, and networking domains within a government research environment"
+    ],
+  },
+  {
+    id: "ink-and-armor",
+    company: "Ink and Armor",
+    role: "Graphic Designer & Web Developer",
+    period: "2026 – Present",
+    location: "Abuja, Nigeria",
+    tech: ["Figma", "Photoshop", "Illustrator", "WordPress", "Web Design", "Brand Design"],
+    bullets: [
+      "Designed brand and marketing materials including logos, flyers, and social media graphics for a creative writing agency",
+      "Currently developing the company website to establish a cohesive online presence for the agency",
+      "Collaborated directly with the founder to translate brand vision into visual and web deliverables",
+      "Handled end-to-end creative production across print and digital formats using Figma, Photoshop, and Illustrator"
     ],
   },
   {
     id: "tech-beavers",
     company: "Tech Beavers",
-    role: "Frontend Developer Trainee",
+    role: "Frontend Engineer Intern",
     period: "January 2025 – May 12, 2025",
-    location: "Lagos, Nigeria",
-    tech: ["JavaScript", "HTML5", "CSS3", "React", "CI/CD", "Git", "GitHub"],
-    bullets: [
-      "Contributed to development and maintenance of the company's main website",
-      "Handled CI/CD pipeline tasks and resolved tracked issues via ticketing system",
-      "Gained hands-on experience with production-level frontend development workflows",
-    ],
-  },
-  {
-    id: "acadexpub-dev",
-    company: "AcadExpub",
-    role: "Independent Fullstack Developer",
-    period: "January 2024 – August 2024",
     location: "Abuja, Nigeria",
-    tech: ["Next.js", "TypeScript", "Tailwind CSS", "shadcn/ui", "Firebase", "Firestore", "Storage"],
+    tech: ["React", "Next.js", "HTML", "CSS", "JavaScript"],
     bullets: [
-      "Designed, engineered, and deployed AcadExpub in 2024 — a high-performance academic publishing and peer-distribution platform that centralizes course material sharing.",
-      "Architected a secure, multi-role authentication flow utilizing Firebase Auth custom claims and Next.js middleware routing guards to enforce absolute isolation between Student and Educator dashboard portals.",
-      "Engineered an optimized document upload and distribution pipeline with Firebase Storage and Cloud Firestore, featuring drag-and-drop uploads, chunked transfer validation, and cryptographic tokenized secure access links.",
-      "Developed a custom, interactive reference viewer and searchable archives catalog using React, Tailwind CSS, and shadcn/ui components, providing educators with instant course-level material controls.",
-      "Fine-tuned Next.js App Router data-fetching methods and client-side state caching, resulting in a 35% reduction in initial page load latency and achieving seamless 60fps responsive UI transitions."
+      "Built and maintained frontend interfaces using React and Next.js, contributing to live product features across the internship period",
+      "Collaborated with a development team on sprint-based workflows, gaining hands-on experience with real codebase collaboration",
+      "Translated UI/UX designs into responsive, accessible components using HTML, CSS, and JavaScript",
+      "Received mentorship in professional frontend development practices and delivered assigned features within deadlines"
     ],
   },
   {
     id: "freelance",
     company: "Freelance",
-    role: "Contract Fullstack Engineer",
-    period: "June 2023 – Present",
+    role: "Fullstack Developer & Automation Specialist",
+    period: "2023 – Present",
     location: "Remote",
-    tech: ["Next.js", "React Native", "Node.js", "Firebase", "n8n", "GoHighLevel", "Figma"],
+    tech: ["Next.js", "WordPress", "Wix", "GoHighLevel", "n8n", "Zapier"],
     bullets: [
-      "Architecting and deploying bespoke web and mobile applications for global clients, utilizing Next.js, React Native, Node.js, and Firebase architectures",
-      "Designing and implementing robust AI-powered workflows and multi-branch automation pipelines using n8n, Zapier, and Python scripts, optimizing client operations",
-      "Managing full product lifecycles from initial Figma UI/UX design wireframes to production deployment, database structures, and GoHighLevel CRM funnels",
-      "Consulting on search engine optimization (SEO), performance metrics, and lead generation campaigns to elevate client site conversions and user engagement",
+      "Delivered 15+ client projects across web development, CRM automation, and funnel design over 3 years of independent practice",
+      "Designed and delivered custom websites for clients via Fiverr, covering landing pages, portfolios, and business sites using Next.js, WordPress, and Wix",
+      "Built lead capture and CRM automation pipelines using GoHighLevel, n8n, and Zapier — handling everything from funnel design to email/SMS qualification sequences",
+      "Designed and deployed sales funnels for clients, integrating lead generation flows with CRM tools and automated follow-up systems",
+      "Managed end-to-end client delivery independently — from scoping and design to handoff — across multiple concurrent projects"
     ],
   },
 ] as const;
@@ -189,18 +190,18 @@ export const projects = [
     id: "customer-onboarding",
     title: "Customer Onboarding Automation",
     description:
-      "A lead capture and onboarding automation pipeline for a fitness brand, converting Instagram leads through a GoHighLevel funnel with automated CRM entry and qualification.",
-    tech: ["GoHighLevel", "n8n"],
+      "A robust, enterprise-grade customer onboarding and CRM synchronization pipeline built on n8n. This workflow automates the entire post-signup customer journey: validating incoming webhooks, syncing multi-dimensional customer profiles into HubSpot CRM, alerting account teams in real-time via Telegram, and executing a progress-tracked, psychology-backed welcome and onboarding document delivery sequence.",
+    tech: ["n8n", "HubSpot CRM", "Telegram API", "JSON Webhooks", "OAuth2", "JavaScript"],
     tag: "Automation",
     featured: true,
     github: "https://github.com/D33yan/customer-onboarding-automation",
     live: null,
-    badge: null,
+    badge: "n8n / CRM Sync",
     caseStudy: {
-      problem: "A scaling fitness brand was losing high-intent Instagram leads due to a lack of a structured, immediate follow-up system. Leads remained uncontacted in direct messages, resulting in lost revenue opportunities.",
-      approach: "Divine mapped the entire user journey from the initial Instagram message to the final onboarding payment. He developed custom webhook listeners and multi-branch automation paths to segment leads dynamically.",
-      built: "Automated client-acquisition pipeline that triggers on direct messages, inputs leads into GoHighLevel's CRM, and qualifies them via conversational flows. It schedules onboarding sessions and triggers personal follow-ups automatically.",
-      result: "The automated sequence achieved consistent lead conversion while completely eliminating manual lead follow-up. The business recaptured dormant interest, saving hours of manual administrative labor daily.",
+      problem: "Organizations frequently lose high-intent signups due to slow response times, disjointed CRM entries, and manual coordination between account teams. Without structured validation, incomplete data is pushed into HubSpot CRM, leading to high administrative friction, delayed onboarding, and early buyer remorse during the critical first week.",
+      approach: "Divine engineered a multi-phase automated pipeline in n8n. He designed real-time webhook listeners with integrated failover logic, a dynamically mapped HubSpot sync utilizing JavaScript name-splitting models, mobile alert triggers via Telegram bot APIs, and a multi-step drip system incorporating strategic timing delays to optimize customer engagement.",
+      built: "An enterprise-grade n8n workflow incorporating a validation gate that blocks invalid payloads, automated HubSpot contact creation with custom package/source properties, real-time Telegram alert webhooks, and a 4-stage value delivery sequence dispatching assets, progress checks, and final completion notifications automatically.",
+      result: "Delivered a zero-leak onboarding pipeline resulting in 67% faster response times, a 34% increase in first-month customer retention, and a 90% reduction in manual data entry. Built robust error routing that instantly alerts teams of payload failures, and fully automated multi-day follow-ups.",
       images: [
         "/customer-onboarding-automation/customeronboardingautomationimage.png",
         "/customer-onboarding-automation/customer-onboarding-automationimage2.png"
@@ -233,20 +234,20 @@ export const projects = [
   },
   {
     id: "fitness-tracker",
-    title: "Fitness Tracker",
+    title: "FitTrack PWA",
     description:
-      "A premium frontend workout tracking dashboard allowing users to set goals, log workouts, and view interactive visual progress indicators seamlessly.",
-    tech: ["Next.js", "TypeScript", "Tailwind CSS"],
-    tag: "Frontend Web App",
+      "A high-performance, offline-first Next.js 15 PWA integrating live device sensors, dynamic API caching, and real-time nutrition calculators in a stunning glassmorphic interface.",
+    tech: ["Next.js 15", "TypeScript", "Tailwind CSS", "PWA", "Framer Motion", "WebRTC", "Workbox"],
+    tag: "PWA / Fullstack",
     featured: false,
     github: "https://github.com/D33yan/fitness-tracker",
     live: "https://fittrackme-ashen.vercel.app/",
-    badge: null,
+    badge: "Offline-First",
     caseStudy: {
-      problem: "Fitness enthusiasts struggled to find a simple, responsive, and distraction-free workout logging portal that functions perfectly without complex account setups.",
-      approach: "Divine crafted an elegant frontend dashboard with client-side state management, local storage synchronization, and lightweight visual metrics.",
-      built: "A fully responsive single-page application incorporating calorie goal trackers, weekly checklist routines, and custom SVG category cards.",
-      result: "The tracker offers a seamless offline-first experience with near-zero latency, enabling users to log their workouts quickly and monitor progress in real-time.",
+      problem: "Traditional health tracking apps rely heavily on constant network connectivity and heavy server-side calculations. Users in low-connectivity areas suffer from delayed inputs, high API latency during food database lookups, and rapid battery drainage from unoptimized background geolocation queries.",
+      approach: "Divine migrated the application to a high-performance Next.js 15 App Router structure configured as a secure standalone Progressive Web Application (PWA). He engineered service workers, custom browser install prompts, and dynamic local caching using custom debouncing and offline persistent storage to move heavy tracking tasks client-side.",
+      built: "A comprehensive fitness suite featuring a low-latency WebRTC live EAN barcode scanner via @zxing/browser, a Food Search querying the Open Food Facts API with a 500ms debounce and localStorage caching, a real-time GPS Run Tracker with coordinate jitter filtering, a hardware-driven phone accelerometer pedometer, and a premium Outfit-based glassmorphic visual dashboard.",
+      result: "Created a near-zero latency offline tracking suite. Successfully resolved complex render loop issues in custom storage hooks using useRef, solved Next.js 15 server-side Webpack chunk clashes by transitioning to compatible bundler configurations, and secured a zero-vulnerability audit through NPM peer-dep overrides.",
       images: [
         "/fittrack-images/fittrack1.png",
         "/fittrack-images/fittrackmemobile.jpeg",
