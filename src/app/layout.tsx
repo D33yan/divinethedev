@@ -17,12 +17,28 @@ const firaCode = Fira_Code({
 
 export const metadata: Metadata = {
   title: `${siteConfig.name} | ${siteConfig.title}`,
-  description: siteConfig.aboutBio.slice(0, 160),
+  description: "Divine Chibueze Nnaji (Navie) is a premium Fullstack Software Engineer & AI Builder. Designing and engineering high-performance web applications, mobile experiences, and automated workflows.",
   metadataBase: new URL(siteConfig.liveSite),
   icons: { icon: "/logo.png" },
+  keywords: [
+    "Divine Chibueze Nnaji",
+    "Navie",
+    "Divine Chibueze Nnaji portfolio",
+    "Fullstack Software Engineer",
+    "AI Developer",
+    "AI Systems Builder",
+    "React Native Developer",
+    "Next.js Developer",
+    "Supabase Real-time Expert",
+    "Express.js Specialist",
+    "n8n Workflow Automation",
+    "GoHighLevel CRM Expert",
+    "Nigeria Software Engineer",
+    "divinethe.dev"
+  ],
   openGraph: {
-    title: `${siteConfig.name} (Navie)`,
-    description: siteConfig.sidebarBio,
+    title: `${siteConfig.name} | ${siteConfig.title}`,
+    description: "Fullstack Software Engineer & AI Builder. Specializing in Next.js, React Native/Expo, Supabase, and advanced workflow automations.",
     url: siteConfig.liveSite,
     type: "website",
     images: [
@@ -30,14 +46,14 @@ export const metadata: Metadata = {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: `${siteConfig.name} - Fullstack Developer Portfolio Preview`,
+        alt: `${siteConfig.name} - Fullstack Developer & AI Builder Portfolio Preview`,
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
     title: `${siteConfig.name} | ${siteConfig.title}`,
-    description: siteConfig.sidebarBio,
+    description: "Fullstack Software Engineer & AI Builder. Building high-performance web/mobile applications and AI-powered automation pipelines.",
     images: ["/og-image.png"],
   },
 };
