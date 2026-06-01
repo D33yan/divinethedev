@@ -88,13 +88,13 @@ export function ProjectDeck() {
   });
 
   return (
-    <div className="relative flex flex-col items-center justify-center py-6 w-full max-w-[92vw] sm:max-w-[480px] md:max-w-[500px] mx-auto">
+    <div className="relative flex flex-col items-center justify-center py-6 w-full max-w-[calc(100vw-32px)] sm:max-w-[480px] md:max-w-[500px] mx-auto">
       {/* Outer ambient cosmic stacked HUD outlines (matched to exact deck widths) */}
       <div className="absolute -top-4 h-full w-[104%] rounded-xl border border-dashed border-[#64ffda]/3 pointer-events-none" />
       <div className="absolute -top-2 h-full w-[102%] rounded-xl border border-dashed border-[#64ffda]/5 pointer-events-none" />
 
       {/* Cards stack layer with generous standardised heights to prevent overflows */}
-      <div className="relative h-[360px] sm:h-[380px] md:h-[400px] w-full flex items-center justify-center select-none">
+      <div className="relative h-[430px] sm:h-[440px] md:h-[460px] w-full flex items-center justify-center select-none">
         <AnimatePresence initial={false}>
           {visibleCards.reverse().map(({ project, depth }) => {
             const isTop = depth === 0;
@@ -169,13 +169,13 @@ export function ProjectDeck() {
                   </div>
 
                   {/* Title */}
-                  <h3 className="mt-3 text-lg sm:text-xl md:text-2xl font-bold tracking-tight text-[#ccd6f6] truncate">
+                  <h3 className="mt-3 text-xl sm:text-2xl font-bold tracking-tight text-[#ccd6f6] truncate">
                     {project.title}
                   </h3>
 
-                  {/* Description: clamped strictly to a fixed height to guarantee visual symmetry across cards! */}
-                  <div className="mt-2.5 h-[80px] sm:h-[96px] md:h-[105px] overflow-hidden">
-                    <p className="text-xs sm:text-sm leading-relaxed text-[#8892b0] line-clamp-4">
+                  {/* Description: clamped to a highly spacious height to support larger fonts and descriptions! */}
+                  <div className="mt-3 h-[130px] sm:h-[135px] md:h-[145px] overflow-hidden">
+                    <p className="text-sm sm:text-base leading-relaxed text-[#8892b0] line-clamp-5">
                       {project.description}
                     </p>
                   </div>
@@ -209,7 +209,7 @@ export function ProjectDeck() {
                   </div>
 
                   {/* Tech stack listing with clean height limits */}
-                  <div className="flex flex-wrap gap-x-3 gap-y-1.5 border-t border-white/5 pt-3.5 h-[34px] sm:h-[40px] overflow-hidden">
+                  <div className="flex flex-wrap gap-x-3 gap-y-1.5 border-t border-white/5 pt-3.5 h-[46px] sm:h-[50px] overflow-hidden">
                     {project.tech.map((t) => (
                       <span key={t} className="font-mono text-[9px] sm:text-[10px] text-[#8892b0]/80">
                         {t}

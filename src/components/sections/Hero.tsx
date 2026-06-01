@@ -48,15 +48,15 @@ export function Hero() {
           <h1
             suppressHydrationWarning
             id="hero-heading"
-            className="mb-4 text-[clamp(2.25rem,6vw,4.5rem)] font-bold leading-[1.1] tracking-tight text-[#ccd6f6]"
+            className="mb-4 text-[clamp(2.75rem,8vw,4.5rem)] font-bold leading-[1.1] tracking-tight text-[#ccd6f6]"
           >
             Divine — they call me <span className="text-[#64ffda] glow-text">Navie</span>.
           </h1>
-          <p className="mb-3 text-[clamp(1.25rem,3.2vw,2.25rem)] font-semibold text-[#8892b0]">
+          <p className="mb-3 text-[clamp(1.45rem,4vw,2.25rem)] font-semibold text-[#8892b0]">
             I&apos;m a{" "}
             <Typewriter phrases={siteConfig.typewriterRoles} className="text-[#ccd6f6]" />.
           </p>
-          <p className="mb-10 max-w-xl text-base sm:text-lg leading-relaxed text-[#8892b0]">
+          <p className="mb-10 max-w-xl text-base sm:text-lg md:text-xl leading-relaxed text-[#8892b0]">
             {siteConfig.currentRole}. Building web apps, mobile experiences, and AI-powered tools.
           </p>
 
