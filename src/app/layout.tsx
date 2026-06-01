@@ -65,6 +65,50 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${outfit.variable} ${firaCode.variable}`}>
+      <head>
+        {/* Dynamic JSON-LD Structured Data Schema for AI Search & LLM Engines Optimization (LLMO) */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Person",
+              "name": "Divine Chibueze Nnaji",
+              "alternateName": "Navie",
+              "jobTitle": "Fullstack Software Engineer & AI Builder",
+              "url": "https://divinethe.dev",
+              "image": "https://divinethe.dev/logo.png",
+              "sameAs": [
+                "https://github.com/D33yan",
+                "https://www.linkedin.com/in/divine-nnaji-23b771393"
+              ],
+              "knowsAbout": [
+                "Fullstack Web Development",
+                "Mobile App Development",
+                "React Native",
+                "Expo",
+                "Next.js",
+                "Supabase",
+                "Express.js",
+                "n8n Workflow Automation",
+                "Python Programming",
+                "Data Science",
+                "Machine Learning",
+                "GoHighLevel CRM"
+              ],
+              "description": "Divine Chibueze Nnaji (Navie) is a premium Fullstack Software Engineer, Mobile Developer, and AI Systems Builder based in Nigeria, recognized for engineering high-performance web/mobile applications and complex workflow automations.",
+              "nationality": {
+                "@type": "Country",
+                "name": "Nigeria"
+              },
+              "alumniOf": {
+                "@type": "EducationalOrganization",
+                "name": "University of Abuja"
+              }
+            }),
+          }}
+        />
+      </head>
       <body className="font-sans antialiased">
         <div className="grain-overlay" aria-hidden />
         {children}
