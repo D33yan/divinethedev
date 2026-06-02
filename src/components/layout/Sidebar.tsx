@@ -10,6 +10,7 @@ import { Typewriter } from "@/components/ui/Typewriter";
 import { useActiveSection } from "@/hooks/useActiveSection";
 import { Magnetic } from "@/components/ui/Magnetic";
 import { ThemeToggle } from "@/components/effects/ThemeToggle";
+import { playHover } from "@/lib/audio";
 
 export function Sidebar() {
   const active = useActiveSection();
@@ -42,6 +43,7 @@ export function Sidebar() {
           <Link
             key={section.id}
             href={`#${section.id}`}
+            onMouseEnter={playHover}
             className="group flex items-center justify-end gap-3"
             aria-label={section.label}
             aria-current={active === section.id ? "true" : undefined}

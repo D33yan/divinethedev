@@ -37,12 +37,16 @@ export function ProjectCard({ project }: { project: Project }) {
         ref={ref}
         onMouseMove={onMove}
         onMouseLeave={onLeave}
+        onClick={() => project.caseStudy && setIsOpen(true)}
+        onDoubleClick={() => project.caseStudy && setIsOpen(true)}
         style={
           touch
             ? undefined
             : { rotateX, rotateY, transformPerspective: 1000, transformStyle: "preserve-3d" }
         }
-        className="glass-card shimmer-card group relative flex h-full min-h-[280px] flex-col overflow-hidden rounded-xl p-6 transition-shadow hover:shadow-[0_0_40px_rgba(100,255,218,0.08)]"
+        className={`glass-card shimmer-card group relative flex h-full min-h-[280px] flex-col overflow-hidden rounded-xl p-6 transition-shadow hover:shadow-[0_0_40px_rgba(100,255,218,0.08)] ${
+          project.caseStudy ? "cursor-pointer hover:border-[#64ffda]/30" : ""
+        }`}
       >
         <div
           className="pointer-events-none absolute inset-0 bg-gradient-to-br from-[#64ffda]/10 via-transparent to-transparent opacity-0 transition-opacity group-hover:opacity-100"
@@ -63,6 +67,8 @@ export function ProjectCard({ project }: { project: Project }) {
               href={project.github}
               target="_blank"
               rel="noopener noreferrer"
+              onClick={(e) => e.stopPropagation()}
+              onPointerDown={(e) => e.stopPropagation()}
               className="text-[#8892b0] transition hover:text-[#64ffda]"
               aria-label={`${project.title} on GitHub`}
               data-cursor-hover
@@ -74,7 +80,10 @@ export function ProjectCard({ project }: { project: Project }) {
           
           {project.caseStudy && (
             <button
-              onClick={() => setIsOpen(true)}
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsOpen(true);
+              }}
               className="mb-5 self-start flex items-center gap-1.5 font-mono text-xs text-[#64ffda] hover:underline"
               data-cursor-hover
             >

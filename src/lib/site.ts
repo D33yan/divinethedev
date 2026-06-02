@@ -9,7 +9,7 @@ export const siteConfig = {
   githubHandle: "D33yan",
   linkedin: "https://www.linkedin.com/in/divine-nnaji-23b771393?utm_source=share_via&utm_content=profile&utm_medium=member_android",
   liveSite: "https://divinethe.dev",
-  resumePath: "/Divine_Nnaji_CV.docx",
+  resumePath: "/Divine_Nnaji_CV.pdf",
   currentRole: "Fullstack Software Engineer & AI Builder",
   typewriterRoles: [
     "Fullstack Engineer",

@@ -1,8 +1,8 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
-import { useEffect } from "react";
-import { X, AlertCircle, Compass, Terminal, Trophy, ExternalLink } from "lucide-react";
+import { useEffect, useState } from "react";
+import { X, AlertCircle, Compass, Terminal, Trophy, ExternalLink, ChevronLeft, ChevronRight } from "lucide-react";
 import { SiGithub } from "react-icons/si";
 import type { projects } from "@/lib/site";
 
@@ -15,6 +15,13 @@ interface CaseStudyModalProps {
 }
 
 export function CaseStudyModal({ project, isOpen, onClose }: CaseStudyModalProps) {
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
+
+  // Reset active image when project changes
+  useEffect(() => {
+    setActiveImageIndex(0);
+  }, [project]);
+
   // Lock body scroll when drawer is open
   useEffect(() => {
     if (isOpen) {
@@ -127,35 +134,157 @@ export function CaseStudyModal({ project, isOpen, onClose }: CaseStudyModalProps
               )}
 
               {/* Case Study Image Gallery */}
-              {"images" in project.caseStudy && project.caseStudy.images && (project.caseStudy.images as readonly string[]).length > 0 && (
-                <div className="mt-8">
-                  <h4 className="font-mono text-[10px] uppercase tracking-widest text-[#64ffda] mb-3">
-                    Project Screenshots
-                  </h4>
-                  <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent snap-x snap-mandatory">
-                    {(project.caseStudy.images as readonly string[]).map((img, index) => (
-                      <div
-                        key={index}
-                        className={`relative shrink-0 overflow-hidden rounded-xl border border-white/10 bg-navy-light snap-start transition duration-300 hover:border-[#64ffda]/30 ${
-                          project.tag.toLowerCase().includes("mobile")
-                            ? "aspect-[9/16] w-[160px] sm:w-[200px]"
-                            : "aspect-video w-[280px] sm:w-[360px]"
-                        }`}
-                      >
-                        <img
-                          src={img}
-                          alt={`${project.title} Screenshot ${index + 1}`}
-                          className="h-full w-full object-cover transition-transform duration-500 hover:scale-105"
-                          loading="lazy"
-                          onError={(e) => {
-                            (e.target as HTMLElement).style.display = "none";
-                          }}
-                        />
+              {/* Case Study Image Gallery */}
+              {"images" in project.caseStudy && project.caseStudy.images && (project.caseStudy.images as readonly string[]).length > 0 && (() => {
+                const images = project.caseStudy.images as readonly string[];
+                const isMobile = project.tag.toLowerCase().includes("mobile") || project.id === "rebid";
+                
+                const handleNext = () => {
+                  setActiveImageIndex((prev) => (prev + 1) % images.length);
+                };
+                const handlePrev = () => {
+                  setActiveImageIndex((prev) => (prev - 1 + images.length) % images.length);
+                };
+
+                return (
+                  <div className="mt-8 relative group/slider">
+                    <h4 className="font-mono text-[10px] uppercase tracking-widest text-[#64ffda] mb-4">
+                      Interactive Gallery ({activeImageIndex + 1} of {images.length})
+                    </h4>
+                    
+                    {/* Main Mockup Container */}
+                    <div className="relative flex items-center justify-center py-4 w-full">
+                      {isMobile ? (
+                        /* Mobile Mockup Device Frame */
+                        <div className="relative mx-auto aspect-[9/16] w-[210px] sm:w-[230px] rounded-[36px] border-[6px] border-slate-700/90 bg-[#0c0e17] shadow-[0_20px_50px_rgba(0,0,0,0.6)] overflow-hidden ring-1 ring-white/10 shrink-0">
+                          {/* Smartphone Notch / Dynamic Island */}
+                          <div className="absolute top-2.5 left-1/2 -translate-x-1/2 h-3.5 w-16 rounded-full bg-slate-900 z-30 flex items-center justify-center border border-white/5">
+                            <div className="w-1 h-1 rounded-full bg-blue-900/40 ml-auto mr-1.5" />
+                          </div>
+                          
+                          {/* Smartphone Screen Inner Content */}
+                          <div className="relative h-full w-full overflow-hidden bg-slate-950">
+                            <AnimatePresence mode="wait">
+                              <motion.img
+                                key={activeImageIndex}
+                                src={images[activeImageIndex]}
+                                alt={`${project.title} Phone View ${activeImageIndex + 1}`}
+                                initial={{ opacity: 0, scale: 0.95 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                exit={{ opacity: 0, scale: 0.95 }}
+                                transition={{ duration: 0.2 }}
+                                drag="x"
+                                dragConstraints={{ left: 0, right: 0 }}
+                                dragElastic={0.4}
+                                onDragEnd={(e, info) => {
+                                  const swipeThreshold = 50;
+                                  if (info.offset.x > swipeThreshold) {
+                                    handleNext();
+                                  } else if (info.offset.x < -swipeThreshold) {
+                                    handlePrev();
+                                  }
+                                }}
+                                className="h-full w-full object-cover animate-none cursor-grab active:cursor-grabbing select-none"
+                                loading="lazy"
+                                onError={(e) => {
+                                  (e.target as HTMLElement).style.display = "none";
+                                }}
+                              />
+                            </AnimatePresence>
+                          </div>
+                        </div>
+                      ) : (
+                        /* Desktop Browser Mockup Frame */
+                        <div className="w-full rounded-xl border border-white/15 bg-[#0a192f]/40 backdrop-blur-md shadow-[0_20px_50px_rgba(0,0,0,0.6)] overflow-hidden">
+                          {/* Browser Window Title Bar */}
+                          <div className="flex items-center gap-1.5 px-4 py-2.5 bg-navy-light/90 border-b border-white/10">
+                            <div className="w-2 h-2 rounded-full bg-[#ff5f56]" />
+                            <div className="w-2 h-2 rounded-full bg-[#ffbd2e]" />
+                            <div className="w-2 h-2 rounded-full bg-[#27c93f]" />
+                            
+                            {/* Browser Search Bar */}
+                            <div className="mx-auto text-[9px] font-mono text-[#8892b0] truncate w-1/2 text-center bg-navy/60 py-0.5 px-3 rounded border border-white/5 select-none">
+                              {project.live ? project.live.replace("https://", "") : `${project.title.toLowerCase()}.dev`}
+                            </div>
+                          </div>
+                          
+                          {/* Browser Screen Inner Content */}
+                          <div className="relative aspect-video w-full bg-slate-950 overflow-hidden">
+                            <AnimatePresence mode="wait">
+                              <motion.img
+                                key={activeImageIndex}
+                                src={images[activeImageIndex]}
+                                alt={`${project.title} Desktop View ${activeImageIndex + 1}`}
+                                initial={{ opacity: 0, scale: 0.98 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                exit={{ opacity: 0, scale: 0.98 }}
+                                transition={{ duration: 0.2 }}
+                                drag="x"
+                                dragConstraints={{ left: 0, right: 0 }}
+                                dragElastic={0.4}
+                                onDragEnd={(e, info) => {
+                                  const swipeThreshold = 50;
+                                  if (info.offset.x > swipeThreshold) {
+                                    handleNext();
+                                  } else if (info.offset.x < -swipeThreshold) {
+                                    handlePrev();
+                                  }
+                                }}
+                                className="h-full w-full object-cover animate-none cursor-grab active:cursor-grabbing select-none"
+                                loading="lazy"
+                                onError={(e) => {
+                                  (e.target as HTMLElement).style.display = "none";
+                                }}
+                              />
+                            </AnimatePresence>
+                          </div>
+                        </div>
+                      )}
+                      
+                      {/* Left Navigation Arrow */}
+                      {images.length > 1 && (
+                        <button
+                          onClick={handlePrev}
+                          className="absolute left-1 sm:-left-3 z-30 flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-navy/90 backdrop-blur-md text-[#ccd6f6] shadow-lg transition opacity-100 sm:opacity-0 sm:group-hover/slider:opacity-100 hover:text-[#64ffda] hover:border-[#64ffda] hover:scale-105 active:scale-95 cursor-pointer"
+                          aria-label="Previous image"
+                          data-cursor-hover
+                        >
+                          <ChevronLeft className="h-5 w-5" />
+                        </button>
+                      )}
+                      
+                      {/* Right Navigation Arrow */}
+                      {images.length > 1 && (
+                        <button
+                          onClick={handleNext}
+                          className="absolute right-1 sm:-right-3 z-30 flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-navy/90 backdrop-blur-md text-[#ccd6f6] shadow-lg transition opacity-100 sm:opacity-0 sm:group-hover/slider:opacity-100 hover:text-[#64ffda] hover:border-[#64ffda] hover:scale-105 active:scale-95 cursor-pointer"
+                          aria-label="Next image"
+                          data-cursor-hover
+                        >
+                          <ChevronRight className="h-5 w-5" />
+                        </button>
+                      )}
+                    </div>
+                    
+                    {/* Indicator Dots */}
+                    {images.length > 1 && (
+                      <div className="mt-4 flex justify-center gap-2">
+                        {images.map((_, idx) => (
+                          <button
+                            key={idx}
+                            onClick={() => setActiveImageIndex(idx)}
+                            className={`h-2 rounded-full transition-all duration-300 ${
+                              idx === activeImageIndex ? "w-6 bg-[#64ffda]" : "w-2 bg-white/20 hover:bg-white/40"
+                            }`}
+                            aria-label={`Go to image ${idx + 1}`}
+                            data-cursor-hover
+                          />
+                        ))}
                       </div>
-                    ))}
+                    )}
                   </div>
-                </div>
-              )}
+                );
+              })()}
 
               {/* Grid or flex list of case study sections */}
               <div className="mt-10 space-y-8">

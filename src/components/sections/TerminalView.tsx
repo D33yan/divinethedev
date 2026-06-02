@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { projects, siteConfig } from "@/lib/site";
+import { playClick, playSuccess, playGlitch } from "@/lib/audio";
 
 interface TerminalLine {
   text: string;
@@ -11,6 +12,45 @@ interface TerminalLine {
 interface TerminalViewProps {
   onSwitchToCards: () => void;
 }
+
+const getSuggestion = (input: string): string => {
+  if (!input) return "";
+  const trimmed = input.trim();
+  if (!trimmed) return "";
+
+  const allCommands = [
+    "help", "clear", "about", "skills", "contact", 
+    "resume", "cv", "hack", "gui", "ls", "cat", 
+    "theme", "open", "run", "source", "code", "view"
+  ];
+
+  const parts = input.split(" ");
+  if (parts.length === 1) {
+    const query = parts[0].toLowerCase();
+    const match = allCommands.find(c => c.startsWith(query));
+    return match && match !== query ? match : "";
+  } else if (parts.length === 2) {
+    const cmd = parts[0].toLowerCase();
+    const argQuery = parts[1].toLowerCase();
+    let argOptions: string[] = [];
+
+    if (cmd === "cat") {
+      argOptions = ["about.md", "skills.md", "contact.txt", "resume.pdf", "projects/rebid.md", "projects/typhoidguard.md", "projects/acadexpub.md"];
+    } else if (["open", "run", "source", "view", "code"].includes(cmd)) {
+      argOptions = ["rebid", "typhoidguard", "acadexpub"];
+    } else if (cmd === "theme") {
+      argOptions = ["teal", "blue", "pink", "green", "red", "orange"];
+    } else if (cmd === "ls") {
+      argOptions = ["projects"];
+    } else if (cmd === "contact") {
+      argOptions = ["mail", "email", "phone", "call"];
+    }
+
+    const match = argOptions.find(opt => opt.startsWith(argQuery));
+    return match && match !== argQuery ? `${parts[0]} ${match}` : "";
+  }
+  return "";
+};
 
 export function TerminalView({ onSwitchToCards }: TerminalViewProps) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -42,7 +82,14 @@ export function TerminalView({ onSwitchToCards }: TerminalViewProps) {
 
   // Keyboard command submission and history logic
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
+    if (e.key === "Tab" || e.key === "ArrowRight") {
+      const suggestion = getSuggestion(inputVal);
+      if (suggestion) {
+        e.preventDefault();
+        setInputVal(suggestion);
+        playSuccess();
+      }
+    } else if (e.key === "Enter") {
       const command = inputVal.trim();
       if (!command) return;
 
@@ -113,55 +160,163 @@ export function TerminalView({ onSwitchToCards }: TerminalViewProps) {
         ];
         break;
 
-      case "ls":
-      case "projects":
-        output = [
-          { text: "CATALOGED PROJECTS IN SYSTEM ARCHIVE:", type: "success" },
-          ...projects.map((p) => ({
-            text: `  [${p.id}] - ${p.title} (${p.tag})\n    Tech: ${p.tech.join(", ")}\n    Desc: ${p.description}`,
-            type: "primary" as const,
-          })),
-          { text: "\nType 'cat <project_id>' to display a detailed case study (e.g. 'cat rebid').", type: "system" },
-        ];
+      case "ls": {
+        const path = arg ? arg.trim().toLowerCase() : "";
+        if (path === "projects" || path === "projects/") {
+          output = [
+            { text: "DIRECTORY LISTING: guest@navie-os:~/projects#", type: "success" },
+            { text: "total 32", type: "system" },
+            ...projects.map((p) => ({
+              text: `-rw-r--r--  devine  staff  1.2K Jun 02 14:00 ${p.id}.md`,
+              type: "primary" as const
+            })),
+            { text: "\nType 'cat projects/<project_id>.md' to view the file (e.g. 'cat projects/rebid.md').", type: "system" }
+          ];
+        } else {
+          output = [
+            { text: "DIRECTORY LISTING: guest@navie-os:~#", type: "success" },
+            { text: "total 48", type: "system" },
+            { text: "drwxr-xr-x  devine  staff  128B Jun 02 14:00 projects/", type: "success" },
+            { text: "-rw-r--r--  devine  staff  2.4K Jun 02 14:00 about.md", type: "primary" },
+            { text: "-rw-r--r--  devine  staff  1.8K Jun 02 14:00 skills.md", type: "primary" },
+            { text: "-rw-r--r--  devine  staff  528B Jun 02 14:00 contact.txt", type: "primary" },
+            { text: "-rwxr-xr-x  devine  staff  145K Jun 02 14:00 resume.pdf", type: "primary" },
+            { text: "\nType 'cat <filename>' to read a file, or 'ls projects' to view project files.", type: "system" }
+          ];
+        }
         break;
+      }
 
       case "cat": {
         if (!arg) {
-          output = [{ text: "Error: No project specified. Usage: cat <project_id> (e.g. 'cat rebid')", type: "error" }];
+          output = [{ text: "Error: No file specified. Usage: cat <filename> (e.g. 'cat about.md')", type: "error" }];
           break;
         }
 
-        const project = projects.find((p) => p.id === arg);
-        if (!project) {
-          output = [{ text: `Error: Project '${arg}' not found. Type 'ls' to see all valid IDs.`, type: "error" }];
+        const targetFile = arg.trim().toLowerCase().replace("projects/", "").replace(".md", "").replace(".txt", "");
+
+        if (targetFile === "about") {
+          output = [
+            { text: "--- about.md ---", type: "success" },
+            { text: `Developer:       ${siteConfig.name} (${siteConfig.alias})`, type: "primary" },
+            { text: `Title Focus:     ${siteConfig.title}`, type: "primary" },
+            { text: `Base Node:       Cloud Server Portal`, type: "primary" },
+            { text: `Active Role:     ${siteConfig.currentRole}`, type: "primary" },
+            { text: `Server Core:     AI Core Integration Engine`, type: "secondary" },
+            { text: `Memory Buffer:   16 GB Cybernetic Stream`, type: "secondary" },
+            { text: `System Shell:    bash / zsh v1.0.4-next`, type: "secondary" },
+            { text: `-------------------------------------------------`, type: "system" },
+            { text: siteConfig.aboutBio, type: "primary" },
+          ];
+        } else if (targetFile === "skills") {
+          output = [
+            { text: "--- skills.md ---", type: "success" },
+            { text: "  Languages   [████████████████] JavaScript, TypeScript, Python, PHP", type: "primary" },
+            { text: "  Frontend    [██████████████]   Next.js, HTML5/CSS3, TailwindCSS", type: "primary" },
+            { text: "  Backend     [████████████]     Node.js, Laravel APIs, SQL/NoSQL", type: "primary" },
+            { text: "  AI & ML     [██████████████]   Scikit-Learn, NumPy, Data Modelling", type: "primary" },
+            { text: "  Automation  [████████████████] n8n Orchestrator, Make, Zapier webhooks", type: "primary" },
+            { text: "  Platforms   [████████████]     GoHighLevel, WordPress, Firebase", type: "primary" },
+            { text: "  Design      [████████████]     Figma, UI/UX Wireframing, Adobe suite", type: "primary" },
+            { text: "", type: "system" },
+            { text: "EARLYCODE SYSTEM CERTIFICATIONS CATALOGED:", type: "success" },
+            { text: "  ▸ Python Programming        (May–June 2022)", type: "secondary" },
+            { text: "  ▸ Fullstack Web Development (Oct 2022 – Feb 2023)", type: "secondary" },
+            { text: "  ▸ App Development           (July–Sept 2023)", type: "secondary" },
+          ];
+        } else if (targetFile === "contact") {
+          output = [
+            { text: "--- contact.txt ---", type: "success" },
+            { text: `  Secure Mail:  ${siteConfig.email}`, type: "primary" },
+            { text: `  Phone Comm:   ${siteConfig.phone}`, type: "primary" },
+            { text: `  GitHub Node:  ${siteConfig.github}`, type: "primary" },
+            { text: `  LinkedIn:     ${siteConfig.linkedin}`, type: "primary" },
+          ];
+        } else if (targetFile === "resume" || targetFile === "resume.pdf" || targetFile === "cv") {
+          if (typeof window !== "undefined") {
+            window.dispatchEvent(new CustomEvent("open-resume-viewer"));
+          }
+          output = [{ text: "Establishing secure CV data tunnel... launching inline viewer drawer.", type: "success" }];
+        } else {
+          // Check if it's a project
+          const project = projects.find((p) => p.id === targetFile);
+          if (project) {
+            output = [
+              { text: `-------------------------------------------------------`, type: "system" },
+              { text: `PROJECT DATA STREAM: ${project.title.toUpperCase()}`, type: "success" },
+              { text: `Domain Focus:        ${project.tag}`, type: "secondary" },
+              { text: `Engineering Stack:   ${project.tech.join(" // ")}`, type: "secondary" },
+              { text: `-------------------------------------------------------`, type: "system" },
+              { text: ``, type: "primary" },
+              { text: `[THE PROBLEM CHALLENGE]`, type: "success" },
+              { text: project.caseStudy.problem, type: "primary" },
+              { text: ``, type: "primary" },
+              { text: `[DEVELOPER APPROACH]`, type: "success" },
+              { text: project.caseStudy.approach, type: "primary" },
+              { text: ``, type: "primary" },
+              { text: `[SOLUTION ARCHITECTURE BUILT]`, type: "success" },
+              { text: project.caseStudy.built, type: "primary" },
+              { text: ``, type: "primary" },
+              { text: `[FINAL METRICS & RESULTS]`, type: "success" },
+              { text: project.caseStudy.result, type: "primary" },
+              { text: ``, type: "primary" },
+              { text: `-------------------------------------------------------`, type: "system" },
+              { 
+                text: `Action Triggers: Type 'open ${project.id}' to launch, 'source ${project.id}' for GitHub.`, 
+                type: "success" 
+              },
+            ];
+          } else {
+            output = [{ text: `Error: File or directory '${arg}' not found. Type 'ls' to view catalog.`, type: "error" }];
+          }
+        }
+        break;
+      }
+
+      case "theme": {
+        if (!arg) {
+          output = [
+            { text: "Usage: theme <accent_color> (e.g. 'theme pink', 'theme blue')", type: "error" },
+            { text: "Available themes:", type: "success" },
+            { text: "  ▸ teal   - Standard Cyber Teal (Default)", type: "primary" },
+            { text: "  ▸ blue   - Electric Neon Cyan Blue", type: "primary" },
+            { text: "  ▸ pink   - Hot Cyberpunk Pink", type: "primary" },
+            { text: "  ▸ green  - Matrix Digital Green", type: "primary" },
+            { text: "  ▸ red    - Electric Neon Red", type: "primary" },
+            { text: "  ▸ orange - Cyber Orange", type: "primary" },
+          ];
           break;
         }
 
-        output = [
-          { text: `-------------------------------------------------------`, type: "system" },
-          { text: `PROJECT DATA STREAM: ${project.title.toUpperCase()}`, type: "success" },
-          { text: `Domain Focus:        ${project.tag}`, type: "secondary" },
-          { text: `Engineering Stack:   ${project.tech.join(" // ")}`, type: "secondary" },
-          { text: `-------------------------------------------------------`, type: "system" },
-          { text: ``, type: "primary" },
-          { text: `[THE PROBLEM CHALLENGE]`, type: "success" },
-          { text: project.caseStudy.problem, type: "primary" },
-          { text: ``, type: "primary" },
-          { text: `[DEVELOPER APPROACH]`, type: "success" },
-          { text: project.caseStudy.approach, type: "primary" },
-          { text: ``, type: "primary" },
-          { text: `[SOLUTION ARCHITECTURE BUILT]`, type: "success" },
-          { text: project.caseStudy.built, type: "primary" },
-          { text: ``, type: "primary" },
-          { text: `[FINAL METRICS & RESULTS]`, type: "success" },
-          { text: project.caseStudy.result, type: "primary" },
-          { text: ``, type: "primary" },
-          { text: `-------------------------------------------------------`, type: "system" },
-          { 
-            text: `Action Triggers: Type 'open ${project.id}' to launch, 'source ${project.id}' for GitHub.`, 
-            type: "success" 
-          },
-        ];
+        const themes: Record<string, { rgb: string; hex: string }> = {
+          teal: { rgb: "100, 255, 218", hex: "#64ffda" },
+          blue: { rgb: "0, 229, 255", hex: "#00e5ff" },
+          green: { rgb: "0, 255, 159", hex: "#00ff9f" },
+          pink: { rgb: "255, 0, 127", hex: "#ff007f" },
+          red: { rgb: "255, 51, 51", hex: "#ff3333" },
+          orange: { rgb: "255, 145, 0", hex: "#ff9100" },
+        };
+
+        const targetTheme = themes[arg.toLowerCase()];
+        if (!targetTheme) {
+          output = [{ text: `Error: Theme '${arg}' not found. Valid options: teal, blue, pink, green, red, orange`, type: "error" }];
+          break;
+        }
+
+        if (typeof window !== "undefined") {
+          const root = document.documentElement;
+          root.style.setProperty("--color-accent-rgb", targetTheme.rgb);
+          root.style.setProperty("--color-accent", `rgb(${targetTheme.rgb})`);
+          root.style.setProperty("--color-accent-dim", `rgba(${targetTheme.rgb}, 0.1)`);
+          localStorage.setItem("navie-accent-theme", arg.toLowerCase());
+          
+          window.dispatchEvent(new CustomEvent("accent-theme-changed", {
+            detail: { theme: arg.toLowerCase(), rgb: targetTheme.rgb, hex: targetTheme.hex }
+          }));
+        }
+
+        playSuccess();
+        output = [{ text: `System visual layout theme re-coded: ${arg.toUpperCase()} (${targetTheme.hex})`, type: "success" }];
         break;
       }
 
@@ -283,7 +438,7 @@ export function TerminalView({ onSwitchToCards }: TerminalViewProps) {
         setTimeout(() => {
           const link = document.createElement("a");
           link.href = siteConfig.resumePath;
-          link.download = "Divine_Nnaji_CV.docx";
+          link.download = "Divine_Nnaji_CV.pdf";
           link.target = "_blank";
           link.rel = "noopener noreferrer";
           document.body.appendChild(link);
@@ -314,11 +469,13 @@ export function TerminalView({ onSwitchToCards }: TerminalViewProps) {
     setLines([...currentLines, ...output, { text: "", type: "system" }]);
   };
 
+  const suggestion = getSuggestion(inputVal);
+
   return (
     <div
       ref={containerRef}
       onClick={handleTerminalClick}
-      className="relative flex h-[520px] w-full flex-col overflow-hidden rounded-2xl border border-white/10 bg-[#070b14]/85 shadow-[0_12px_40px_rgba(10,15,30,0.5)] backdrop-blur-md cursor-text"
+      className="terminal-container relative flex h-[520px] w-full flex-col overflow-hidden rounded-2xl border border-white/10 backdrop-blur-md cursor-text"
     >
       {/* HUD terminal scanline overlay */}
       <div 
@@ -384,6 +541,12 @@ export function TerminalView({ onSwitchToCards }: TerminalViewProps) {
         <div className="mt-2 flex items-center">
           <span className="mr-2 text-[#00e5ff] font-semibold">guest@navie-os:~#</span>
           <span className="relative flex flex-1 items-center">
+            {suggestion && (
+              <span className="absolute left-0 pointer-events-none text-[#ccd6f6] opacity-25 whitespace-pre select-none font-mono">
+                {inputVal}
+                <span className="text-white/30">{suggestion.substring(inputVal.length)}</span>
+              </span>
+            )}
             <span className="text-[#ccd6f6] whitespace-pre">{inputVal}</span>
             <span className="h-4 w-2 bg-[#64ffda] animate-pulse" />
             
@@ -391,8 +554,10 @@ export function TerminalView({ onSwitchToCards }: TerminalViewProps) {
             <input
               ref={inputRef}
               type="text"
-              value={inputVal}
-              onChange={(e) => setInputVal(e.target.value)}
+              onChange={(e) => {
+                setInputVal(e.target.value);
+                playClick();
+              }}
               onKeyDown={handleKeyDown}
               className="absolute inset-0 opacity-0 cursor-text pointer-events-auto w-full border-none outline-none"
               autoFocus
@@ -432,18 +597,50 @@ function MatrixOverlay({ onClose }: { onClose: () => void }) {
     const drops: number[] = Array(columns).fill(1);
     const chars = "ｦｧｨｩｪｫｬｭｮｯｰｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜﾝ1023456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
+    const mouseRef = { x: -9999, y: -9999 };
+
+    const handleMouseMove = (e: MouseEvent) => {
+      const rect = canvas.getBoundingClientRect();
+      mouseRef.x = e.clientX - rect.left;
+      mouseRef.y = e.clientY - rect.top;
+    };
+
+    const handleMouseLeave = () => {
+      mouseRef.x = -9999;
+      mouseRef.y = -9999;
+    };
+
+    window.addEventListener("mousemove", handleMouseMove);
+    canvas.addEventListener("mouseleave", handleMouseLeave);
+
     let animationId: number;
     const draw = () => {
       ctx.fillStyle = "rgba(0, 0, 0, 0.07)";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      ctx.fillStyle = "#00ff9f";
-      ctx.font = "11px monospace";
-
       for (let i = 0; i < drops.length; i++) {
         const text = chars[Math.floor(Math.random() * chars.length)];
-        const x = i * 14;
-        const y = drops[i] * 14;
+        let x = i * 14;
+        let y = drops[i] * 14;
+
+        // Calculate distance from mouse coordinates
+        const dist = Math.hypot(x - mouseRef.x, y - mouseRef.y);
+        const insideRipple = dist < 120;
+
+        if (insideRipple) {
+          // Glitch / offset coordinates
+          const angle = Math.atan2(y - mouseRef.y, x - mouseRef.x);
+          const force = (120 - dist) * 0.15; // push characters slightly away
+          x += Math.cos(angle) * force;
+          y += Math.sin(angle) * force;
+
+          // Glitch color to neon white
+          ctx.fillStyle = "#ffffff";
+          ctx.font = "bold 13px monospace"; // make it slightly larger/bolder
+        } else {
+          ctx.fillStyle = "#00ff9f";
+          ctx.font = "11px monospace";
+        }
 
         ctx.fillText(text, x, y);
 
@@ -481,6 +678,8 @@ function MatrixOverlay({ onClose }: { onClose: () => void }) {
       clearInterval(progressInterval);
       clearTimeout(statusTimeout);
       clearTimeout(exitTimeout);
+      window.removeEventListener("mousemove", handleMouseMove);
+      canvas.removeEventListener("mouseleave", handleMouseLeave);
     };
   }, [onClose]);
 

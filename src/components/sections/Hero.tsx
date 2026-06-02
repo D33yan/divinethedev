@@ -71,16 +71,15 @@ export function Hero() {
               </Link>
             </Magnetic>
             <Magnetic>
-              <a
-                href={siteConfig.resumePath}
-                download="Divine_Nnaji_CV.docx"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex min-h-[44px] items-center rounded border border-[#64ffda]/50 px-6 py-3 font-mono text-sm text-[#ccd6f6] transition hover:border-[#64ffda] hover:text-[#64ffda]"
+              <button
+                onClick={() => {
+                  window.dispatchEvent(new CustomEvent("open-resume-viewer"));
+                }}
+                className="inline-flex min-h-[44px] items-center rounded border border-[#64ffda]/50 px-6 py-3 font-mono text-sm text-[#ccd6f6] transition hover:border-[#64ffda] hover:text-[#64ffda] cursor-pointer"
                 data-cursor-hover
               >
                 Download Resume
-              </a>
+              </button>
             </Magnetic>
           </div>
         </motion.div>

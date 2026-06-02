@@ -6,6 +6,7 @@ import { SiGithub } from "react-icons/si";
 import { ExternalLink, ChevronLeft, ChevronRight } from "lucide-react";
 import { projects } from "@/lib/site";
 import { CaseStudyModal } from "@/components/sections/CaseStudyModal";
+import { playHover } from "@/lib/audio";
 
 type Project = (typeof projects)[number];
 
@@ -24,6 +25,7 @@ export function ProjectDeck() {
   const cycleDeck = (direction: number) => {
     // Reset drag tracking motion value
     dragX.set(0);
+    playHover(); // Tactile feedback
     if (direction > 0) {
       setCurrentIndex((prev) => (prev + 1) % projects.length);
     } else {
@@ -57,9 +59,10 @@ export function ProjectDeck() {
 
   const handleDragEnd = (event: any, info: any) => {
     const swipeThreshold = 120;
-    if (info.offset.x > swipeThreshold) {
+    const velocityThreshold = 450; // Flick speed in px/s
+    if (info.offset.x > swipeThreshold || info.velocity.x > velocityThreshold) {
       cycleDeck(1);
-    } else if (info.offset.x < -swipeThreshold) {
+    } else if (info.offset.x < -swipeThreshold || info.velocity.x < -velocityThreshold) {
       cycleDeck(-1);
     }
   };
@@ -71,6 +74,7 @@ export function ProjectDeck() {
 
   const handleLaunchBrowser = (e: React.MouseEvent, project: Project) => {
     e.preventDefault();
+    e.stopPropagation();
     if (project.live) {
       window.dispatchEvent(new CustomEvent("open-project-browser", {
         detail: { url: project.live, title: project.title }
@@ -123,8 +127,21 @@ export function ProjectDeck() {
                 dragConstraints={{ left: 0, right: 0 }}
                 dragElastic={0.65}
                 onDragEnd={isTop ? handleDragEnd : undefined}
+                onTap={() => {
+                  if (isTop && project.caseStudy) {
+                    handleOpenCaseStudy(project);
+                  }
+                }}
+                onDoubleClick={(e) => {
+                  e.stopPropagation();
+                  if (isTop && project.caseStudy) {
+                    handleOpenCaseStudy(project);
+                  }
+                }}
                 className={`glass-card absolute flex h-full w-full flex-col justify-between rounded-2xl border border-white/10 p-6 sm:p-8 backdrop-blur-xl shadow-[0_15px_35px_rgba(0,0,0,0.5)] ${
-                  isTop ? "cursor-grab active:cursor-grabbing" : "pointer-events-none"
+                  isTop 
+                    ? `cursor-pointer active:cursor-grabbing ${project.caseStudy ? 'hover:border-[#64ffda]/30' : ''}` 
+                    : "pointer-events-none"
                 }`}
               >
                 {/* Visual HUD grid highlight corners */}
@@ -134,7 +151,7 @@ export function ProjectDeck() {
                       // CLI_CARD // ACTIVE
                     </div>
                     <div className="absolute bottom-3 right-3 font-mono text-[8px] text-[#64ffda]/25 uppercase tracking-widest">
-                      SWIPE TO CYCLE
+                      CLICK CARD FOR CASE STUDY · SWIPE TO CYCLE
                     </div>
                   </>
                 )}
@@ -159,6 +176,8 @@ export function ProjectDeck() {
                         href={project.github}
                         target="_blank"
                         rel="noopener noreferrer"
+                        onClick={(e) => e.stopPropagation()}
+                        onPointerDown={(e) => e.stopPropagation()}
                         className="text-[#8892b0] transition hover:text-[#64ffda] pointer-events-auto"
                         aria-label={`${project.title} on GitHub`}
                         data-cursor-hover
@@ -187,7 +206,11 @@ export function ProjectDeck() {
                   <div className="flex items-center gap-3 mb-4 h-8">
                     {project.caseStudy && isTop && (
                       <button
-                        onClick={() => handleOpenCaseStudy(project)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleOpenCaseStudy(project);
+                        }}
+                        onPointerDown={(e) => e.stopPropagation()}
                         className="flex items-center gap-1.5 font-mono text-[10px] sm:text-xs text-[#64ffda] hover:underline cursor-pointer pointer-events-auto font-semibold"
                         data-cursor-hover
                       >
@@ -198,7 +221,11 @@ export function ProjectDeck() {
 
                     {project.live && isTop && (
                       <button
-                        onClick={(e) => handleLaunchBrowser(e, project)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleLaunchBrowser(e, project);
+                        }}
+                        onPointerDown={(e) => e.stopPropagation()}
                         className="flex items-center gap-1.5 font-mono text-[10px] sm:text-xs text-[#00e5ff] hover:underline cursor-pointer pointer-events-auto ml-auto font-semibold"
                         data-cursor-hover
                       >

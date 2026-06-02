@@ -154,60 +154,60 @@ body {
 .light .text-\[\#8892b0\]\/80 {
   color: rgba(var(--color-text-secondary-rgb), 0.8) !important;
 }
-.light .text-\[\#64ffda\] {
+.text-\[\#64ffda\] {
   color: var(--color-accent) !important;
 }
-.light .text-\[\#64ffda\]\/25 {
+.text-\[\#64ffda\]\/25 {
   color: rgba(var(--color-accent-rgb), 0.25) !important;
 }
-.light .text-\[\#64ffda\]\/80 {
+.text-\[\#64ffda\]\/80 {
   color: rgba(var(--color-accent-rgb), 0.8) !important;
 }
 
 /* Background Colors */
-.light .bg-\[\#64ffda\] {
+.bg-\[\#64ffda\] {
   background-color: var(--color-accent) !important;
   color: #ffffff !important; /* Force high-contrast white text on dark teal background */
 }
-.light .bg-\[\#64ffda\]\/5 {
+.bg-\[\#64ffda\]\/5 {
   background-color: rgba(var(--color-accent-rgb), 0.05) !important;
 }
-.light .bg-\[\#64ffda\]\/10 {
+.bg-\[\#64ffda\]\/10 {
   background-color: rgba(var(--color-accent-rgb), 0.1) !important;
 }
-.light .bg-\[\#64ffda\]\/15 {
+.bg-\[\#64ffda\]\/15 {
   background-color: rgba(var(--color-accent-rgb), 0.15) !important;
 }
-.light .bg-\[\#64ffda\]\/20 {
+.bg-\[\#64ffda\]\/20 {
   background-color: rgba(var(--color-accent-rgb), 0.2) !important;
 }
 
 /* Border Colors */
-.light .border-\[\#64ffda\] {
+.border-\[\#64ffda\] {
   border-color: var(--color-accent) !important;
 }
-.light .border-\[\#64ffda\]\/3 {
+.border-\[\#64ffda\]\/3 {
   border-color: rgba(var(--color-accent-rgb), 0.03) !important;
 }
-.light .border-\[\#64ffda\]\/5 {
+.border-\[\#64ffda\]\/5 {
   border-color: rgba(var(--color-accent-rgb), 0.05) !important;
 }
-.light .border-\[\#64ffda\]\/10 {
+.border-\[\#64ffda\]\/10 {
   border-color: rgba(var(--color-accent-rgb), 0.1) !important;
 }
-.light .border-\[\#64ffda\]\/20 {
+.border-\[\#64ffda\]\/20 {
   border-color: rgba(var(--color-accent-rgb), 0.2) !important;
 }
-.light .border-\[\#64ffda\]\/25 {
+.border-\[\#64ffda\]\/25 {
   border-color: rgba(var(--color-accent-rgb), 0.25) !important;
 }
-.light .border-\[\#64ffda\]\/30 {
+.border-\[\#64ffda\]\/30 {
   border-color: rgba(var(--color-accent-rgb), 0.3) !important;
 }
-.light .border-\[\#64ffda\]\/40 {
+.border-\[\#64ffda\]\/40 {
   border-color: rgba(var(--color-accent-rgb), 0.4) !important;
 }
-.light .border-\[\#64ffda\]\/50 {
+.border-\[\#64ffda\]\/50 {
   border-color: rgba(var(--color-accent-rgb), 0.5) !important;
 }
 .light .border-\[\#8892b0\] {
@@ -215,46 +215,46 @@ body {
 }
 
 /* Focus States */
-.light .focus\:border-\[\#64ffda\]\/50:focus {
+.focus\:border-\[\#64ffda\]\/50:focus {
   border-color: rgba(var(--color-accent-rgb), 0.5) !important;
 }
 
 /* Gradients */
-.light .from-\[\#64ffda\]\/10 {
+.from-\[\#64ffda\]\/10 {
   --tw-gradient-from: rgba(var(--color-accent-rgb), 0.1) !important;
   --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, transparent) !important;
 }
 
 /* Hover States */
-.light .hover\:bg-\[\#64ffda\]\/10:hover {
+.hover\:bg-\[\#64ffda\]\/10:hover {
   background-color: rgba(var(--color-accent-rgb), 0.1) !important;
 }
-.light .hover\:bg-\[\#64ffda\]\/15:hover {
+.hover\:bg-\[\#64ffda\]\/15:hover {
   background-color: rgba(var(--color-accent-rgb), 0.15) !important;
 }
-.light .hover\:bg-\[\#64ffda\]\/20:hover {
+.hover\:bg-\[\#64ffda\]\/20:hover {
   background-color: rgba(var(--color-accent-rgb), 0.2) !important;
 }
-.light .hover\:bg-\[\#64ffda\]\/80:hover {
+.hover\:bg-\[\#64ffda\]\/80:hover {
   background-color: rgba(var(--color-accent-rgb), 0.8) !important;
   color: #ffffff !important;
 }
-.light .hover\:border-\[\#64ffda\]:hover {
+.hover\:border-\[\#64ffda\]:hover {
   border-color: var(--color-accent) !important;
 }
-.light .hover\:border-\[\#64ffda\]\/30:hover {
+.hover\:border-\[\#64ffda\]\/30:hover {
   border-color: rgba(var(--color-accent-rgb), 0.3) !important;
 }
-.light .hover\:border-\[\#64ffda\]\/40:hover {
+.hover\:border-\[\#64ffda\]\/40:hover {
   border-color: rgba(var(--color-accent-rgb), 0.4) !important;
 }
-.light .hover\:border-\[\#64ffda\]\/50:hover {
+.hover\:border-\[\#64ffda\]\/50:hover {
   border-color: rgba(var(--color-accent-rgb), 0.5) !important;
 }
-.light .hover\:text-\[\#64ffda\]:hover {
+.hover\:text-\[\#64ffda\]:hover {
   color: var(--color-accent) !important;
 }
-.light .hover\:text-\[\#64ffda\]\/80:hover {
+.hover\:text-\[\#64ffda\]\/80:hover {
   color: rgba(var(--color-accent-rgb), 0.8) !important;
 }
 .light .hover\:text-\[\#ccd6f6\]:hover {
@@ -267,16 +267,16 @@ body {
 }
 
 /* Group Hover States */
-.light .group:hover .group-hover\:border-\[\#64ffda\] {
+.group:hover .group-hover\:border-\[\#64ffda\] {
   border-color: var(--color-accent) !important;
 }
 .light .group:hover .group-hover\:text-\[\#ccd6f6\] {
   color: var(--color-text-primary) !important;
 }
-.light .group\/live:hover .group-hover\/live\:border-\[\#64ffda\]\/30 {
+.group\/live:hover .group-hover\/live\:border-\[\#64ffda\]\/30 {
   border-color: rgba(var(--color-accent-rgb), 0.3) !important;
 }
-.light .group\/live:hover .group-hover\/live\:text-\[\#64ffda\] {
+.group\/live:hover .group-hover\/live\:text-\[\#64ffda\] {
   color: var(--color-accent) !important;
 }
 
@@ -326,4 +326,25 @@ body {
 .light .bg-white\/10.text-white.border-white\/20:hover {
   background-color: rgba(0, 0, 0, 0.08) !important;
   border-color: rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Custom Terminal Container Styles for beautiful Dark and Light Modes */
+.terminal-container {
+  background-color: rgba(22, 28, 41, 0.85) !important; /* Soft premium grayish-blue carbon */
+  box-shadow: 0 12px 40px rgba(10, 15, 30, 0.5) !important;
+  transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.light .terminal-container {
+  background-color: rgba(241, 245, 249, 0.95) !important; /* Frost light-grayish */
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.1) !important;
+  border-color: rgba(0, 0, 0, 0.08) !important;
+}
+
+.light .text-\[\#00e5ff\] {
+  color: #0284c7 !important; /* Rich vibrant sky-blue for terminal input commands */
+}
+
+.light .text-\[\#ff5252\] {
+  color: #dc2626 !important; /* Premium high-contrast dark red for terminal errors */
 }

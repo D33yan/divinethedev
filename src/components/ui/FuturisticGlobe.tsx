@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 interface SkillNode {
   name: string;
@@ -38,6 +38,8 @@ export function FuturisticGlobe() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const tooltipRef = useRef<HTMLDivElement>(null);
   
+  const [accentRgb, setAccentRgb] = useState("100, 255, 218");
+
   // Use a mutable ref for animation variables to avoid triggering component re-renders
   const stateRef = useRef({
     // Rotation states
@@ -74,9 +76,28 @@ export function FuturisticGlobe() {
     
     // Core glow pulse
     pulseTime: 0,
+    accentRgb: "100, 255, 218"
   });
 
   useEffect(() => {
+    // Sync initial theme
+    if (typeof window !== "undefined") {
+      const currentRgb = getComputedStyle(document.documentElement).getPropertyValue("--color-accent-rgb").trim();
+      if (currentRgb) {
+        setAccentRgb(currentRgb);
+        stateRef.current.accentRgb = currentRgb;
+      }
+    }
+
+    const handleThemeChange = (e: Event) => {
+      const detail = (e as CustomEvent).detail;
+      if (detail && detail.rgb) {
+        setAccentRgb(detail.rgb);
+        stateRef.current.accentRgb = detail.rgb;
+      }
+    };
+    window.addEventListener("accent-theme-changed", handleThemeChange);
+
     // 1. Skills setup (larger radii for background element)
     stateRef.current.nodes = SKILLS_DATA.map((skill, index) => {
       const startAngle = (index / SKILLS_DATA.length) * Math.PI * 2;
@@ -277,6 +298,25 @@ export function FuturisticGlobe() {
       const state = stateRef.current;
       ctx.clearRect(0, 0, width, height);
 
+      // Dynamically extract CSS accent color variables from DOM
+      const accentRgb = typeof window !== "undefined"
+        ? getComputedStyle(document.documentElement).getPropertyValue("--color-accent-rgb").trim() || "100, 255, 218"
+        : "100, 255, 218";
+      
+      const accentHex = typeof window !== "undefined"
+        ? getComputedStyle(document.documentElement).getPropertyValue("--color-accent").trim() || "#64ffda"
+        : "#64ffda";
+
+      state.accentRgb = accentRgb;
+
+      // Synchronize the Next.js skill node color with the dynamic accent theme
+      const nextjsNode = state.nodes.find((n) => n.name === "Next.js");
+      if (nextjsNode) {
+        nextjsNode.color = accentHex.startsWith("rgb") 
+          ? `rgb(${accentRgb})` 
+          : (accentHex || "#64ffda");
+      }
+
       const cx = width / 2;
       const cy = height / 2;
 
@@ -368,13 +408,14 @@ export function FuturisticGlobe() {
       // -------------------------------------------------------------
       
       // Layer 1: Background cosmic stars (z > 0)
-      ctx.fillStyle = "rgba(100, 255, 218, 0.25)";
+      ctx.fillStyle = `rgba(${state.accentRgb}, 0.25)`;
       state.stars.forEach((star) => {
         const rot = rotate3D(star.x, star.y, star.z);
         if (rot.z > 0) {
           const proj = project(rot);
+          const radius = Math.max(0, star.size * proj.scale);
           ctx.beginPath();
-          ctx.arc(proj.x, proj.y, star.size * proj.scale, 0, Math.PI * 2);
+          ctx.arc(proj.x, proj.y, radius, 0, Math.PI * 2);
           ctx.fill();
         }
       });
@@ -417,9 +458,9 @@ export function FuturisticGlobe() {
 
       // Outer atmosphere neon glow ring
       const atmosphereGlow = ctx.createRadialGradient(cx, cy, pulseRadius - 8, cx, cy, pulseRadius + 30);
-      atmosphereGlow.addColorStop(0, "rgba(100, 255, 218, 0.08)");
-      atmosphereGlow.addColorStop(0.3, "rgba(100, 255, 218, 0.03)");
-      atmosphereGlow.addColorStop(1, "rgba(100, 255, 218, 0)");
+      atmosphereGlow.addColorStop(0, `rgba(${state.accentRgb}, 0.08)`);
+      atmosphereGlow.addColorStop(0.3, `rgba(${state.accentRgb}, 0.03)`);
+      atmosphereGlow.addColorStop(1, `rgba(${state.accentRgb}, 0)`);
       ctx.fillStyle = atmosphereGlow;
       ctx.beginPath();
       ctx.arc(cx, cy, pulseRadius + 35, 0, Math.PI * 2);
@@ -429,13 +470,14 @@ export function FuturisticGlobe() {
       drawShadedGlobeGrid(ctx, state.globeRadius, rotate3D, project, lx, ly, lz, false);
 
       // Layer 8: Foreground stars (z <= 0)
-      ctx.fillStyle = "rgba(100, 255, 218, 0.5)";
+      ctx.fillStyle = `rgba(${state.accentRgb}, 0.5)`;
       state.stars.forEach((star) => {
         const rot = rotate3D(star.x, star.y, star.z);
-        if (rot.z <= 0) {
+        if (rot.z <= 0 && rot.z > -state.fov + 10) {
           const proj = project(rot);
+          const radius = Math.max(0, star.size * proj.scale);
           ctx.beginPath();
-          ctx.arc(proj.x, proj.y, star.size * proj.scale, 0, Math.PI * 2);
+          ctx.arc(proj.x, proj.y, radius, 0, Math.PI * 2);
           ctx.fill();
         }
       });
@@ -541,6 +583,7 @@ export function FuturisticGlobe() {
       canvas.removeEventListener("mousedown", handleCanvasMouseDown);
       window.removeEventListener("mouseup", handleWindowMouseUp);
       window.removeEventListener("highlight-skill", handleHighlightSkill);
+      window.removeEventListener("accent-theme-changed", handleThemeChange);
       cancelAnimationFrame(animationId);
     };
   }, []);
@@ -548,7 +591,7 @@ export function FuturisticGlobe() {
   // Helper to draw constellation links between skill nodes close to each other in 3D
   const drawConstellationLinks = (ctx: CanvasRenderingContext2D, nodes: SkillNode[]) => {
     ctx.lineWidth = 0.5;
-    ctx.strokeStyle = "rgba(100, 255, 218, 0.05)";
+    ctx.strokeStyle = `rgba(${stateRef.current.accentRgb}, 0.05)`;
     
     for (let i = 0; i < nodes.length; i++) {
       for (let j = i + 1; j < nodes.length; j++) {
@@ -562,7 +605,7 @@ export function FuturisticGlobe() {
         if (dist3d < 190) {
           // Scale line opacity with distance
           const opacity = (1 - dist3d / 190) * 0.09;
-          ctx.strokeStyle = `rgba(100, 255, 218, ${opacity})`;
+          ctx.strokeStyle = `rgba(${stateRef.current.accentRgb}, ${opacity})`;
           
           ctx.beginPath();
           ctx.moveTo(n1.x2d, n1.y2d);
@@ -581,7 +624,7 @@ export function FuturisticGlobe() {
     project: (coords: { x: number; y: number; z: number }) => { x: number; y: number; scale: number }
   ) => {
     ctx.lineWidth = 0.5;
-    ctx.strokeStyle = "rgba(100, 255, 218, 0.015)";
+    ctx.strokeStyle = `rgba(${stateRef.current.accentRgb}, 0.015)`;
     ctx.setLineDash([3, 15]);
     
     nodes.forEach((node) => {
@@ -666,7 +709,7 @@ export function FuturisticGlobe() {
           
           // Set dynamic style depending on light intensity and depth layer
           const baseAlpha = drawBehind ? 0.06 : 0.28;
-          ctx.strokeStyle = `rgba(100, 255, 218, ${baseAlpha * intensity})`;
+          ctx.strokeStyle = `rgba(${stateRef.current.accentRgb}, ${baseAlpha * intensity})`;
           ctx.lineWidth = (drawBehind ? 0.4 : 0.8) * intensity;
           
           ctx.beginPath();
@@ -720,7 +763,7 @@ export function FuturisticGlobe() {
           const intensity = Math.max(0.08, (dot + 1) / 2);
           
           const baseAlpha = drawBehind ? 0.06 : 0.28;
-          ctx.strokeStyle = `rgba(100, 255, 218, ${baseAlpha * intensity})`;
+          ctx.strokeStyle = `rgba(${stateRef.current.accentRgb}, ${baseAlpha * intensity})`;
           ctx.lineWidth = (drawBehind ? 0.4 : 0.8) * intensity;
           
           ctx.beginPath();
@@ -781,13 +824,22 @@ export function FuturisticGlobe() {
       className="relative h-full w-full select-none"
     >
       {/* Dynamic background dashboard coordinates */}
-      <div className="absolute top-8 left-8 hidden font-mono text-[9px] tracking-widest text-[#64ffda]/25 uppercase lg:block">
+      <div 
+        style={{ color: `rgba(${accentRgb}, 0.25)` }}
+        className="absolute top-8 left-8 hidden font-mono text-[9px] tracking-widest uppercase lg:block"
+      >
         SYS_GRID // SHADED_3D_CORE // COORD_NET
       </div>
       
       {/* Outer ambient decorative orbits */}
-      <div className="absolute top-1/2 left-1/2 h-[750px] w-[750px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-dashed border-[#64ffda]/3 pointer-events-none animate-[spin_120s_linear_infinite]" />
-      <div className="absolute top-1/2 left-1/2 h-[550px] w-[550px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-dashed border-[#64ffda]/5 pointer-events-none animate-[spin_80s_linear_infinite_reverse]" />
+      <div 
+        style={{ borderColor: `rgba(${accentRgb}, 0.03)` }}
+        className="absolute top-1/2 left-1/2 h-[750px] w-[750px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-dashed pointer-events-none animate-[spin_120s_linear_infinite]" 
+      />
+      <div 
+        style={{ borderColor: `rgba(${accentRgb}, 0.05)` }}
+        className="absolute top-1/2 left-1/2 h-[550px] w-[550px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-dashed pointer-events-none animate-[spin_80s_linear_infinite_reverse]" 
+      />
 
       {/* Main Background Canvas */}
       <canvas
@@ -803,14 +855,16 @@ export function FuturisticGlobe() {
           opacity: "0",
           pointerEvents: "none",
           transition: "opacity 0.15s ease-out, transform 0.08s ease-out",
+          borderColor: `rgba(${accentRgb}, 0.3)`,
+          boxShadow: `0 0 20px rgba(${accentRgb}, 0.15)`
         }}
-        className="z-20 w-52 rounded border border-[#64ffda]/30 bg-navy/90 p-3 shadow-[0_0_20px_rgba(100,255,218,0.15)] backdrop-blur-md"
+        className="z-20 w-52 rounded border bg-navy/90 p-3 backdrop-blur-md"
       >
         {/* HUD Corner Caps */}
-        <div className="absolute -top-px -left-px h-1.5 w-1.5 border-t border-l border-[#64ffda]" />
-        <div className="absolute -top-px -right-px h-1.5 w-1.5 border-t border-r border-[#64ffda]" />
-        <div className="absolute -bottom-px -left-px h-1.5 w-1.5 border-b border-l border-[#64ffda]" />
-        <div className="absolute -bottom-px -right-px h-1.5 w-1.5 border-b border-r border-[#64ffda]" />
+        <div style={{ borderColor: `rgb(${accentRgb})` }} className="absolute -top-px -left-px h-1.5 w-1.5 border-t border-l" />
+        <div style={{ borderColor: `rgb(${accentRgb})` }} className="absolute -top-px -right-px h-1.5 w-1.5 border-t border-r" />
+        <div style={{ borderColor: `rgb(${accentRgb})` }} className="absolute -bottom-px -left-px h-1.5 w-1.5 border-b border-l" />
+        <div style={{ borderColor: `rgb(${accentRgb})` }} className="absolute -bottom-px -right-px h-1.5 w-1.5 border-b border-r" />
 
         <div className="flex items-center justify-between border-b border-white/10 pb-1.5">
           <span className="font-mono text-[9px] tracking-wider text-[#8892b0] uppercase">
@@ -819,7 +873,10 @@ export function FuturisticGlobe() {
           <div className="tech-indicator h-1.5 w-1.5 rounded-full" />
         </div>
         
-        <h4 className="tech-title mt-1.5 font-sans text-xs font-bold tracking-tight text-[#64ffda]">
+        <h4 
+          style={{ color: `rgb(${accentRgb})` }}
+          className="tech-title mt-1.5 font-sans text-xs font-bold tracking-tight"
+        >
           -
         </h4>
         

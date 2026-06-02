@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { skillGroups } from "@/lib/site";
 import { SectionHeading } from "@/components/ui/SectionHeading";
+import { playHover } from "@/lib/audio";
 import { 
   SiJavascript, SiTypescript, SiPython, SiPhp,
   SiNextdotjs, SiReact, SiHtml5, SiCss,
@@ -102,6 +103,7 @@ export function Skills() {
                       className="group flex items-center gap-2 rounded-lg border border-white/5 bg-navy-light/40 px-3 py-1.5 transition-all duration-300 hover:bg-navy-light/80 hover:border-[#64ffda]/30 cursor-default"
                       onMouseEnter={() => {
                         window.dispatchEvent(new CustomEvent("highlight-skill", { detail: skill }));
+                        playHover();
                       }}
                       onMouseLeave={() => {
                         window.dispatchEvent(new CustomEvent("highlight-skill", { detail: null }));

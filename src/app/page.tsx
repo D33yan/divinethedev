@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { Suspense, useState } from "react";
+import { Suspense, useState, useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { CustomCursor } from "@/components/effects/CustomCursor";
 import { CursorSpotlight } from "@/components/effects/CursorSpotlight";
@@ -33,12 +33,44 @@ const Skills = dynamic(() => import("@/components/sections/Skills").then((m) => 
 const Education = dynamic(() => import("@/components/sections/Education").then((m) => m.Education));
 const Contact = dynamic(() => import("@/components/sections/Contact").then((m) => m.Contact));
 
+const TelemetryHUD = dynamic(
+  () => import("@/components/ui/TelemetryHUD").then((m) => m.TelemetryHUD),
+  { ssr: false }
+);
+
+const ResumeViewerModal = dynamic(
+  () => import("@/components/sections/ResumeViewerModal").then((m) => m.ResumeViewerModal),
+  { ssr: false }
+);
+
 function SectionFallback() {
   return <div className="min-h-[40vh]" aria-hidden />;
 }
 
 export default function Home() {
   const [isIntroFinished, setIsIntroFinished] = useState(false);
+
+  // Restore saved accent color theme on mount client-side
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const cachedTheme = localStorage.getItem("navie-accent-theme");
+      if (cachedTheme) {
+        const themes: Record<string, string> = {
+          teal: "100, 255, 218",
+          blue: "0, 229, 255",
+          pink: "255, 0, 127",
+          green: "0, 255, 159",
+        };
+        const rgb = themes[cachedTheme];
+        if (rgb) {
+          const root = document.documentElement;
+          root.style.setProperty("--color-accent-rgb", rgb);
+          root.style.setProperty("--color-accent", `rgb(${rgb})`);
+          root.style.setProperty("--color-accent-dim", `rgba(${rgb}, 0.1)`);
+        }
+      }
+    }
+  }, []);
 
   return (
     <>
@@ -64,6 +96,8 @@ export default function Home() {
         <BuiltInBrowser />
         <Sidebar />
         <MobileNav />
+        <TelemetryHUD />
+        <ResumeViewerModal />
 
         <div className="lg:pl-[min(320px,28vw)]">
           <main>
