@@ -21,7 +21,7 @@ const getSuggestion = (input: string): string => {
   const allCommands = [
     "help", "clear", "about", "skills", "contact", 
     "resume", "cv", "hack", "gui", "ls", "cat", 
-    "theme", "open", "run", "source", "code", "view"
+    "theme", "open", "run", "source", "code", "view", "chat"
   ];
 
   const parts = input.split(" ");
@@ -69,11 +69,31 @@ export function TerminalView({ onSwitchToCards }: TerminalViewProps) {
   const [history, setHistory] = useState<string[]>([]);
   const [historyIndex, setHistoryIndex] = useState(-1);
   const [isHacking, setIsHacking] = useState(false);
+  const [chatHistory, setChatHistory] = useState<{ sender: "user" | "bot"; text: string }[]>([]);
 
   // Auto scroll to bottom
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [lines]);
+
+  // Focus terminal and set active typing command to chat
+  useEffect(() => {
+    const handleFocusChat = () => {
+      containerRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+      setInputVal("chat ");
+      setTimeout(() => {
+        inputRef.current?.focus();
+        if (inputRef.current) {
+          inputRef.current.selectionStart = inputRef.current.selectionEnd = 5;
+        }
+      }, 500);
+    };
+
+    window.addEventListener("focus-terminal-chat-active", handleFocusChat);
+    return () => {
+      window.removeEventListener("focus-terminal-chat-active", handleFocusChat);
+    };
+  }, []);
 
   // Focus input on click anywhere inside the terminal
   const handleTerminalClick = () => {
@@ -128,7 +148,7 @@ export function TerminalView({ onSwitchToCards }: TerminalViewProps) {
   };
 
   // Shell Command Execution Engine
-  const executeCommand = (cmdStr: string, currentLines: TerminalLine[]) => {
+  const executeCommand = async (cmdStr: string, currentLines: TerminalLine[]) => {
     // Strip optional leading slash to support both "/help" and "help"
     let normalized = cmdStr.trim();
     if (normalized.startsWith("/")) {
@@ -153,6 +173,7 @@ export function TerminalView({ onSwitchToCards }: TerminalViewProps) {
           { text: "  about                   - Print server specifications and bio stats", type: "primary" },
           { text: "  contact                 - Print professional contact links & details", type: "primary" },
           { text: "  resume / cv             - Automate CV / Resume document secure download", type: "primary" },
+          { text: "  chat <question>         - Ask Divine's custom AI chatbot a direct question", type: "primary" },
           { text: "  hack                    - Activate dynamic system overrides simulation", type: "primary" },
           { text: "  gui                     - Switch view back to visual slider cards", type: "primary" },
           { text: "  clear                   - Clear terminal screen buffer", type: "primary" },
@@ -458,6 +479,69 @@ export function TerminalView({ onSwitchToCards }: TerminalViewProps) {
       case "gui":
         onSwitchToCards();
         return;
+
+      case "chat": {
+        if (!arg) {
+          output = [
+            { text: "Usage: chat <your question> (e.g. 'chat what is your stack?')", type: "error" },
+            { text: "Ask me anything about Divine's professional engineering skills and background!", type: "system" }
+          ];
+          break;
+        }
+
+        const firstSpaceIdx = cmdStr.trim().indexOf(" ");
+        const userMessage = firstSpaceIdx !== -1 ? cmdStr.trim().substring(firstSpaceIdx).trim() : "";
+
+        if (!userMessage) {
+          output = [
+            { text: "Usage: chat <your question> (e.g. 'chat what is your stack?')", type: "error" },
+            { text: "Ask me anything about Divine's professional engineering skills and background!", type: "system" }
+          ];
+          break;
+        }
+
+        // Render thinking line inside terminal buffer immediately
+        setLines([
+          ...currentLines,
+          { text: `Establishing secure synaptic AI uplink... thinking...`, type: "secondary" }
+        ]);
+
+        try {
+          const res = await fetch("/api/chat", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              message: userMessage,
+              history: chatHistory
+            }),
+          });
+          const data = await res.json();
+
+          if (data.reply) {
+            setChatHistory((prev) => [
+              ...prev,
+              { sender: "user", text: userMessage },
+              { sender: "bot", text: data.reply }
+            ]);
+
+            setLines([
+              ...currentLines,
+              { text: data.reply, type: "success" },
+              { text: "", type: "system" }
+            ]);
+            playSuccess();
+          } else {
+            throw new Error(data.error || "Synaptic link disrupted.");
+          }
+        } catch (err: any) {
+          setLines([
+            ...currentLines,
+            { text: `Error: Synaptic link failed: ${err.message || "Offline link."}`, type: "error" },
+            { text: "", type: "system" }
+          ]);
+        }
+        return;
+      }
 
       default:
         output = [

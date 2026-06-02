@@ -23,7 +23,7 @@ export function useActiveSection() {
           setActive(visible[0].target.id);
         }
       },
-      { rootMargin: "-40% 0px -45% 0px", threshold: [0, 0.25, 0.5] }
+      { rootMargin: "-15% 0px -45% 0px", threshold: [0, 0.1, 0.2] }
     );
 
     elements.forEach((el) => observer.observe(el));

@@ -60,6 +60,8 @@ export default function Home() {
           blue: "0, 229, 255",
           pink: "255, 0, 127",
           green: "0, 255, 159",
+          red: "255, 51, 51",
+          orange: "255, 145, 0",
         };
         const rgb = themes[cachedTheme];
         if (rgb) {

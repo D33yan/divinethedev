@@ -81,6 +81,17 @@ export function Hero() {
                 Download Resume
               </button>
             </Magnetic>
+            <Magnetic>
+              <button
+                onClick={() => {
+                  window.dispatchEvent(new CustomEvent("focus-terminal-chat"));
+                }}
+                className="inline-flex min-h-[44px] items-center rounded border border-[#64ffda]/50 px-6 py-3 font-mono text-sm text-[#ccd6f6] transition hover:border-[#64ffda] hover:text-[#64ffda] cursor-pointer bg-[#64ffda]/5"
+                data-cursor-hover
+              >
+                Chat with AI
+              </button>
+            </Magnetic>
           </div>
         </motion.div>
       </div>

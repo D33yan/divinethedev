@@ -38,7 +38,7 @@ export function Sidebar() {
         <p className="mt-6 text-sm leading-relaxed text-[#8892b0]">{siteConfig.sidebarBio}</p>
       </div>
 
-      <nav className="absolute top-1/2 right-6 flex -translate-y-1/2 flex-col gap-4" aria-label="Section navigation">
+      <nav className="my-auto flex flex-col gap-4 items-end self-end pr-2 w-full" aria-label="Section navigation">
         {navSections.map((section) => (
           <Link
             key={section.id}

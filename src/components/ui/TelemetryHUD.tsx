@@ -155,6 +155,19 @@ export function TelemetryHUD() {
       className="fixed bottom-4 right-4 z-[50] flex flex-col items-end gap-2"
       onMouseEnter={handleTriggerHoverSound}
     >
+      {/* Floating CTA button for quick AI Assistant chat */}
+      {!isOpen && (
+        <button
+          onClick={() => window.dispatchEvent(new CustomEvent("focus-terminal-chat"))}
+          className="glass-card flex items-center gap-1.5 rounded-lg border border-[#64ffda]/30 bg-navy-light/95 px-2.5 py-1.5 font-mono text-[9px] text-[#64ffda] shadow-[0_0_15px_rgba(100,255,218,0.12)] transition hover:bg-[#64ffda]/10 hover:border-[#64ffda]/50 cursor-pointer animate-pulse"
+          data-cursor-hover
+          title="Chat with AI Assistant"
+        >
+          <span className="h-1.5 w-1.5 rounded-full bg-[#64ffda] animate-ping" />
+          <span>TALK_TO_AI</span>
+        </button>
+      )}
+
       {/* Visual cyber diagnostic HUD header panel */}
       <button
         onClick={() => setIsOpen((prev) => !prev)}

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { TerminalView } from "@/components/sections/TerminalView";
@@ -10,6 +10,26 @@ import { projects } from "@/lib/site";
 
 export function Projects() {
   const [viewMode, setViewMode] = useState<"cards" | "terminal">("cards");
+
+  // Synchronize dynamic AI chat requests from other sections
+  useEffect(() => {
+    const handleFocusChat = () => {
+      if (viewMode !== "terminal") {
+        setViewMode("terminal");
+        // Wait for AnimatePresence slide and TerminalView mount
+        setTimeout(() => {
+          window.dispatchEvent(new CustomEvent("focus-terminal-chat-active"));
+        }, 150);
+      } else {
+        window.dispatchEvent(new CustomEvent("focus-terminal-chat-active"));
+      }
+    };
+
+    window.addEventListener("focus-terminal-chat", handleFocusChat);
+    return () => {
+      window.removeEventListener("focus-terminal-chat", handleFocusChat);
+    };
+  }, [viewMode]);
 
   return (
     <section id="projects" className="px-6 py-24 lg:px-12" aria-labelledby="projects-heading">

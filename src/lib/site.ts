@@ -12,13 +12,14 @@ export const siteConfig = {
   resumePath: "/Divine_Nnaji_CV.pdf",
   currentRole: "Fullstack Software Engineer & AI Builder",
   typewriterRoles: [
+    "Frontend Specialist",
     "Fullstack Engineer",
     "AI Integration Specialist",
     "Automation Builder",
-    "UI/UX Enthusiast",
+    "UI/UX & Design Enthusiast",
   ],
   sidebarBio:
-    "I build web apps, mobile experiences, and AI-powered tools — with a strong eye for design and a love for automation.",
+    "I design and engineer interactive frontend interfaces, mobile experiences, and AI-powered automation tools with a pixel-perfect eye for detail.",
   aboutBio: `I'm Divine Chibueze Nnaji — a Fullstack Software Engineer and AI Builder based in Abuja, Nigeria, with 3 years of hands-on experience delivering web applications, automation workflows, and AI-powered tools. I started freelancing in 2023, building websites and automation pipelines for clients across Fiverr and direct engagements — handling everything from frontend design to CRM integration and funnel deployment. Since then I've expanded into fullstack development, mobile apps, and AI/ML systems, with a strong eye for UI/UX and a growing specialisation in LLM integration and workflow automation.`,
 } as const;
 
