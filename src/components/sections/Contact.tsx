@@ -43,7 +43,7 @@ function ContactContent() {
           Let&apos;s Build Something Extraordinary
         </h3>
         <p className="text-sm leading-relaxed text-[#8892b0]">
-          I&apos;m currently open to freelance opportunities, contract positions, and collaborative AI and fullstack engineering projects. Whether you have a project in mind or just want to connect, feel free to drop a message or reach out via my socials.
+          I&apos;m currently open to full-time, hybrid, and onsite engineering roles, as well as freelance opportunities, contract positions, and collaborative AI and fullstack projects. Whether you have a position to fill, a project in mind, or just want to connect, feel free to drop a message or reach out directly!
         </p>
 
         <div className="flex flex-col gap-4 pt-4">
