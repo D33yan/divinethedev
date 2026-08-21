@@ -62,60 +62,63 @@ export const techPills = [
 
 export const experiences = [
   {
-    id: "nasrda",
-    company: "NASRDA",
-    role: "Data Scientist & AI Engineer",
+    id: "awoofhub",
+    company: "AwoofHub",
+    role: "Mobile & Frontend Engineer",
     period: "April 2026 – Present",
     location: "Abuja, Nigeria",
-    tech: ["Python", "NumPy", "Matplotlib", "Data Science", "Machine Learning", "AI Integration"],
+    tech: ["React Native", "Expo", "Next.js"],
     bullets: [
-      "Cleaned and preprocessed datasets using Python, NumPy, and Pandas to ensure data integrity for modelling pipelines",
-      "Conducted exploratory data analysis (EDA) to surface patterns and inform model development decisions",
-      "Built and evaluated machine learning models, contributing to AI integration across internal research workflows",
-      "Worked across data science, embedded systems, and networking domains within a government research environment"
+      "Translated UI/UX designs into reusable, production-ready components for both the mobile app and marketing website, maintaining strict adherence to the design system",
+      "Built custom hooks, TypeScript types, and service layers powering data flow across the app and website; integrated REST APIs with the backend team",
+      "Shipped the product's marketing website from design handoff to launch, contributing to both frontend implementation and structure",
+      "Collaborated directly with the team lead and founder on architecture decisions, product direction, and design strategy"
     ],
   },
   {
-    id: "ink-and-armor",
-    company: "Ink and Armor",
-    role: "Graphic Designer & Web Developer",
-    period: "2026 – Present",
+    id: "nasrda",
+    company: "NASRDA",
+    role: "Software Engineering Intern",
+    period: "April 2025 – September 2025", // ⚠️ confirm vs "April 2025 – December 2025"
     location: "Abuja, Nigeria",
-    tech: ["Figma", "Photoshop", "Illustrator", "WordPress", "Web Design", "Brand Design"],
+    tech: ["Python", "NumPy", "Pandas", "Power BI", "Linux", "Docker", "WSL2", "JWT", "Networking"],
     bullets: [
-      "Designed brand and marketing materials including logos, flyers, and social media graphics for a creative writing agency",
-      "Currently developing the company website to establish a cohesive online presence for the agency",
-      "Collaborated directly with the founder to translate brand vision into visual and web deliverables",
-      "Handled end-to-end creative production across print and digital formats using Figma, Photoshop, and Illustrator"
+      "Built hands-on networking skills using WSL2, Docker, and virtual machines — configuring DNS resolution, static IPs, and protocol troubleshooting (dig, nslookup, traceroute)",
+      "Developed a lightweight internal dashboard using Power BI to visualize processing status for a housing dataset (Mexico real estate data, sourced from Kaggle)",
+      "Secured API endpoints with token-based authentication (JWT) and applied cybersecurity fundamentals — including access control and secure data handling — to user authentication flows, implementing role-based access control (RBAC) for admin vs. regular users",
+      "Worked across data science, embedded systems, and networking teams in a multidisciplinary aerospace research environment"
     ],
   },
   {
-    id: "tech-beavers",
-    company: "Tech Beavers",
+    id: "myitura",
+    company: "MyItura",
     role: "Frontend Engineer Intern",
-    period: "January 2025 – May 12, 2025",
+    period: "January 2024 – May 2024",
     location: "Abuja, Nigeria",
     tech: ["React", "Next.js", "HTML", "CSS", "JavaScript"],
     bullets: [
-      "Built and maintained frontend interfaces using React and Next.js, contributing to live product features across the internship period",
-      "Collaborated with a development team on sprint-based workflows, gaining hands-on experience with real codebase collaboration",
-      "Translated UI/UX designs into responsive, accessible components using HTML, CSS, and JavaScript",
-      "Received mentorship in professional frontend development practices and delivered assigned features within deadlines"
+      "Built and maintained production frontend features using React and Next.js, optimizing component load times",
+      "Contributed to a healthcare platform for managing patient consultations and prescriptions",
+      "Collaborated within an agile team, participating in sprint planning and daily standups",
+      "Completed 50+ tickets within the first 2 months of hire, demonstrating fast ramp-up and consistent delivery velocity"
     ],
   },
   {
     id: "freelance",
-    company: "Freelance",
-    role: "Fullstack Developer & Automation Specialist",
+    company: "Fiverr / Contracts",
+    role: "Fullstack & Automation Freelancer",
     period: "2023 – Present",
     location: "Remote",
-    tech: ["Next.js", "WordPress", "Wix", "GoHighLevel", "n8n", "Zapier"],
+    tech: ["Next.js", "WordPress", "Wix", "GoHighLevel", "n8n", "Zapier", "Ahrefs", "Google Search Console"],
     bullets: [
-      "Delivered 15+ client projects across web development, CRM automation, and funnel design over 3 years of independent practice",
-      "Designed and delivered custom websites for clients via Fiverr, covering landing pages, portfolios, and business sites using Next.js, WordPress, and Wix",
-      "Built lead capture and CRM automation pipelines using GoHighLevel, n8n, and Zapier — handling everything from funnel design to email/SMS qualification sequences",
-      "Designed and deployed sales funnels for clients, integrating lead generation flows with CRM tools and automated follow-up systems",
-      "Managed end-to-end client delivery independently — from scoping and design to handoff — across multiple concurrent projects"
+      "Delivered 30+ client projects spanning custom web architecture, automation pipelines, and conversion funnels",
+      "Engineered lead-generation funnels and reliable CRM integrations using GoHighLevel, n8n, and Zapier",
+      "Designed and launched responsive websites for international clients using custom code, WordPress, and Wix",
+      "Managed end-to-end client delivery independently — from initial wireframes to final production deployment",
+      "Built websites optimized for Core Web Vitals, minimizing load times and improving performance scores",
+      "Increased visibility and traffic for client websites across diverse niches through technical and content optimization",
+      "Conducted SEO audits using PageSpeed Insights, identifying and resolving performance bottlenecks",
+      "Applied web and funnel design principles to improve user attention retention and engagement"
     ],
   },
 ] as const;
