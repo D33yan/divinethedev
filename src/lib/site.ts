@@ -1,3 +1,4 @@
+
 export const siteConfig = {
   name: "Divine Chibueze Nnaji",
   alias: "Navie",
@@ -129,7 +130,7 @@ export const projects = [
     title: "Rebid",
     description:
       "A mobile bidding platform where users post projects and receive competitive bids within a set time window, awarding the contract to the highest bidder.",
-    tech: ["React Native", "Expo", "Supabase", "Express.js"],
+    tech: ["React Native", "Expo", "Supabase", "Express.js", "React"],
     tag: "Mobile App",
     featured: true,
     github: "https://github.com/D33yan/rebid-app",
