@@ -10,6 +10,8 @@ from reportlab.lib.enums import TA_CENTER, TA_LEFT, TA_RIGHT, TA_JUSTIFY
 def create_pdf_resume():
     # Setup output path - output to the public folder in Next.js
     pdf_path = r"c:\Users\DEVINE\Downloads\navie-portfolio-revamp\divinethedev\public\Divine_Nnaji_CV.pdf"
+    if len(sys.argv) > 2:
+        pdf_path = sys.argv[2]
     
     # 0.5 in margins for maximum density and clean layout
     doc = SimpleDocTemplate(

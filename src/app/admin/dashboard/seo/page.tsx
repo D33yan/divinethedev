@@ -237,7 +237,7 @@ export default function SeoAndCvManager() {
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div className="space-y-1">
                   <label className="text-[10px] font-bold font-mono text-[#8892b0] uppercase tracking-wider block">Social OG Image URL</label>
                   <div className="flex gap-2">

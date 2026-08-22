@@ -4,6 +4,7 @@ import { exec } from "child_process";
 import { promisify } from "util";
 import fs from "fs";
 import path from "path";
+import os from "os";
 
 const execPromise = promisify(exec);
 
@@ -96,22 +97,64 @@ export async function POST(req: Request) {
       }))
     };
 
-    // Save JSON data temporarily
-    const tempFile = path.join(process.cwd(), "scripts", "temp_resume_payload.json");
-    fs.writeFileSync(tempFile, JSON.stringify(payload, null, 2), "utf-8");
+    // Save JSON data temporarily in OS writeable temp directory
+    const tempJsonFile = path.join(os.tmpdir(), `temp_resume_payload_${Date.now()}.json`);
+    const tempPdfFile = path.join(os.tmpdir(), `Divine_Nnaji_CV_${Date.now()}.pdf`);
+    fs.writeFileSync(tempJsonFile, JSON.stringify(payload, null, 2), "utf-8");
 
     // Spawn Python script compilation
     try {
       const scriptPath = path.join(process.cwd(), "scripts", "generate_cv_pdf.py");
-      await execPromise(`python "${scriptPath}" "${tempFile}"`);
-      return NextResponse.json({ success: true, message: "PDF CV successfully generated." });
+      await execPromise(`python "${scriptPath}" "${tempJsonFile}" "${tempPdfFile}"`);
+
+      if (!fs.existsSync(tempPdfFile)) {
+        throw new Error("Python script executed but output PDF was not found in temp directory.");
+      }
+
+      // Read PDF file into Buffer
+      const pdfBuffer = fs.readFileSync(tempPdfFile);
+
+      // Upload directly to Supabase storage bucket 'portfolio-images'
+      const { error: uploadError } = await supabaseServer.storage
+        .from("portfolio-images")
+        .upload("branding/Divine_Nnaji_CV.pdf", pdfBuffer, {
+          contentType: "application/pdf",
+          upsert: true
+        });
+
+      if (uploadError) throw uploadError;
+
+      // Retrieve secure public URL
+      const { data: publicUrlData } = supabaseServer.storage
+        .from("portfolio-images")
+        .getPublicUrl("branding/Divine_Nnaji_CV.pdf");
+
+      const publicUrl = publicUrlData?.publicUrl;
+      if (!publicUrl) throw new Error("Could not retrieve public URL for uploaded PDF.");
+
+      // Update resume_url in site_settings table
+      const { error: updateError } = await supabaseServer
+        .from("site_settings")
+        .update({ resume_url: publicUrl })
+        .eq("id", "primary");
+
+      if (updateError) throw updateError;
+
+      return NextResponse.json({ 
+        success: true, 
+        message: "PDF CV successfully generated and uploaded to Supabase Storage.",
+        url: publicUrl
+      });
     } catch (execErr: any) {
       console.error("Python exec compilation failed:", execErr);
       return NextResponse.json({ error: `Python compilation failed: ${execErr.message}` }, { status: 500 });
     } finally {
-      // Clean up temp file
-      if (fs.existsSync(tempFile)) {
-        fs.unlinkSync(tempFile);
+      // Clean up temp files
+      if (fs.existsSync(tempJsonFile)) {
+        fs.unlinkSync(tempJsonFile);
+      }
+      if (fs.existsSync(tempPdfFile)) {
+        fs.unlinkSync(tempPdfFile);
       }
     }
   } catch (err: any) {
