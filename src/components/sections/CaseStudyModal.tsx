@@ -4,9 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useState } from "react";
 import { X, AlertCircle, Compass, Terminal, Trophy, ExternalLink, ChevronLeft, ChevronRight } from "lucide-react";
 import { SiGithub } from "react-icons/si";
-import type { projects } from "@/lib/site";
-
-type Project = (typeof projects)[number];
+import type { Project } from "@/components/providers/PortfolioDataContext";
 
 interface CaseStudyModalProps {
   project: Project;

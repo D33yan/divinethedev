@@ -2,12 +2,18 @@
 
 import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
-import { experiences } from "@/lib/site";
+import { usePortfolioData } from "@/components/providers/PortfolioDataContext";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 
 export function Experience() {
-  const [active, setActive] = useState<string>(experiences[0].id);
-  const current = experiences.find((e) => e.id === active) ?? experiences[0];
+  const { experiences } = usePortfolioData();
+  const [active, setActive] = useState<string>(experiences[0]?.id || "");
+  
+  // Update active state if experiences list shifts or changes
+  const activeId = experiences.some(e => e.id === active) ? active : (experiences[0]?.id || "");
+  const current = experiences.find((e) => e.id === activeId) ?? experiences[0];
+
+  if (!current) return null;
 
   return (
     <section id="experience" className="px-6 py-24 lg:px-12" aria-labelledby="experience-heading">

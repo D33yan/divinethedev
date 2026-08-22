@@ -4,13 +4,12 @@ import { useEffect, useState } from "react";
 import { motion, useMotionValue, useTransform, AnimatePresence } from "framer-motion";
 import { SiGithub } from "react-icons/si";
 import { ExternalLink, ChevronLeft, ChevronRight } from "lucide-react";
-import { projects } from "@/lib/site";
+import { usePortfolioData, Project } from "@/components/providers/PortfolioDataContext";
 import { CaseStudyModal } from "@/components/sections/CaseStudyModal";
 import { playHover } from "@/lib/audio";
 
-type Project = (typeof projects)[number];
-
 export function ProjectDeck() {
+  const { projects } = usePortfolioData();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [modalOpen, setModalOpen] = useState(false);
   const [activeProject, setActiveProject] = useState<Project | null>(null);

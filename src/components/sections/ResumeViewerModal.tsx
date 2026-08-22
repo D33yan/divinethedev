@@ -8,10 +8,12 @@ import {
 } from "lucide-react";
 import { SiGithub } from "react-icons/si";
 import { FaLinkedin } from "react-icons/fa";
-import { siteConfig, experiences, projects } from "@/lib/site";
+import { siteConfig } from "@/lib/site";
+import { usePortfolioData } from "@/components/providers/PortfolioDataContext";
 import { playGlitch, playSuccess } from "@/lib/audio";
 
 export function ResumeViewerModal() {
+  const { experiences, projects, education, certifications } = usePortfolioData();
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
@@ -321,16 +323,20 @@ export function ResumeViewerModal() {
                         [SEC-05] // ACADEMIC RECORD
                       </h2>
                     </div>
-                    <div className="bg-white/3 border border-white/5 rounded-xl p-5 h-full">
-                      <h3 className="text-sm font-bold text-[#ccd6f6]">
-                        B.Sc. Computer Science
-                      </h3>
-                      <p className="text-xs text-[#64ffda] mt-1 font-mono">
-                        University of Abuja
-                      </p>
-                      <p className="text-[10px] font-mono text-[#8892b0]/60 mt-1 uppercase">
-                        Abuja, Nigeria // 2023 – Present
-                      </p>
+                    <div className="bg-[#112240]/40 border border-white/5 rounded-xl p-5 space-y-4">
+                      {education.map((edu, eduIdx) => (
+                        <div key={edu.id || eduIdx} className={eduIdx > 0 ? "border-t border-white/5 pt-3" : ""}>
+                          <h3 className="text-sm font-bold text-[#ccd6f6]">
+                            {edu.title}
+                          </h3>
+                          <p className="text-xs text-[#64ffda] mt-1 font-mono">
+                            {edu.org}
+                          </p>
+                          <p className="text-[10px] font-mono text-[#8892b0]/60 mt-1 uppercase">
+                            {edu.period}
+                          </p>
+                        </div>
+                      ))}
                     </div>
                   </div>
 
@@ -342,17 +348,13 @@ export function ResumeViewerModal() {
                         [SEC-06] // SYSTEM CERTIFICATIONS
                       </h2>
                     </div>
-                    <div className="bg-white/3 border border-white/5 rounded-xl p-5 space-y-3">
-                      {[
-                        { title: "App Development Certificate", period: "July – Sept 2023" },
-                        { title: "Fullstack Web Engineering Certificate", period: "Oct 2022 – Feb 2023" },
-                        { title: "Python Programming Certificate", period: "May – June 2022" }
-                      ].map((cert, certIdx) => (
-                        <div key={certIdx} className="flex gap-2 text-xs">
+                    <div className="bg-[#112240]/40 border border-white/5 rounded-xl p-5 space-y-3">
+                      {certifications.map((cert, certIdx) => (
+                        <div key={cert.id || certIdx} className="flex gap-2 text-xs">
                           <CheckCircle2 className="h-3.5 w-3.5 text-[#64ffda] shrink-0 mt-0.5" />
                           <div>
                             <p className="font-semibold text-[#ccd6f6]">{cert.title}</p>
-                            <p className="text-[10px] font-mono text-[#8892b0]/55 uppercase">{cert.period} // EarlyCode Training Institute</p>
+                            <p className="text-[10px] font-mono text-[#8892b0]/55 uppercase">{cert.period} // {cert.org}</p>
                           </div>
                         </div>
                       ))}

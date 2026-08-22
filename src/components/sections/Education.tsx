@@ -2,7 +2,7 @@
 
 import { useRef } from "react";
 import { motion, useScroll, useSpring } from "framer-motion";
-import { certifications, education } from "@/lib/site";
+import { usePortfolioData } from "@/components/providers/PortfolioDataContext";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 
 function TimelineItem({
@@ -42,7 +42,7 @@ function TimelineItem({
   );
 }
 
-function TimelineList({ items }: { items: readonly { title: string; org: string; period: string }[] }) {
+function TimelineList({ items }: { items: { title: string; org: string; period: string }[] }) {
   const containerRef = useRef<HTMLUListElement>(null);
   
   // Track scroll progress of the list relative to viewport
@@ -87,6 +87,8 @@ function TimelineList({ items }: { items: readonly { title: string; org: string;
 }
 
 export function Education() {
+  const { education, certifications } = usePortfolioData();
+
   return (
     <section id="education" className="px-6 py-24 lg:px-12" aria-labelledby="education-heading">
       <SectionHeading number="05" title="Education" />

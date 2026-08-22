@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { siteConfig } from "@/lib/site";
@@ -8,6 +9,12 @@ import { Typewriter } from "@/components/ui/Typewriter";
 import { FuturisticGlobe } from "@/components/ui/FuturisticGlobe";
 
 export function Hero() {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   return (
     <section
       id="hero"
@@ -45,13 +52,23 @@ export function Hero() {
           transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
         >
           <p className="mb-4 font-mono text-[#64ffda] tracking-wide">Hi, my name is</p>
-          <h1
-            suppressHydrationWarning
-            id="hero-heading"
-            className="mb-4 text-[clamp(2.75rem,8vw,4.5rem)] font-bold leading-[1.1] tracking-tight text-[#ccd6f6]"
-          >
-            Divine — they call me <span className="text-[#64ffda] glow-text">Navie</span>.
-          </h1>
+          {mounted ? (
+            <h1
+              id="hero-heading"
+              className="mb-4 text-[clamp(2.75rem,8vw,4.5rem)] font-bold leading-[1.1] tracking-tight text-[#ccd6f6]"
+            >
+              Divine — they call me <span className="text-[#64ffda] glow-text">Navie</span>.
+            </h1>
+          ) : (
+            <h1
+              id="hero-heading"
+              className="mb-4 text-[clamp(2.75rem,8vw,4.5rem)] font-bold leading-[1.1] tracking-tight text-[#ccd6f6] notranslate"
+              translate="no"
+              suppressHydrationWarning
+            >
+              Divine — they call me <span className="text-[#64ffda] glow-text">Navie</span>.
+            </h1>
+          )}
           <p className="mb-3 text-[clamp(1.45rem,4vw,2.25rem)] font-semibold text-[#8892b0]">
             I&apos;m a{" "}
             <Typewriter phrases={siteConfig.typewriterRoles} className="text-[#ccd6f6]" />.

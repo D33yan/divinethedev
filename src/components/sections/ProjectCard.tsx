@@ -6,9 +6,7 @@ import Link from "next/link";
 import { useRef, useState } from "react";
 import { useIsTouchDevice } from "@/hooks/useIsTouchDevice";
 import { CaseStudyModal } from "@/components/sections/CaseStudyModal";
-import type { projects } from "@/lib/site";
-
-type Project = (typeof projects)[number];
+import type { Project } from "@/components/providers/PortfolioDataContext";
 
 export function ProjectCard({ project }: { project: Project }) {
   const ref = useRef<HTMLDivElement>(null);

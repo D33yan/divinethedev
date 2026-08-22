@@ -6,9 +6,10 @@ import { SectionHeading } from "@/components/ui/SectionHeading";
 import { TerminalView } from "@/components/sections/TerminalView";
 import { ProjectDeck } from "@/components/sections/ProjectDeck";
 import { ProjectCard } from "@/components/sections/ProjectCard";
-import { projects } from "@/lib/site";
+import { usePortfolioData } from "@/components/providers/PortfolioDataContext";
 
 export function Projects() {
+  const { projects } = usePortfolioData();
   const [viewMode, setViewMode] = useState<"cards" | "terminal">("cards");
 
   // Synchronize dynamic AI chat requests from other sections

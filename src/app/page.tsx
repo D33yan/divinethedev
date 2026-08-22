@@ -12,6 +12,7 @@ import { MobileNav } from "@/components/layout/MobileNav";
 import { Footer } from "@/components/layout/Footer";
 import { Hero } from "@/components/sections/Hero";
 import { BuiltInBrowser } from "@/components/ui/BuiltInBrowser";
+import { PortfolioDataProvider } from "@/components/providers/PortfolioDataContext";
 
 // 1. Server-side placeholder (solid black full-screen overlay to block initial view and prevent flashes)
 function LoaderPlaceholder() {
@@ -91,40 +92,42 @@ export default function Home() {
         transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
         className={!isIntroFinished ? "pointer-events-none h-screen overflow-hidden" : ""}
       >
-        <ScrollProgress />
-        <CustomCursor />
-        <CursorSpotlight />
-        <BackToTop />
-        <BuiltInBrowser />
-        <Sidebar />
-        <MobileNav />
-        <TelemetryHUD />
-        <ResumeViewerModal />
+        <PortfolioDataProvider>
+          <ScrollProgress />
+          <CustomCursor />
+          <CursorSpotlight />
+          <BackToTop />
+          <BuiltInBrowser />
+          <Sidebar />
+          <MobileNav />
+          <TelemetryHUD />
+          <ResumeViewerModal />
 
-        <div className="lg:pl-[min(320px,28vw)]">
-          <main>
-            <Hero />
-            <Suspense fallback={<SectionFallback />}>
-              <About />
-            </Suspense>
-            <Suspense fallback={<SectionFallback />}>
-              <Experience />
-            </Suspense>
-            <Suspense fallback={<SectionFallback />}>
-              <Projects />
-            </Suspense>
-            <Suspense fallback={<SectionFallback />}>
-              <Skills />
-            </Suspense>
-            <Suspense fallback={<SectionFallback />}>
-              <Education />
-            </Suspense>
-            <Suspense fallback={<SectionFallback />}>
-              <Contact />
-            </Suspense>
-          </main>
-          <Footer />
-        </div>
+          <div className="lg:pl-[min(320px,28vw)]">
+            <main>
+              <Hero />
+              <Suspense fallback={<SectionFallback />}>
+                <About />
+              </Suspense>
+              <Suspense fallback={<SectionFallback />}>
+                <Experience />
+              </Suspense>
+              <Suspense fallback={<SectionFallback />}>
+                <Projects />
+              </Suspense>
+              <Suspense fallback={<SectionFallback />}>
+                <Skills />
+              </Suspense>
+              <Suspense fallback={<SectionFallback />}>
+                <Education />
+              </Suspense>
+              <Suspense fallback={<SectionFallback />}>
+                <Contact />
+              </Suspense>
+            </main>
+            <Footer />
+          </div>
+        </PortfolioDataProvider>
       </motion.div>
     </>
   );

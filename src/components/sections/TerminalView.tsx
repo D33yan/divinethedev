@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { projects, siteConfig } from "@/lib/site";
+import { siteConfig } from "@/lib/site";
+import { usePortfolioData } from "@/components/providers/PortfolioDataContext";
 import { playClick, playSuccess, playGlitch } from "@/lib/audio";
 
 interface TerminalLine {
@@ -13,7 +14,7 @@ interface TerminalViewProps {
   onSwitchToCards: () => void;
 }
 
-const getSuggestion = (input: string): string => {
+const getSuggestion = (input: string, projectsList: any[]): string => {
   if (!input) return "";
   const trimmed = input.trim();
   if (!trimmed) return "";
@@ -35,9 +36,12 @@ const getSuggestion = (input: string): string => {
     let argOptions: string[] = [];
 
     if (cmd === "cat") {
-      argOptions = ["about.md", "skills.md", "contact.txt", "resume.pdf", "projects/rebid.md", "projects/typhoidguard.md", "projects/acadexpub.md"];
+      argOptions = [
+        "about.md", "skills.md", "contact.txt", "resume.pdf",
+        ...projectsList.map(p => `projects/${p.id}.md`)
+      ];
     } else if (["open", "run", "source", "view", "code"].includes(cmd)) {
-      argOptions = ["rebid", "typhoidguard", "acadexpub"];
+      argOptions = projectsList.map(p => p.id);
     } else if (cmd === "theme") {
       argOptions = ["teal", "blue", "pink", "green", "red", "orange"];
     } else if (cmd === "ls") {
@@ -53,6 +57,7 @@ const getSuggestion = (input: string): string => {
 };
 
 export function TerminalView({ onSwitchToCards }: TerminalViewProps) {
+  const { projects } = usePortfolioData();
   const containerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
@@ -103,7 +108,7 @@ export function TerminalView({ onSwitchToCards }: TerminalViewProps) {
   // Keyboard command submission and history logic
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Tab" || e.key === "ArrowRight") {
-      const suggestion = getSuggestion(inputVal);
+      const suggestion = getSuggestion(inputVal, projects);
       if (suggestion) {
         e.preventDefault();
         setInputVal(suggestion);
@@ -553,7 +558,7 @@ export function TerminalView({ onSwitchToCards }: TerminalViewProps) {
     setLines([...currentLines, ...output, { text: "", type: "system" }]);
   };
 
-  const suggestion = getSuggestion(inputVal);
+  const suggestion = getSuggestion(inputVal, projects);
 
   return (
     <div

@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { skillGroups } from "@/lib/site";
+import { usePortfolioData } from "@/components/providers/PortfolioDataContext";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { playHover } from "@/lib/audio";
 import { 
@@ -91,6 +91,8 @@ function getSkillIcon(skillName: string) {
 }
 
 export function Skills() {
+  const { skillGroups } = usePortfolioData();
+
   return (
     <section id="skills" className="px-6 py-24 lg:px-12" aria-labelledby="skills-heading">
       <SectionHeading number="04" title="Skills" />
