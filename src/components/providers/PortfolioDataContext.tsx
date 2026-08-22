@@ -10,6 +10,7 @@ import {
   certifications as staticCertifications,
   services as staticServices,
   testimonials as staticTestimonials,
+  workflowsConfig,
   siteConfig
 } from "@/lib/site";
 
@@ -92,6 +93,8 @@ interface PortfolioDataContextType {
   certifications: CertificationItem[];
   services: ServiceItem[];
   testimonials: TestimonialItem[];
+  workflowNodes: any[];
+  workflowSteps: any[];
   logoUrl: string;
   avatar1Url: string;
   avatar2Url: string;
@@ -100,6 +103,11 @@ interface PortfolioDataContextType {
   darkBgColor: string;
   lightBgColor: string;
   accentPresets: string[];
+  seoTitle: string;
+  seoDescription: string;
+  seoKeywords: string;
+  seoOgImage: string;
+  analyticsId: string;
   loading: boolean;
   refreshData: () => Promise<void>;
   logEvent: (eventType: string, eventDetails?: string) => Promise<void>;
@@ -118,6 +126,9 @@ export function PortfolioDataProvider({ children }: { children: React.ReactNode 
   const [services, setServices] = useState<ServiceItem[]>(staticServices as ServiceItem[]);
   const [testimonials, setTestimonials] = useState<TestimonialItem[]>(staticTestimonials as TestimonialItem[]);
   
+  const [workflowNodes, setWorkflowNodes] = useState<any[]>(workflowsConfig.nodes);
+  const [workflowSteps, setWorkflowSteps] = useState<any[]>(workflowsConfig.steps);
+  
   const [logoUrl, setLogoUrl] = useState("/logo.png");
   const [avatar1Url, setAvatar1Url] = useState("/portfolioprofile1.png");
   const [avatar2Url, setAvatar2Url] = useState("/portfolioprofile2.jpg");
@@ -127,6 +138,13 @@ export function PortfolioDataProvider({ children }: { children: React.ReactNode 
   const [darkBgColor, setDarkBgColor] = useState("#000000");
   const [lightBgColor, setLightBgColor] = useState("#f6f8fa");
   const [accentPresets, setAccentPresets] = useState<string[]>([]);
+
+  // SEO & Meta Settings states
+  const [seoTitle, setSeoTitle] = useState("Divine Chibueze Nnaji (Navie) — Premium Cybernetic Portfolio");
+  const [seoDescription, setSeoDescription] = useState("A world-class, premium developer portfolio website with a cybernetic tactile design system.");
+  const [seoKeywords, setSeoKeywords] = useState("Developer, Fullstack, AI Builder, Automation, Portfolio");
+  const [seoOgImage, setSeoOgImage] = useState("/og_image.png");
+  const [analyticsId, setAnalyticsId] = useState("");
   
   const [loading, setLoading] = useState(true);
   const [isUsingLiveDb, setIsUsingLiveDb] = useState(false);
@@ -156,6 +174,11 @@ export function PortfolioDataProvider({ children }: { children: React.ReactNode 
           if (dbSettings.accent_color) setAccentColor(dbSettings.accent_color);
           if (dbSettings.dark_bg_color) setDarkBgColor(dbSettings.dark_bg_color);
           if (dbSettings.light_bg_color) setLightBgColor(dbSettings.light_bg_color);
+          if (dbSettings.seo_title) setSeoTitle(dbSettings.seo_title);
+          if (dbSettings.seo_description) setSeoDescription(dbSettings.seo_description);
+          if (dbSettings.seo_keywords) setSeoKeywords(dbSettings.seo_keywords);
+          if (dbSettings.seo_og_image) setSeoOgImage(dbSettings.seo_og_image);
+          if (dbSettings.analytics_id) setAnalyticsId(dbSettings.analytics_id);
           if (dbSettings.accent_presets) {
             try {
               const presets = typeof dbSettings.accent_presets === "string" 
@@ -212,6 +235,17 @@ export function PortfolioDataProvider({ children }: { children: React.ReactNode 
         .from("testimonials")
         .select("*")
         .order("created_at", { ascending: true });
+
+      // Fetch dynamic workflows
+      const { data: dbWfNodes, error: wfNodesError } = await supabase
+        .from("workflow_nodes")
+        .select("*")
+        .order("created_at", { ascending: true });
+
+      const { data: dbWfSteps, error: wfStepsError } = await supabase
+        .from("workflow_steps")
+        .select("*")
+        .order("sort_order", { ascending: true });
 
       if (dbProjects && !projectsError) {
         const mapped = dbProjects.map((p) => ({
@@ -294,6 +328,18 @@ export function PortfolioDataProvider({ children }: { children: React.ReactNode 
         setTestimonials(staticTestimonials as TestimonialItem[]);
       }
 
+      if (dbWfNodes && !wfNodesError) {
+        setWorkflowNodes(dbWfNodes);
+      } else {
+        setWorkflowNodes(workflowsConfig.nodes);
+      }
+
+      if (dbWfSteps && !wfStepsError) {
+        setWorkflowSteps(dbWfSteps);
+      } else {
+        setWorkflowSteps(workflowsConfig.steps);
+      }
+
     } catch (err) {
       console.error("Error fetching dynamic portfolio context data:", err);
       setIsUsingLiveDb(false);
@@ -337,6 +383,70 @@ export function PortfolioDataProvider({ children }: { children: React.ReactNode 
     root.style.setProperty("--bg-white-custom", lightBgColor);
   }, [accentColor, darkBgColor, lightBgColor]);
 
+  // SEO & Head injection synchronizer hook
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    document.title = seoTitle;
+    
+    // Dynamic meta description
+    let metaDesc = document.querySelector('meta[name="description"]');
+    if (!metaDesc) {
+      metaDesc = document.createElement('meta');
+      metaDesc.setAttribute('name', 'description');
+      document.head.appendChild(metaDesc);
+    }
+    metaDesc.setAttribute('content', seoDescription);
+
+    // Dynamic meta keywords
+    let metaKey = document.querySelector('meta[name="keywords"]');
+    if (!metaKey) {
+      metaKey = document.createElement('meta');
+      metaKey.setAttribute('name', 'keywords');
+      document.head.appendChild(metaKey);
+    }
+    metaKey.setAttribute('content', seoKeywords);
+
+    // Dynamic Open Graph tags
+    const ogTags = [
+      { property: "og:title", content: seoTitle },
+      { property: "og:description", content: seoDescription },
+      { property: "og:image", content: seoOgImage }
+    ];
+
+    ogTags.forEach(({ property, content }) => {
+      let tag = document.querySelector(`meta[property="${property}"]`);
+      if (!tag) {
+        tag = document.createElement('meta');
+        tag.setAttribute('property', property);
+        document.head.appendChild(tag);
+      }
+      tag.setAttribute('content', content);
+    });
+
+    // Inject Google Analytics snippet if present
+    if (analyticsId) {
+      const scriptId = "google-analytics-script";
+      const existingScript = document.getElementById(scriptId);
+      if (!existingScript) {
+        const newScript = document.createElement("script");
+        newScript.id = scriptId;
+        newScript.src = `https://www.googletagmanager.com/gtag/js?id=${analyticsId}`;
+        newScript.async = true;
+        document.head.appendChild(newScript);
+
+        const inlineScript = document.createElement("script");
+        inlineScript.id = `${scriptId}-inline`;
+        inlineScript.innerHTML = `
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', '${analyticsId}');
+        `;
+        document.head.appendChild(inlineScript);
+      }
+    }
+  }, [seoTitle, seoDescription, seoKeywords, seoOgImage, analyticsId]);
+
   return (
     <PortfolioDataContext.Provider value={{
       projects,
@@ -346,6 +456,8 @@ export function PortfolioDataProvider({ children }: { children: React.ReactNode 
       certifications,
       services,
       testimonials,
+      workflowNodes,
+      workflowSteps,
       logoUrl,
       avatar1Url,
       avatar2Url,
@@ -354,6 +466,11 @@ export function PortfolioDataProvider({ children }: { children: React.ReactNode 
       darkBgColor,
       lightBgColor,
       accentPresets,
+      seoTitle,
+      seoDescription,
+      seoKeywords,
+      seoOgImage,
+      analyticsId,
       loading,
       refreshData: fetchData,
       logEvent,

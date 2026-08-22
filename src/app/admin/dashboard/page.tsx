@@ -9,7 +9,8 @@ import {
   education as staticEducation, 
   certifications as staticCertifications,
   services as staticServices,
-  testimonials as staticTestimonials
+  testimonials as staticTestimonials,
+  workflowsConfig
 } from "@/lib/site";
 import { useTactileAudio } from "@/hooks/useTactileAudio";
 import { useUserRole } from "@/hooks/useUserRole";
@@ -345,6 +346,31 @@ export default function DashboardOverview() {
         if (testErr) throw new Error(`Testimonials Seed Error: ${testErr.message}`);
       } catch (testErr: any) {
         console.warn("Could not seed default testimonials:", testErr);
+      }
+
+      // 9. Seed Workflows
+      try {
+        const nodesToInsert = workflowsConfig.nodes.map((n) => ({
+          node_id: n.id,
+          title: n.title,
+          icon: n.icon,
+          color: n.color,
+          desc: n.desc
+        }));
+        await supabase.from("workflow_nodes").delete().neq("id", "00000000-0000-0000-0000-000000000000");
+        const { error: wfNodeErr } = await supabase.from("workflow_nodes").insert(nodesToInsert);
+        if (wfNodeErr) throw new Error(`Workflow Nodes Seed Error: ${wfNodeErr.message}`);
+
+        const stepsToInsert = workflowsConfig.steps.map((s, idx) => ({
+          node_id: s.id,
+          log: s.log,
+          sort_order: idx
+        }));
+        await supabase.from("workflow_steps").delete().neq("id", "00000000-0000-0000-0000-000000000000");
+        const { error: wfStepErr } = await supabase.from("workflow_steps").insert(stepsToInsert);
+        if (wfStepErr) throw new Error(`Workflow Steps Seed Error: ${wfStepErr.message}`);
+      } catch (wfErr: any) {
+        console.warn("Could not seed default workflows:", wfErr);
       }
 
       setSeedSuccess(true);

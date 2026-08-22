@@ -1,12 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import * as Icons from "lucide-react";
 import { Play, Settings, ShieldCheck, CheckCircle } from "lucide-react";
 import { playClick, playSuccess, playGlitch } from "@/lib/audio";
-import { workflowsConfig } from "@/lib/site";
+import { usePortfolioData } from "@/components/providers/PortfolioDataContext";
 
 interface WorkflowNode {
   id: string;
@@ -18,185 +18,235 @@ interface WorkflowNode {
 }
 
 export function Workflows() {
-  const [nodes, setNodes] = useState<WorkflowNode[]>(
-    workflowsConfig.nodes.map((node) => ({
-      ...node,
-      icon: (Icons as any)[node.icon] || Icons.HelpCircle,
-      status: "idle"
-    }))
-  );
+  const { workflowNodes, workflowSteps } = usePortfolioData();
 
+  const [nodes, setNodes] = useState<WorkflowNode[]>([]);
   const [activeNode, setActiveNode] = useState<string | null>(null);
   const [isRunning, setIsRunning] = useState(false);
   const [simulationLog, setSimulationLog] = useState<string>("SYSTEM_IDLE // Standby for workflow initiation");
+
+  // Sync context rows with workflow simulator state
+  useEffect(() => {
+    if (workflowNodes && workflowNodes.length > 0) {
+      setNodes(
+        workflowNodes.map((node) => ({
+          id: node.node_id || node.id,
+          title: node.title,
+          icon: (Icons as any)[node.icon] || Icons.HelpCircle,
+          color: node.color || "text-[#64ffda] border-[#64ffda]/20 bg-[#64ffda]/5",
+          desc: node.desc,
+          status: "idle"
+        }))
+      );
+    }
+  }, [workflowNodes]);
+
+  // Hide component completely if empty
+  if (!workflowNodes || workflowNodes.length === 0) return null;
 
   const runSimulation = async () => {
     if (isRunning) return;
     setIsRunning(true);
     playClick();
 
-    // Reset nodes to idle
+    // Reset nodes status
     setNodes((prev) => prev.map((n) => ({ ...n, status: "idle" })));
 
-    const steps = workflowsConfig.steps;
+    const steps = workflowSteps && workflowSteps.length > 0 ? workflowSteps.map(s => ({
+      id: s.node_id,
+      log: s.log
+    })) : [];
+
+    if (steps.length === 0) {
+      setSimulationLog("▸ SIMULATION_ABORT: Zero transition execution steps defined.");
+      setIsRunning(false);
+      return;
+    }
 
     for (let i = 0; i < steps.length; i++) {
       const step = steps[i];
-      setSimulationLog(step.log);
       
-      // Update current node to running
+      // Highlight current executing node
       setNodes((prev) =>
         prev.map((n) => (n.id === step.id ? { ...n, status: "running" } : n))
       );
+      setSimulationLog(step.log);
       playClick();
 
-      await new Promise((r) => setTimeout(r, 1200));
+      // Artificial node pipeline latency
+      await new Promise((res) => setTimeout(res, 1200));
 
-      // Update current node to success
+      // Mark current executing node as success
       setNodes((prev) =>
         prev.map((n) => (n.id === step.id ? { ...n, status: "success" } : n))
       );
     }
 
-    setSimulationLog("✔ SUCCESS: Workflow execution pipeline complete.");
+    setSimulationLog("✔ PIPELINE_SUCCESS // Execution sequence finished");
     playSuccess();
     setIsRunning(false);
   };
 
   return (
-    <section id="workflows" className="px-6 py-24 lg:px-12 relative" aria-labelledby="workflows-heading">
+    <section id="workflows" className="px-6 py-24 lg:px-12" aria-labelledby="workflows-heading">
       <SectionHeading number="05" title="Workflow Automations" />
 
-      <div className="max-w-5xl mx-auto grid gap-12 lg:grid-cols-12 items-start mt-6">
-        {/* Left Column: Visual Pipeline Canvas */}
-        <div className="lg:col-span-8 space-y-6">
-          <div className="glass-card rounded-2xl border border-white/10 p-6 bg-[#0a192f]/30 backdrop-blur-md relative overflow-hidden">
-            
-            {/* SVG Glowing Connector lines */}
-            <div className="absolute inset-0 z-0 pointer-events-none hidden md:block">
-              <svg className="w-full h-full" style={{ minHeight: "180px" }}>
-                <defs>
-                  <linearGradient id="neon-glow" x1="0%" y1="0%" x2="100%" y2="0%">
-                    <stop offset="0%" stopColor="#60a5fa" />
-                    <stop offset="50%" stopColor="#a855f7" />
-                    <stop offset="100%" stopColor="#64ffda" />
-                  </linearGradient>
-                </defs>
-                {/* Connector line 1 */}
-                <path 
-                  d="M 120 70 L 260 70" 
-                  fill="none" 
-                  stroke={isRunning ? "url(#neon-glow)" : "rgba(255,255,255,0.05)"} 
-                  strokeWidth="2" 
-                  strokeDasharray={isRunning ? "6, 4" : "none"}
-                  className={isRunning ? "animate-workflow-dash" : ""}
-                />
-                {/* Connector line 2 */}
-                <path 
-                  d="M 370 70 L 510 70" 
-                  fill="none" 
-                  stroke={isRunning ? "url(#neon-glow)" : "rgba(255,255,255,0.05)"} 
-                  strokeWidth="2" 
-                  strokeDasharray={isRunning ? "6, 4" : "none"}
-                  className={isRunning ? "animate-workflow-dash" : ""}
-                />
-                {/* Connector line 3 */}
-                <path 
-                  d="M 620 70 L 760 70" 
-                  fill="none" 
-                  stroke={isRunning ? "url(#neon-glow)" : "rgba(255,255,255,0.05)"} 
-                  strokeWidth="2" 
-                  strokeDasharray={isRunning ? "6, 4" : "none"}
-                  className={isRunning ? "animate-workflow-dash" : ""}
-                />
-              </svg>
-            </div>
+      <div className="max-w-5xl mx-auto mt-6 grid gap-8 lg:grid-cols-3">
+        {/* Connection pipeline canvas */}
+        <div className="lg:col-span-2 glass-card rounded-2xl border border-white/10 p-6 bg-[#0a192f]/30 backdrop-blur-md relative overflow-hidden flex flex-col justify-between min-h-[380px]">
+          {/* Animated SVG Connector pipes */}
+          <div className="absolute inset-0 z-0 pointer-events-none hidden sm:block">
+            <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+              {/* Connector from Node 0 to Node 1 */}
+              <path
+                d="M 120,80 L 320,80"
+                stroke="rgba(255,255,255,0.05)"
+                strokeWidth="2"
+                fill="none"
+              />
+              <path
+                d="M 120,80 L 320,80"
+                stroke="var(--color-accent)"
+                strokeWidth="2"
+                fill="none"
+                className={`transition-all duration-500 ${
+                  isRunning ? "animate-workflow-dash opacity-30" : "opacity-0"
+                }`}
+              />
 
-            {/* Pipeline Nodes Row */}
-            <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6 py-6 min-h-[140px]">
-              {nodes.map((node) => {
-                const IconComponent = node.icon;
-                const isSelected = activeNode === node.id;
-                
-                return (
-                  <motion.div 
-                    key={node.id}
-                    onClick={() => {
-                      playClick();
-                      setActiveNode(isSelected ? null : node.id);
-                    }}
-                    whileHover={{ scale: 1.03 }}
-                    className={`w-36 h-28 rounded-xl border p-4 cursor-pointer flex flex-col justify-between items-center text-center transition-all duration-300 ${node.color} ${
-                      isSelected ? "border-[#64ffda] shadow-[0_0_15px_rgba(100,255,218,0.15)]" : ""
-                    }`}
-                  >
-                    <div className="relative">
-                      {node.status === "running" ? (
-                        <div className="w-8 h-8 rounded-lg border border-dashed border-[#64ffda] flex items-center justify-center animate-spin">
-                          <Settings className="h-4 w-4 text-[#64ffda]" />
-                        </div>
-                      ) : node.status === "success" ? (
-                        <div className="w-8 h-8 rounded-lg bg-[#64ffda]/10 border border-[#64ffda]/30 flex items-center justify-center text-[#64ffda]">
-                          <CheckCircle className="h-4 w-4" />
-                        </div>
-                      ) : (
-                        <div className="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-neutral-400">
-                          <IconComponent className="h-4 w-4" />
-                        </div>
-                      )}
-                    </div>
+              {/* Connector from Node 1 to Node 2 */}
+              <path
+                d="M 380,120 L 380,240"
+                stroke="rgba(255,255,255,0.05)"
+                strokeWidth="2"
+                fill="none"
+              />
+              <path
+                d="M 380,120 L 380,240"
+                stroke="var(--color-accent)"
+                strokeWidth="2"
+                fill="none"
+                className={`transition-all duration-500 ${
+                  isRunning ? "animate-workflow-dash opacity-30" : "opacity-0"
+                }`}
+              />
 
-                    <span className="font-mono text-[10px] uppercase font-bold tracking-wider text-[#ccd6f6] truncate max-w-full">
-                      {node.title}
+              {/* Connector from Node 2 to Node 3 */}
+              <path
+                d="M 320,280 L 120,280"
+                stroke="rgba(255,255,255,0.05)"
+                strokeWidth="2"
+                fill="none"
+              />
+              <path
+                d="M 320,280 L 120,280"
+                stroke="var(--color-accent)"
+                strokeWidth="2"
+                fill="none"
+                className={`transition-all duration-500 ${
+                  isRunning ? "animate-workflow-dash opacity-30" : "opacity-0"
+                }`}
+              />
+            </svg>
+          </div>
+
+          {/* Dynamic Nodes layout */}
+          <div className="grid grid-cols-2 gap-x-12 gap-y-16 relative z-10 w-full">
+            {nodes.map((node, index) => {
+              const Icon = node.icon;
+              return (
+                <button
+                  key={node.id}
+                  onClick={() => {
+                    setActiveNode(node.id);
+                    playClick();
+                  }}
+                  className={`flex flex-col items-center justify-center p-4 rounded-xl border text-center transition-all duration-300 relative group cursor-pointer max-w-[160px] mx-auto w-full ${
+                    activeNode === node.id
+                      ? "border-[#64ffda] bg-[#64ffda]/5 shadow-[0_0_15px_rgba(100,255,218,0.1)]"
+                      : "border-white/5 bg-[#0a192f]/45 hover:border-white/15"
+                  }`}
+                >
+                  {/* Pipeline Status Indicator */}
+                  {node.status === "running" && (
+                    <span className="absolute -top-1.5 -right-1.5 flex h-3 w-3">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-3 w-3 bg-sky-500"></span>
                     </span>
-                  </motion.div>
-                );
-              })}
+                  )}
+                  {node.status === "success" && (
+                    <span className="absolute -top-1.5 -right-1.5 flex h-3.5 w-3.5 rounded-full bg-[#64ffda] text-black justify-center items-center font-bold text-[8px]">
+                      ✔
+                    </span>
+                  )}
+
+                  <div className={`p-3 rounded-lg border ${node.color} mb-3 group-hover:scale-105 transition-transform`}>
+                    <Icon className="h-5 w-5" />
+                  </div>
+                  <h4 className="text-[11px] font-bold font-mono text-[#ccd6f6] tracking-wider block uppercase">
+                    {node.title}
+                  </h4>
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Simulator Controls & Watermark */}
+          <div className="mt-8 pt-4 border-t border-white/5 flex flex-col sm:flex-row justify-between items-center gap-4 relative z-10">
+            <div className="font-mono text-[10px] text-left text-neutral-500 uppercase tracking-widest max-w-[280px]">
+              {simulationLog}
             </div>
 
-            {/* Simulating Output logger */}
-            <div className="mt-6 pt-4 border-t border-white/5 font-mono text-[10px] text-left uppercase tracking-wider text-[#8892b0] flex justify-between items-center">
-              <span>{simulationLog}</span>
-              <button
-                onClick={runSimulation}
-                disabled={isRunning}
-                className="flex items-center gap-1.5 px-3 py-1.5 bg-[#64ffda]/10 hover:bg-[#64ffda]/25 border border-[#64ffda] text-black bg-[#64ffda] disabled:bg-white/5 disabled:border-white/5 disabled:text-[#8892b0] font-bold rounded-lg cursor-pointer transition text-[9px] uppercase tracking-widest shadow-lg shadow-[#64ffda]/10"
-              >
-                <Play className="h-3 w-3 fill-black" />
-                <span>Test Run Pipeline</span>
-              </button>
-            </div>
+            <button
+              onClick={runSimulation}
+              disabled={isRunning}
+              className="flex items-center gap-2 rounded border border-[#64ffda] bg-[#64ffda]/10 px-4 py-2 font-mono text-[11px] text-[#64ffda] shadow-[0_0_15px_rgba(100,255,218,0.1)] hover:bg-[#64ffda]/20 transition disabled:opacity-50 cursor-pointer"
+            >
+              <Play className="h-3.5 w-3.5 fill-[#64ffda]" />
+              <span>RUN_SIMULATION</span>
+            </button>
           </div>
         </div>
 
-        {/* Right Column: Node Parameters Tooltip Details */}
-        <div className="lg:col-span-4 h-full">
+        {/* Node inspector panel */}
+        <div className="font-mono text-xs text-left">
           <AnimatePresence mode="wait">
             {activeNode ? (
               <motion.div
                 key={activeNode}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 10 }}
-                className="glass-card rounded-2xl border border-[#64ffda]/20 p-6 bg-[#112240]/40 backdrop-blur-md text-left font-mono text-xs space-y-4"
+                initial={{ opacity: 0, x: 12 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -12 }}
+                className="glass-card rounded-2xl border border-white/10 p-6 bg-[#0a192f]/30 backdrop-blur-md space-y-4 h-full flex flex-col justify-start"
               >
-                <div className="flex items-center gap-2 text-[#64ffda] font-bold tracking-wider">
-                  <ShieldCheck className="h-4 w-4" />
-                  <span>NODE_INSPECTOR // {activeNode.toUpperCase()}</span>
+                <div className="flex items-center gap-3">
+                  <div className="p-2 rounded-lg bg-white/5 border border-white/10 text-[#64ffda]">
+                    {(() => {
+                      const Icon = nodes.find((n) => n.id === activeNode)?.icon || Icons.HelpCircle;
+                      return <Icon className="h-4 w-4" />;
+                    })()}
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-[#ccd6f6] text-sm uppercase">
+                      {nodes.find((n) => n.id === activeNode)?.title}
+                    </h3>
+                    <span className="text-[9px] text-[#64ffda] uppercase block tracking-wider">
+                      NODE_ID: {activeNode}
+                    </span>
+                  </div>
                 </div>
-                <h3 className="text-sm font-bold text-[#ccd6f6]">
-                  {nodes.find((n) => n.id === activeNode)?.title}
-                </h3>
-                <p className="text-[#8892b0] leading-relaxed">
+
+                <p className="text-[#8892b0] leading-relaxed text-[11px]">
                   {nodes.find((n) => n.id === activeNode)?.desc}
                 </p>
-                <div className="pt-2 border-t border-white/5 text-[9px] text-neutral-500 uppercase tracking-widest">
+                
+                <div className="pt-2 border-t border-white/5 text-[9px] text-neutral-500 uppercase tracking-widest mt-auto">
                   Status: {nodes.find((n) => n.id === activeNode)?.status.toUpperCase()}
                 </div>
               </motion.div>
             ) : (
-              <div className="glass-card rounded-2xl border border-white/5 p-6 bg-[#0a192f]/20 text-left font-mono text-xs text-[#8892b0]/55 flex items-center justify-center min-h-[160px] border-dashed border-2">
-                <p className="text-center">
+              <div className="glass-card rounded-2xl border border-white/5 p-6 bg-[#0a192f]/20 text-left font-mono text-xs text-[#8892b0]/55 flex items-center justify-center min-h-[160px] border-dashed border-2 h-full">
+                <p className="text-center text-[11px] leading-relaxed uppercase tracking-wider">
                   SELECT ANY NODE ON THE WORKFLOW CANVAS TO INSPECT ACTIVE CODE PARAMETERS
                 </p>
               </div>
