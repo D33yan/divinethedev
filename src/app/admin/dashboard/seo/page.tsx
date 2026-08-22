@@ -5,7 +5,7 @@ import { supabase } from "@/lib/supabaseClient";
 import { useTactileAudio } from "@/hooks/useTactileAudio";
 import { useUserRole } from "@/hooks/useUserRole";
 import { SystemAlert } from "@/components/ui/SystemAlert";
-import { Loader2, Globe, FileText, Save, RefreshCw, CheckCircle2, AlertTriangle } from "lucide-react";
+import { Loader2, Globe, FileText, Save, RefreshCw, CheckCircle2, AlertTriangle, Upload } from "lucide-react";
 
 export default function SeoAndCvManager() {
   const { isAdmin } = useUserRole();
@@ -15,6 +15,57 @@ export default function SeoAndCvManager() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState(false);
+
+  const handleOgImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!supabase || !isAdmin) {
+      triggerSound("glitch");
+      setError("Admin write privilege required to upload assets.");
+      return;
+    }
+
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploading(true);
+    setError("");
+    setSuccess("");
+    triggerSound("click");
+
+    try {
+      const fileExt = file.name.split(".").pop();
+      const fileName = `og-image-${Date.now()}.${fileExt}`;
+      const filePath = `branding/${fileName}`;
+
+      // Upload to 'portfolio-images' storage bucket
+      const { error: uploadError } = await supabase.storage
+        .from("portfolio-images")
+        .upload(filePath, file, {
+          cacheControl: "3600",
+          upsert: true
+        });
+
+      if (uploadError) throw uploadError;
+
+      // Get public URL
+      const { data } = supabase.storage
+        .from("portfolio-images")
+        .getPublicUrl(filePath);
+
+      if (data?.publicUrl) {
+        setSeoOgImage(data.publicUrl);
+        setSuccess("Open Graph social preview image uploaded successfully!");
+        triggerSound("success");
+      }
+    } catch (err: any) {
+      console.error(err);
+      setError(err.message || "Failed to upload social preview image.");
+      triggerSound("glitch");
+    } finally {
+      setUploading(false);
+      e.target.value = "";
+    }
+  };
 
   // SEO Form states
   const [seoTitle, setSeoTitle] = useState("");
@@ -189,14 +240,30 @@ export default function SeoAndCvManager() {
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1">
                   <label className="text-[10px] font-bold font-mono text-[#8892b0] uppercase tracking-wider block">Social OG Image URL</label>
-                  <input
-                    type="text"
-                    required
-                    value={seoOgImage}
-                    onChange={(e) => setSeoOgImage(e.target.value)}
-                    placeholder="/og_image.png"
-                    className="w-full bg-[#112240] border border-white/10 rounded-xl px-4 py-2.5 text-[#ccd6f6] focus:border-[#64ffda] outline-none transition font-mono"
-                  />
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      required
+                      value={seoOgImage}
+                      onChange={(e) => setSeoOgImage(e.target.value)}
+                      placeholder="/og_image.png"
+                      className="flex-1 bg-[#112240] border border-white/10 rounded-xl px-4 py-2.5 text-[#ccd6f6] focus:border-[#64ffda] outline-none transition font-mono"
+                    />
+                    <label className="flex items-center justify-center p-2.5 rounded-xl border border-[#64ffda]/30 bg-[#64ffda]/10 text-[#64ffda] hover:bg-[#64ffda]/20 transition cursor-pointer shrink-0" title="Upload OG Image">
+                      {uploading ? (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      ) : (
+                        <Upload className="h-4 w-4" />
+                      )}
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleOgImageUpload}
+                        className="hidden"
+                        disabled={uploading || !isAdmin}
+                      />
+                    </label>
+                  </div>
                 </div>
                 <div className="space-y-1">
                   <label className="text-[10px] font-bold font-mono text-[#8892b0] uppercase tracking-wider block">Google Analytics ID</label>
