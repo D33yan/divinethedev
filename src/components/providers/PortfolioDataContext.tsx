@@ -259,12 +259,12 @@ export function PortfolioDataProvider({ children }: { children: React.ReactNode 
           github: p.github || "",
           live: p.live || null,
           badge: p.badge || null,
-          caseStudy: {
-            problem: p.cs_problem || "",
-            approach: p.cs_approach || "",
-            built: p.cs_built || "",
-            result: p.cs_result || "",
-            images: p.cs_images || []
+          caseStudy: p.case_study || {
+            problem: "",
+            approach: "",
+            built: "",
+            result: "",
+            images: []
           }
         }));
         setProjects(mapped);
