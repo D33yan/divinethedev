@@ -6,7 +6,8 @@ import { supabase } from "@/lib/supabaseClient";
 import { useTactileAudio } from "@/hooks/useTactileAudio";
 import { 
   ShieldAlert, ShieldCheck, LayoutDashboard, Briefcase, 
-  FolderGit2, Cpu, GraduationCap, LogOut, ArrowLeft, Loader2, Mail 
+  FolderGit2, Cpu, GraduationCap, LogOut, ArrowLeft, Loader2, Mail,
+  Sparkles, MessageSquare, Palette
 } from "lucide-react";
 import Link from "next/link";
 
@@ -106,6 +107,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     { name: "Experiences", path: "/admin/dashboard/experience", icon: Briefcase },
     { name: "Skills", path: "/admin/dashboard/skills", icon: Cpu },
     { name: "Education & Certs", path: "/admin/dashboard/education", icon: GraduationCap },
+    { name: "Services", path: "/admin/dashboard/services", icon: Sparkles },
+    { name: "Testimonials", path: "/admin/dashboard/testimonials", icon: MessageSquare },
+    { name: "Theme Settings", path: "/admin/dashboard/theme", icon: Palette },
     { name: "Inbox Messages", path: "/admin/dashboard/messages", icon: Mail },
   ];
 

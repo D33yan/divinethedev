@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { siteConfig } from "@/lib/site";
+import { siteConfig, terminalConfig } from "@/lib/site";
 import { usePortfolioData } from "@/components/providers/PortfolioDataContext";
 import { playClick, playSuccess, playGlitch } from "@/lib/audio";
 
@@ -57,17 +57,145 @@ const getSuggestion = (input: string, projectsList: any[]): string => {
 };
 
 export function TerminalView({ onSwitchToCards }: TerminalViewProps) {
-  const { projects } = usePortfolioData();
+  const { projects, resumeUrl, logEvent } = usePortfolioData();
+  
+  // Terminal Snake Game states
+  const [snakeActive, setSnakeActive] = useState(false);
+  const [snake, setSnake] = useState<{ x: number; y: number }[]>([]);
+  const [food, setFood] = useState<{ x: number; y: number }>({ x: 5, y: 5 });
+  const [snakeDir, setSnakeDir] = useState<{ x: number; y: number }>({ x: 1, y: 0 });
+  const [snakeScore, setSnakeScore] = useState(0);
+  const [snakeGameOver, setSnakeGameOver] = useState(false);
+
+  const startSnakeGame = () => {
+    setSnakeActive(true);
+    setSnake([{ x: 7, y: 5 }, { x: 6, y: 5 }, { x: 5, y: 5 }]);
+    setFood({ x: 3, y: 3 });
+    setSnakeDir({ x: 1, y: 0 });
+    setSnakeScore(0);
+    setSnakeGameOver(false);
+    logEvent("command_executed", "snake_game_started");
+  };
+
+  useEffect(() => {
+    if (!snakeActive) return;
+
+    const handleGameKeys = (e: KeyboardEvent) => {
+      const key = e.key.toLowerCase();
+      if (key === "escape") {
+        setSnakeActive(false);
+        return;
+      }
+      if (snakeGameOver && e.key === "Enter") {
+        startSnakeGame();
+        return;
+      }
+      if (key === "w" || e.key === "ArrowUp") {
+        setSnakeDir((prev) => (prev.y === 1 ? prev : { x: 0, y: -1 }));
+      } else if (key === "s" || e.key === "ArrowDown") {
+        setSnakeDir((prev) => (prev.y === -1 ? prev : { x: 0, y: 1 }));
+      } else if (key === "a" || e.key === "ArrowLeft") {
+        setSnakeDir((prev) => (prev.x === 1 ? prev : { x: -1, y: 0 }));
+      } else if (key === "d" || e.key === "ArrowRight") {
+        setSnakeDir((prev) => (prev.x === -1 ? prev : { x: 1, y: 0 }));
+      }
+    };
+
+    window.addEventListener("keydown", handleGameKeys);
+    return () => window.removeEventListener("keydown", handleGameKeys);
+  }, [snakeActive, snakeGameOver]);
+
+  useEffect(() => {
+    if (!snakeActive || snakeGameOver) return;
+
+    const gameLoop = setInterval(() => {
+      setSnake((prevSnake) => {
+        if (prevSnake.length === 0) return prevSnake;
+        const head = { x: prevSnake[0].x + snakeDir.x, y: prevSnake[0].y + snakeDir.y };
+
+        // Check boundaries
+        if (head.x < 0 || head.x >= 20 || head.y < 0 || head.y >= 10) {
+          setSnakeGameOver(true);
+          playGlitch();
+          return prevSnake;
+        }
+
+        // Check self collision
+        if (prevSnake.some((segment) => segment.x === head.x && segment.y === head.y)) {
+          setSnakeGameOver(true);
+          playGlitch();
+          return prevSnake;
+        }
+
+        const newSnake = [head, ...prevSnake];
+
+        // Check food collision
+        if (head.x === food.x && head.y === food.y) {
+          setSnakeScore((s) => s + 10);
+          playSuccess();
+          // Generate new food
+          let newFood: { x: number; y: number };
+          do {
+            newFood = {
+              x: Math.floor(Math.random() * 20),
+              y: Math.floor(Math.random() * 10)
+            };
+          } while (newSnake.some((seg) => seg.x === newFood.x && seg.y === newFood.y));
+          setFood(newFood);
+        } else {
+          newSnake.pop();
+        }
+
+        return newSnake;
+      });
+    }, 150);
+
+    return () => clearInterval(gameLoop);
+  }, [snakeActive, snakeDir, food, snakeGameOver]);
+
+  const renderSnakeBoard = () => {
+    const width = 20;
+    const height = 10;
+    let board = "";
+
+    // Border top
+    board += "┌" + "─".repeat(width * 2) + "┐\n";
+
+    for (let y = 0; y < height; y++) {
+      board += "│";
+      for (let x = 0; x < width; x++) {
+        const isHead = snake[0] && snake[0].x === x && snake[0].y === y;
+        const isBody = snake.slice(1).some((segment) => segment.x === x && segment.y === y);
+        const isFood = food.x === x && food.y === y;
+
+        if (isHead) {
+          board += "■ ";
+        } else if (isBody) {
+          board += "o ";
+        } else if (isFood) {
+          board += "★ ";
+        } else {
+          board += "  ";
+        }
+      }
+      board += "│\n";
+    }
+
+    // Border bottom
+    board += "└" + "─".repeat(width * 2) + "┘\n";
+    return board;
+  };
+
   const containerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
 
   const [inputVal, setInputVal] = useState("");
   const [lines, setLines] = useState<TerminalLine[]>([
-    { text: "NAVIE-OS [Version 1.0.4] Core Shell Terminal", type: "header" },
-    { text: "(c) 2026 Divine Chibueze Nnaji. All rights reserved.", type: "system" },
-    { text: "System diagnostic: STABLE // Core Data Science & AI node connected.", type: "system" },
-    { text: "Type 'help' to view available commands, or 'gui' to return to visual mode.", type: "success" },
+    { text: terminalConfig.welcomeMessage[0], type: "header" },
+    { text: terminalConfig.welcomeMessage[1], type: "system" },
+    { text: terminalConfig.welcomeMessage[2], type: "system" },
+    { text: terminalConfig.welcomeMessage[3], type: "success" },
     { text: "", type: "system" },
   ]);
 
@@ -158,6 +286,10 @@ export function TerminalView({ onSwitchToCards }: TerminalViewProps) {
     let normalized = cmdStr.trim();
     if (normalized.startsWith("/")) {
       normalized = normalized.substring(1);
+    }
+
+    if (normalized) {
+      logEvent("command_executed", normalized);
     }
 
     const parts = normalized.toLowerCase().split(" ");
@@ -400,34 +532,21 @@ export function TerminalView({ onSwitchToCards }: TerminalViewProps) {
       }
 
       case "skills":
-        output = [
-          { text: "GUEST SYSTEM PROFILE: TECH SKILLS MONITORS", type: "success" },
-          { text: "  Languages   [████████████████] JavaScript, TypeScript, Python, PHP", type: "primary" },
-          { text: "  Frontend    [██████████████]   Next.js, HTML5/CSS3, TailwindCSS", type: "primary" },
-          { text: "  Backend     [████████████]     Node.js, Laravel APIs, SQL/NoSQL", type: "primary" },
-          { text: "  AI & ML     [██████████████]   Scikit-Learn, NumPy, Data Modelling", type: "primary" },
-          { text: "  Automation  [████████████████] n8n Orchestrator, Make, Zapier webhooks", type: "primary" },
-          { text: "  Platforms   [████████████]     GoHighLevel, WordPress, Firebase", type: "primary" },
-          { text: "  Design      [████████████]     Figma, UI/UX Wireframing, Adobe suite", type: "primary" },
-          { text: "", type: "system" },
-          { text: "EARLYCODE SYSTEM CERTIFICATIONS CATALOGED:", type: "success" },
-          { text: "  ▸ Python Programming        (May–June 2022)", type: "secondary" },
-          { text: "  ▸ Fullstack Web Development (Oct 2022 – Feb 2023)", type: "secondary" },
-          { text: "  ▸ App Development           (July–Sept 2023)", type: "secondary" },
-        ];
+        output = terminalConfig.skillsCommandOutput.map((line, idx) => ({
+          text: line,
+          type: idx === 0 ? "success" : "primary"
+        }));
         break;
 
       case "about":
         output = [
           { text: `-------------------------------------------------`, type: "system" },
-          { text: `SERVER NODE DATA: guest@navie-os:~# sysinfo`, type: "success" },
-          { text: `Developer:       ${siteConfig.name} (${siteConfig.alias})`, type: "primary" },
-          { text: `Title Focus:     ${siteConfig.title}`, type: "primary" },
-          { text: `Base Node:       Cloud Server Portal`, type: "primary" },
-          { text: `Active Role:     ${siteConfig.currentRole}`, type: "primary" },
-          { text: `Server Core:     AI Core Integration Engine`, type: "secondary" },
-          { text: `Memory Buffer:   16 GB Cybernetic Stream`, type: "secondary" },
-          { text: `System Shell:    bash / zsh v1.0.4-next`, type: "secondary" },
+          { text: `SERVER NODE DATA: ${terminalConfig.username}@${terminalConfig.hostname}:~# sysinfo`, type: "success" },
+          { text: `Developer:       ${terminalConfig.sysInfo.developer}`, type: "primary" },
+          { text: `Title Focus:     ${terminalConfig.sysInfo.role}`, type: "primary" },
+          { text: `Base Node:       ${terminalConfig.sysInfo.base}`, type: "primary" },
+          { text: `Memory Buffer:   ${terminalConfig.sysInfo.memory}`, type: "secondary" },
+          { text: `System Shell:    ${terminalConfig.sysInfo.shell}`, type: "secondary" },
           { text: `-------------------------------------------------`, type: "system" },
           { text: siteConfig.aboutBio, type: "primary" },
         ];
@@ -463,7 +582,7 @@ export function TerminalView({ onSwitchToCards }: TerminalViewProps) {
         output = [{ text: "Establishing secure CV data download tunnel...", type: "success" }];
         setTimeout(() => {
           const link = document.createElement("a");
-          link.href = siteConfig.resumePath;
+          link.href = resumeUrl;
           link.download = "Divine_Nnaji_CV.pdf";
           link.target = "_blank";
           link.rel = "noopener noreferrer";
@@ -472,6 +591,12 @@ export function TerminalView({ onSwitchToCards }: TerminalViewProps) {
           document.body.removeChild(link);
         }, 600);
         break;
+
+      case "play":
+      case "snake":
+      case "game":
+        startSnakeGame();
+        return;
 
       case "hack":
         setIsHacking(true);
@@ -592,7 +717,7 @@ export function TerminalView({ onSwitchToCards }: TerminalViewProps) {
         {/* Window Title */}
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
           <span className="font-mono text-[10px] tracking-wider text-[#8892b0] uppercase">
-            guest@navie-os:~ (bash)
+            {terminalConfig.username}@{terminalConfig.hostname}:~ (bash)
           </span>
         </div>
 
@@ -605,57 +730,84 @@ export function TerminalView({ onSwitchToCards }: TerminalViewProps) {
 
       {/* Main Terminal Lines Buffer */}
       <div className="flex-1 overflow-y-auto p-5 font-mono text-xs md:text-sm leading-relaxed scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent">
-        <div className="space-y-1.5">
-          {lines.map((line, idx) => {
-            let colorClass = "text-[#ccd6f6]";
-            if (line.type === "system") colorClass = "text-[#8892b0]/70";
-            if (line.type === "header") colorClass = "text-[#64ffda] font-bold text-sm tracking-wider";
-            if (line.type === "input") colorClass = "text-[#00e5ff] font-semibold";
-            if (line.type === "success") colorClass = "text-[#64ffda]";
-            if (line.type === "error") colorClass = "text-[#ff5252]";
-            if (line.type === "secondary") colorClass = "text-[#8892b0]";
+        {snakeActive ? (
+          <div className="flex flex-col items-center justify-center h-full text-center space-y-3 py-4 select-none">
+            <span className="text-[#64ffda] font-bold tracking-wider text-xs uppercase animate-pulse">
+              ▲ NAVIE_OS // CLI_SNAKE_v1.0.0
+            </span>
+            <pre className="text-left text-[#64ffda] font-mono leading-none tracking-tight text-xs bg-navy/20 p-4 border border-white/5 rounded-xl">
+              {renderSnakeBoard()}
+            </pre>
+            <div className="text-xs font-mono text-[#8892b0]">
+              {snakeGameOver ? (
+                <div className="space-y-1">
+                  <p className="text-red-400 font-bold uppercase">✖ COLLISION DETECTED // GAME_OVER</p>
+                  <p className="text-[#ccd6f6]">FINAL SCORE: <span className="text-[#64ffda] font-bold">{snakeScore}</span></p>
+                  <p className="text-[10px] uppercase mt-2 text-[#64ffda]">Press [ENTER] to retry // [ESC] to exit game</p>
+                </div>
+              ) : (
+                <div className="space-y-1">
+                  <p className="text-[#ccd6f6]">SCORE: <span className="text-[#64ffda] font-bold">{snakeScore}</span></p>
+                  <p className="text-[10px] uppercase text-white/40">Controls: [W/A/S/D] or [Arrows] // [ESC] to exit</p>
+                </div>
+              )}
+            </div>
+          </div>
+        ) : (
+          <>
+            <div className="space-y-1.5">
+              {lines.map((line, idx) => {
+                let colorClass = "text-[#ccd6f6]";
+                if (line.type === "system") colorClass = "text-[#8892b0]/70";
+                if (line.type === "header") colorClass = "text-[#64ffda] font-bold text-sm tracking-wider";
+                if (line.type === "input") colorClass = "text-[#00e5ff] font-semibold";
+                if (line.type === "success") colorClass = "text-[#64ffda]";
+                if (line.type === "error") colorClass = "text-[#ff5252]";
+                if (line.type === "secondary") colorClass = "text-[#8892b0]";
 
-            return (
-              <pre
-                key={idx}
-                className={`whitespace-pre-wrap ${colorClass}`}
-              >
-                {line.text}
-              </pre>
-            );
-          })}
-        </div>
+                return (
+                  <pre
+                    key={idx}
+                    className={`whitespace-pre-wrap ${colorClass}`}
+                  >
+                    {line.text}
+                  </pre>
+                );
+              })}
+            </div>
 
-        {/* Typing Line */}
-        <div className="mt-2 flex items-center">
-          <span className="mr-2 text-[#00e5ff] font-semibold">guest@navie-os:~#</span>
-          <span className="relative flex flex-1 items-center">
-            {suggestion && (
-              <span className="absolute left-0 pointer-events-none text-[#ccd6f6] opacity-25 whitespace-pre select-none font-mono">
-                {inputVal}
-                <span className="text-white/30">{suggestion.substring(inputVal.length)}</span>
+            {/* Typing Line */}
+            <div className="mt-2 flex items-center">
+              <span className="mr-2 text-[#00e5ff] font-semibold">{terminalConfig.username}@{terminalConfig.hostname}:~#</span>
+              <span className="relative flex flex-1 items-center">
+                {suggestion && (
+                  <span className="absolute left-0 pointer-events-none text-[#ccd6f6] opacity-25 whitespace-pre select-none font-mono">
+                    {inputVal}
+                    <span className="text-white/30">{suggestion.substring(inputVal.length)}</span>
+                  </span>
+                )}
+                <span className="text-[#ccd6f6] whitespace-pre">{inputVal}</span>
+                <span className="h-4 w-2 bg-[#64ffda] animate-pulse" />
+                
+                {/* Hidden HTML input for soft-keyboard integration */}
+                <input
+                  ref={inputRef}
+                  type="text"
+                  onChange={(e) => {
+                    setInputVal(e.target.value);
+                    playClick();
+                  }}
+                  onKeyDown={handleKeyDown}
+                  className="absolute inset-0 opacity-0 cursor-text pointer-events-auto w-full border-none outline-none"
+                  autoFocus
+                  autoCapitalize="none"
+                  autoComplete="off"
+                  spellCheck="false"
+                />
               </span>
-            )}
-            <span className="text-[#ccd6f6] whitespace-pre">{inputVal}</span>
-            <span className="h-4 w-2 bg-[#64ffda] animate-pulse" />
-            
-            {/* Hidden HTML input for soft-keyboard integration */}
-            <input
-              ref={inputRef}
-              type="text"
-              onChange={(e) => {
-                setInputVal(e.target.value);
-                playClick();
-              }}
-              onKeyDown={handleKeyDown}
-              className="absolute inset-0 opacity-0 cursor-text pointer-events-auto w-full border-none outline-none"
-              autoFocus
-              autoCapitalize="none"
-              autoComplete="off"
-              spellCheck="false"
-            />
-          </span>
-        </div>
+            </div>
+          </>
+        )}
 
         {/* Dummy bottom element for autoscroll */}
         <div ref={bottomRef} />

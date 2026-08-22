@@ -3,7 +3,9 @@
 :root {
   --font-sans: var(--font-outfit);
   --font-mono: var(--font-fira);
-  --color-navy: #000000;
+  --bg-navy-custom: #000000;
+  --bg-white-custom: #f6f8fa;
+  --color-navy: var(--bg-navy-custom);
   --color-navy-light: #080808;
   --color-navy-lighter: #141414;
   --color-accent-rgb: 100, 255, 218;
@@ -16,7 +18,7 @@
 }
 
 .light {
-  --color-navy: #f6f8fa;
+  --color-navy: var(--bg-white-custom);
   --color-navy-light: rgba(255, 255, 255, 0.8);
   --color-navy-lighter: rgba(0, 0, 0, 0.08);
   --color-accent-rgb: 15, 118, 110;
@@ -347,4 +349,15 @@ body {
 
 .light .text-\[\#ff5252\] {
   color: #dc2626 !important; /* Premium high-contrast dark red for terminal errors */
+}
+
+/* n8n workflow animated SVG connector styles */
+@keyframes workflow-dash {
+  to {
+    stroke-dashoffset: -40;
+  }
+}
+.animate-workflow-dash {
+  stroke-dasharray: 6, 4;
+  animation: workflow-dash 8s linear infinite;
 }

@@ -8,8 +8,10 @@ import { supabase } from "@/lib/supabaseClient";
 import { useState } from "react";
 import { siteConfig } from "@/lib/site";
 import { SectionHeading } from "@/components/ui/SectionHeading";
+import { usePortfolioData } from "@/components/providers/PortfolioDataContext";
 
 function ContactContent() {
+  const { logEvent } = usePortfolioData();
   const [formState, setFormState] = useState({ name: "", email: "", message: "" });
   const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
   const [errorMessage, setErrorMessage] = useState("");
@@ -17,6 +19,9 @@ function ContactContent() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setStatus("submitting");
+
+    // Track submission event in telemetry
+    logEvent("contact_attempt", `From: ${formState.name} (${formState.email})`);
 
     // Log query details directly in Supabase contact_messages table
     try {

@@ -27,10 +27,13 @@ export const siteConfig = {
 export const navSections = [
   { id: "hero", label: "Home" },
   { id: "about", label: "About" },
+  { id: "services", label: "Services" },
   { id: "experience", label: "Experience" },
   { id: "projects", label: "Projects" },
+  { id: "workflows", label: "Workflows" },
   { id: "skills", label: "Skills" },
   { id: "education", label: "Education" },
+  { id: "testimonials", label: "Testimonials" },
   { id: "contact", label: "Contact" },
 ] as const;
 
@@ -336,3 +339,125 @@ export const certifications = [
     period: "July–Sept 2023",
   },
 ] as const;
+
+export const themeConfig = {
+  defaultTheme: "dark", // "dark" | "light"
+  accentTheme: "teal", // "teal" | "purple" | "blue" | "emerald" | "amber"
+  enableCursor: true,
+  enableSpotlight: true,
+  enableTerminal: true,
+  enableWorkflows: true,
+  enableServices: true,
+  enableTestimonials: true,
+  sectionsOrder: ["about", "services", "experience", "projects", "workflows", "skills", "education", "testimonials", "contact"]
+};
+
+export const services = [
+  {
+    id: "web-dev",
+    title: "Fullstack Web Development",
+    desc: "Building modular, secure, and blazing-fast web applications using React, Next.js, and modern serverless infrastructures.",
+    icon: "Code"
+  },
+  {
+    id: "workflows",
+    title: "Workflow Automation",
+    desc: "Integrating CRM platforms (HubSpot, GoHighLevel) and building bulletproof automation workflows using n8n and custom webhook integrations.",
+    icon: "Cpu"
+  },
+  {
+    id: "ui-ux",
+    title: "UI/UX & Interactive Design",
+    desc: "Designing stunning, clean, and modern interfaces in Figma and coding them into fluid, responsive, and accessible interactive screens.",
+    icon: "Layout"
+  }
+];
+
+export const testimonials = [
+  {
+    id: "t1",
+    quote: "Divine is an exceptionally skilled engineer. He delivered a complex database synchronization pipeline on n8n that automated our client onboarding process seamlessly.",
+    author: "Alexander Mercer",
+    role: "Engineering Director",
+    company: "Vortex Tech Solutions",
+    avatar: "/portfolioprofile1.png",
+    stars: 5
+  },
+  {
+    id: "t2",
+    quote: "The typhoid diagnosis expert triage system was built exactly to specification with outstanding mathematical parity matching our Python prototypes, delivering instant edge inferences.",
+    author: "Dr. Sarah Jenkins",
+    role: "Chief Medical Scientist",
+    company: "MedCheck Labs",
+    avatar: "/portfolioprofile2.jpg",
+    stars: 5
+  }
+];
+
+export const terminalConfig = {
+  welcomeMessage: [
+    "NAVIE-OS [Version 1.0.4] Core Shell Terminal",
+    "(c) 2026 Divine Chibueze Nnaji. All rights reserved.",
+    "System diagnostic: STABLE // Core AI node connected.",
+    "Type 'help' to view available commands, or 'gui' to return to visual mode."
+  ],
+  username: "guest",
+  hostname: "navie-os",
+  sysInfo: {
+    developer: "Divine Chibueze Nnaji (Navie)",
+    role: "Fullstack Software Engineer & AI Builder",
+    base: "Cloud Server Portal",
+    memory: "16 GB Cybernetic Stream",
+    shell: "bash / zsh v1.0.4-next"
+  },
+  skillsCommandOutput: [
+    "GUEST SYSTEM PROFILE: TECH SKILLS MONITORS",
+    "  Languages   [████████████████] JavaScript, TypeScript, Python, PHP",
+    "  Frontend    [██████████████]   Next.js, HTML5/CSS3, TailwindCSS",
+    "  Backend     [████████████]     Node.js, Laravel APIs, SQL/NoSQL",
+    "  AI & ML     [██████████████]   Scikit-Learn, NumPy, Data Modelling",
+    "  Automation  [████████████████] n8n Orchestrator, Make, Zapier webhooks",
+    "  Platforms   [████████████]     GoHighLevel, WordPress, Firebase",
+    "  Design      [████████████]     Figma, UI/UX Wireframing, Adobe suite"
+  ]
+};
+
+export const workflowsConfig = {
+  title: "Lead Webhook Pipeline",
+  nodes: [
+    {
+      id: "webhook",
+      title: "Lead Webhook",
+      icon: "Webhook",
+      color: "text-blue-400 border-blue-500/20 bg-blue-500/5",
+      desc: "Captures lead forms and landing page clicks in real-time. Emits webhook JSON payload."
+    },
+    {
+      id: "ai",
+      title: "Gemini AI Node",
+      icon: "Bot",
+      color: "text-purple-400 border-purple-500/20 bg-purple-500/5",
+      desc: "Analyzes message contents, extracts key tech stacks, and classifies urgency rating."
+    },
+    {
+      id: "db",
+      title: "Supabase DB",
+      icon: "Database",
+      color: "text-[#64ffda] border-[#64ffda]/20 bg-[#64ffda]/5",
+      desc: "Saves client details securely in postgres table & updates live CMS analytics logs."
+    },
+    {
+      id: "notify",
+      title: "Telegram Alert",
+      icon: "BellRing",
+      color: "text-amber-400 border-amber-500/20 bg-amber-500/5",
+      desc: "Dispatches instant secure push alerts to Divine's private device detailing lead contact."
+    }
+  ],
+  steps: [
+    { id: "webhook", log: "▸ INCOMING_WEBHOOK: Lead payload parsed successfully." },
+    { id: "ai", log: "▸ SYNAPSE_AI: Enriched lead profile & parsed Stack keywords via LLM." },
+    { id: "db", log: "▸ DB_SYNC: Synced lead record row into Supabase database." },
+    { id: "notify", log: "▸ INSTANT_PUSH: Dispatched notification to device." }
+  ]
+};

@@ -5,12 +5,25 @@ import { Menu, X } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { navSections, siteConfig } from "@/lib/site";
+import { navSections, siteConfig, themeConfig } from "@/lib/site";
 import { ThemeToggle } from "@/components/effects/ThemeToggle";
 import { playClick } from "@/lib/audio";
 
 export function MobileNav() {
   const [open, setOpen] = useState(false);
+
+  const enabledSections = [
+    { id: "hero", label: "Home" },
+    ...themeConfig.sectionsOrder
+      .map((id) => navSections.find((sec) => sec.id === id))
+      .filter((sec): sec is typeof navSections[number] => {
+        if (!sec) return false;
+        if (sec.id === "workflows" && !themeConfig.enableWorkflows) return false;
+        if (sec.id === "services" && !themeConfig.enableServices) return false;
+        if (sec.id === "testimonials" && !themeConfig.enableTestimonials) return false;
+        return true;
+      })
+  ];
 
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
@@ -83,7 +96,7 @@ export function MobileNav() {
                 <p className="text-lg font-bold text-[#ccd6f6] mt-1">{siteConfig.name}</p>
               </div>
               <ul className="space-y-5 text-left">
-                {navSections.map((item, i) => (
+                {enabledSections.map((item, i) => (
                   <motion.li
                     key={item.id}
                     initial={{ opacity: 0, x: 16 }}

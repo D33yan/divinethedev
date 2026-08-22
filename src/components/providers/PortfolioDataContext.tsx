@@ -7,7 +7,10 @@ import {
   projects as staticProjects, 
   skillGroups as staticSkillGroups, 
   education as staticEducation, 
-  certifications as staticCertifications 
+  certifications as staticCertifications,
+  services as staticServices,
+  testimonials as staticTestimonials,
+  siteConfig
 } from "@/lib/site";
 
 // Types derived from site.ts structure
@@ -64,14 +67,42 @@ export interface CertificationItem {
   period: string;
 }
 
+export interface ServiceItem {
+  id: string;
+  title: string;
+  desc: string;
+  icon: string;
+}
+
+export interface TestimonialItem {
+  id: string;
+  quote: string;
+  author: string;
+  role: string;
+  company: string;
+  avatar: string;
+  stars: number;
+}
+
 interface PortfolioDataContextType {
   projects: Project[];
   experiences: Experience[];
   skillGroups: SkillGroup[];
   education: EducationItem[];
   certifications: CertificationItem[];
+  services: ServiceItem[];
+  testimonials: TestimonialItem[];
+  logoUrl: string;
+  avatar1Url: string;
+  avatar2Url: string;
+  resumeUrl: string;
+  accentColor: string;
+  darkBgColor: string;
+  lightBgColor: string;
+  accentPresets: string[];
   loading: boolean;
   refreshData: () => Promise<void>;
+  logEvent: (eventType: string, eventDetails?: string) => Promise<void>;
   isUsingLiveDb: boolean;
 }
 
@@ -83,6 +114,20 @@ export function PortfolioDataProvider({ children }: { children: React.ReactNode 
   const [skillGroups, setSkillGroups] = useState<SkillGroup[]>(staticSkillGroups as unknown as SkillGroup[]);
   const [education, setEducation] = useState<EducationItem[]>(staticEducation as unknown as EducationItem[]);
   const [certifications, setCertifications] = useState<CertificationItem[]>(staticCertifications as unknown as CertificationItem[]);
+  
+  const [services, setServices] = useState<ServiceItem[]>(staticServices as ServiceItem[]);
+  const [testimonials, setTestimonials] = useState<TestimonialItem[]>(staticTestimonials as TestimonialItem[]);
+  
+  const [logoUrl, setLogoUrl] = useState("/logo.png");
+  const [avatar1Url, setAvatar1Url] = useState("/portfolioprofile1.png");
+  const [avatar2Url, setAvatar2Url] = useState("/portfolioprofile2.jpg");
+  const [resumeUrl, setResumeUrl] = useState(siteConfig.resumePath || "/Divine_Nnaji_CV.pdf");
+  
+  const [accentColor, setAccentColor] = useState("rgb(100, 255, 218)");
+  const [darkBgColor, setDarkBgColor] = useState("#000000");
+  const [lightBgColor, setLightBgColor] = useState("#f6f8fa");
+  const [accentPresets, setAccentPresets] = useState<string[]>([]);
+  
   const [loading, setLoading] = useState(true);
   const [isUsingLiveDb, setIsUsingLiveDb] = useState(false);
 
@@ -95,6 +140,37 @@ export function PortfolioDataProvider({ children }: { children: React.ReactNode 
     }
 
     try {
+      // Fetch dynamic branding configuration
+      try {
+        const { data: dbSettings } = await supabase
+          .from("site_settings")
+          .select("*")
+          .eq("id", "primary")
+          .single();
+
+        if (dbSettings) {
+          if (dbSettings.logo_url) setLogoUrl(dbSettings.logo_url);
+          if (dbSettings.avatar1_url) setAvatar1Url(dbSettings.avatar1_url);
+          if (dbSettings.avatar2_url) setAvatar2Url(dbSettings.avatar2_url);
+          if (dbSettings.resume_url) setResumeUrl(dbSettings.resume_url);
+          if (dbSettings.accent_color) setAccentColor(dbSettings.accent_color);
+          if (dbSettings.dark_bg_color) setDarkBgColor(dbSettings.dark_bg_color);
+          if (dbSettings.light_bg_color) setLightBgColor(dbSettings.light_bg_color);
+          if (dbSettings.accent_presets) {
+            try {
+              const presets = typeof dbSettings.accent_presets === "string" 
+                ? JSON.parse(dbSettings.accent_presets) 
+                : dbSettings.accent_presets;
+              setAccentPresets(presets);
+            } catch (pErr) {
+              console.warn("Could not parse accent presets JSON:", pErr);
+            }
+          }
+        }
+      } catch (settingsErr) {
+        console.warn("Could not query dynamic branding details:", settingsErr);
+      }
+
       // Fetch projects
       const { data: dbProjects, error: projectsError } = await supabase
         .from("projects")
@@ -120,96 +196,146 @@ export function PortfolioDataProvider({ children }: { children: React.ReactNode 
         .order("sort_order", { ascending: true });
 
       // Fetch certifications
-      const { data: dbCertifications, error: certsError } = await supabase
+      const { data: dbCertifications, error: certError } = await supabase
         .from("certifications")
         .select("*")
-        .order("sort_order", { ascending: true });
+        .order("created_at", { ascending: true });
 
-      if (projectsError || experiencesError || skillsError || educationError || certsError) {
-        console.warn("Error fetching from Supabase, falling back to static config:", {
-          projectsError, experiencesError, skillsError, educationError, certsError
-        });
-        setIsUsingLiveDb(false);
-      } else if (
-        (!dbProjects || dbProjects.length === 0) &&
-        (!dbExperiences || dbExperiences.length === 0) &&
-        (!dbSkills || dbSkills.length === 0)
-      ) {
-        // Tables exist but are empty (not seeded yet)
-        console.log("Supabase tables are empty. Using static content config.");
-        setIsUsingLiveDb(false);
-      } else {
-        // Map database schemas to UI interfaces
-        if (dbProjects && dbProjects.length > 0) {
-          setProjects(dbProjects.map((p: any) => ({
-            id: p.slug,
-            db_id: p.id,
-            title: p.title,
-            description: p.description,
-            tech: p.tech || [],
-            tag: p.tag,
-            featured: p.featured,
-            github: p.github,
-            live: p.live,
-            badge: p.badge,
-            caseStudy: p.case_study || { problem: "", approach: "", built: "", result: "", images: [] }
-          })));
-        }
+      // Fetch services
+      const { data: dbServices, error: servicesError } = await supabase
+        .from("services")
+        .select("*")
+        .order("created_at", { ascending: true });
 
-        if (dbExperiences && dbExperiences.length > 0) {
-          setExperiences(dbExperiences.map((e: any) => ({
-            id: e.slug,
-            db_id: e.id,
-            company: e.company,
-            role: e.role,
-            period: e.period,
-            location: e.location,
-            tech: e.tech || [],
-            bullets: e.bullets || []
-          })));
-        }
+      // Fetch testimonials
+      const { data: dbTestimonials, error: testimonialsError } = await supabase
+        .from("testimonials")
+        .select("*")
+        .order("created_at", { ascending: true });
 
-        if (dbSkills && dbSkills.length > 0) {
-          setSkillGroups(dbSkills.map((s: any) => ({
-            id: s.id,
-            title: s.title,
-            skills: s.skills || []
-          })));
-        }
-
-        if (dbEducation && dbEducation.length > 0) {
-          setEducation(dbEducation.map((edu: any) => ({
-            id: edu.id,
-            type: "education",
-            title: edu.title,
-            org: edu.org,
-            period: edu.period
-          })));
-        }
-
-        if (dbCertifications && dbCertifications.length > 0) {
-          setCertifications(dbCertifications.map((c: any) => ({
-            id: c.id,
-            type: "cert",
-            title: c.title,
-            org: c.org,
-            period: c.period
-          })));
-        }
-
+      if (dbProjects && !projectsError) {
+        const mapped = dbProjects.map((p) => ({
+          db_id: p.id,
+          id: p.slug,
+          title: p.title,
+          description: p.description,
+          tech: p.tech || [],
+          tag: p.tag,
+          featured: p.featured || false,
+          github: p.github || "",
+          live: p.live || null,
+          badge: p.badge || null,
+          caseStudy: {
+            problem: p.cs_problem || "",
+            approach: p.cs_approach || "",
+            built: p.cs_built || "",
+            result: p.cs_result || "",
+            images: p.cs_images || []
+          }
+        }));
+        setProjects(mapped);
         setIsUsingLiveDb(true);
       }
+
+      if (dbExperiences && !experiencesError) {
+        const mapped = dbExperiences.map((e) => ({
+          db_id: e.id,
+          id: e.slug,
+          company: e.company,
+          role: e.role,
+          period: e.period,
+          location: e.location || "",
+          tech: e.tech || [],
+          bullets: e.bullets || []
+        }));
+        setExperiences(mapped);
+      }
+
+      if (dbSkills && !skillsError) {
+        const mapped = dbSkills.map((s) => ({
+          id: s.id,
+          title: s.title,
+          skills: s.skills || []
+        }));
+        setSkillGroups(mapped);
+      }
+
+      if (dbEducation && !educationError) {
+        const mapped = dbEducation.map((edu) => ({
+          id: edu.id,
+          type: "education" as const,
+          title: edu.title,
+          org: edu.org,
+          period: edu.period
+        }));
+        setEducation(mapped);
+      }
+
+      if (dbCertifications && !certError) {
+        const mapped = dbCertifications.map((c) => ({
+          id: c.id,
+          type: "cert" as const,
+          title: c.title,
+          org: c.org,
+          period: c.period
+        }));
+        setCertifications(mapped);
+      }
+
+      if (dbServices && !servicesError) {
+        setServices(dbServices as ServiceItem[]);
+      } else {
+        setServices(staticServices as ServiceItem[]);
+      }
+
+      if (dbTestimonials && !testimonialsError) {
+        setTestimonials(dbTestimonials as TestimonialItem[]);
+      } else {
+        setTestimonials(staticTestimonials as TestimonialItem[]);
+      }
+
     } catch (err) {
-      console.error("Exception fetching data from Supabase:", err);
+      console.error("Error fetching dynamic portfolio context data:", err);
       setIsUsingLiveDb(false);
     } finally {
       setLoading(false);
     }
   };
 
+  const logEvent = async (eventType: string, eventDetails: string = "") => {
+    if (!supabase) return;
+    try {
+      await supabase.from("analytics_events").insert({
+        event_type: eventType,
+        event_details: eventDetails
+      });
+    } catch (err) {
+      console.warn("Could not log telemetry event:", err);
+    }
+  };
+
   useEffect(() => {
     fetchData();
+    logEvent("page_view", "Landing page mounted");
   }, []);
+
+  // Theme variable custom properties synchronizer hook
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const root = document.documentElement;
+
+    // Inject dynamic theme colors in document DOM properties
+    root.style.setProperty("--color-accent", accentColor);
+    
+    const rgbMatch = accentColor.match(/\d+,\s*\d+,\s*\d+/);
+    if (rgbMatch) {
+      root.style.setProperty("--color-accent-rgb", rgbMatch[0]);
+      root.style.setProperty("--color-accent-dim", `rgba(${rgbMatch[0]}, 0.1)`);
+    }
+
+    root.style.setProperty("--bg-navy-custom", darkBgColor);
+    root.style.setProperty("--bg-white-custom", lightBgColor);
+  }, [accentColor, darkBgColor, lightBgColor]);
 
   return (
     <PortfolioDataContext.Provider value={{
@@ -218,8 +344,19 @@ export function PortfolioDataProvider({ children }: { children: React.ReactNode 
       skillGroups,
       education,
       certifications,
+      services,
+      testimonials,
+      logoUrl,
+      avatar1Url,
+      avatar2Url,
+      resumeUrl,
+      accentColor,
+      darkBgColor,
+      lightBgColor,
+      accentPresets,
       loading,
       refreshData: fetchData,
+      logEvent,
       isUsingLiveDb
     }}>
       {children}

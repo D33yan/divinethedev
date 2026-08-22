@@ -13,7 +13,7 @@ import { usePortfolioData } from "@/components/providers/PortfolioDataContext";
 import { playGlitch, playSuccess } from "@/lib/audio";
 
 export function ResumeViewerModal() {
-  const { experiences, projects, education, certifications } = usePortfolioData();
+  const { experiences, projects, education, certifications, resumeUrl, logEvent } = usePortfolioData();
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
@@ -59,8 +59,9 @@ export function ResumeViewerModal() {
 
   const handleDownload = () => {
     playSuccess();
+    logEvent("cv_download", "Official PDF downloaded");
     const link = document.createElement("a");
-    link.href = siteConfig.resumePath;
+    link.href = resumeUrl;
     link.download = "Divine_Nnaji_CV.pdf";
     link.target = "_blank";
     link.rel = "noopener noreferrer";
@@ -382,6 +383,7 @@ export function ResumeViewerModal() {
                 <button
                   onClick={() => {
                     playSuccess();
+                    logEvent("cv_download", "Dynamic CV printed");
                     window.print();
                   }}
                   className="flex items-center gap-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-white px-5 py-2.5 font-mono text-xs font-bold transition cursor-pointer"

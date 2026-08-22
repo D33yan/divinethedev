@@ -1,57 +1,65 @@
-# Divine Chibueze Nnaji (Navie) — Premium Cybernetic Portfolio & AI Chatbot
+# Premium Cybernetic Portfolio Template & CMS Framework
 
-A world-class, premium developer portfolio website for **Divine Chibueze Nnaji**, Fullstack Software Engineer & AI Builder. Built with a futuristic cyber-tactile design system, featuring custom web sensory integrations, offline-edge machine learning predictions, automatic workflow hooks, and an interactive Gemini-powered serverless shell terminal!
+A highly structured, customizable, and general-purpose developer portfolio template built with Next.js 16, Supabase, and dynamic theming variables. Adapted for developers, designers, freelancers, automation engineers, and tech professionals.
 
-**Live Production Domain:** [divinethe.dev](https://divinethe.dev)
+Featuring an interactive retro UNIX shell terminal, client-side telemetry trackers, a visual workflow automation simulator, retro ASCII terminal games, and a full-featured admin CMS.
+
+**Live Production Example:** [divinethe.dev](https://divinethe.dev)
 
 ---
 
-## ⚡ Engineering Architecture & Premium Features
+## ⚡ Architecture & Customization Features
 
-### 1. 🤖 UNIX Terminal AI Chatbot Integration
-* **Secure Serverless AI Proxy Gateway** (`/api/chat`): Routes visitor queries to Google's official `gemini-flash-latest` model using secure server-side environment variables, protecting credentials from leaking into client-side JS bundles.
-* **Contextual System Prompt**: Synthesizes a high-fidelity persona prompt using your central portfolio configuration (`siteConfig`), instructing the AI to respond concisely and accurately as your virtual representative.
-* **Interactive Chat Memory**: Preserves session state so recruiters and guests can hold continuous, context-aware conversations.
-* **Synaptic Shell Loader & Tickers**: Animates immediate shell updates (`Establishing secure synaptic AI uplink... thinking...`) that seamlessly resolve into typewriter replies upon API compilation.
-* **Global 'TALK_TO_AI' CTA Trigger**: Pulses a floating CTA pill right above the diagnostics HUD from anywhere on the landing page. Clicking it smoothly scrolls to the terminal, populates the command prefix (`chat `), and focuses the cursor.
+### 1. ⚙️ Centralized Configuration & Section Ordering
+All static structures, diagnostic values, and feature gates are managed centrally in [site.ts](file:///c:/Users/DEVINE/Downloads/navie-portfolio-revamp/divinethedev/src/lib/site.ts). 
+- **Dynamic Render sequence**: Change the order of sections on your landing page instantly by rearranging strings in `themeConfig.sectionsOrder`.
+- **Dynamic Navigation Link generator**: Sidebar links and mobile nav panels automatically parse the `sectionsOrder` array, keeping anchor scrolls in sync and eliminating broken paths.
+- **Section Toggle gates**: Enable or disable the Terminal, Services, Testimonials, and Workflow sections instantly via config properties.
 
-### 2. 🎴 Clickable Project Cards (Tactile Triggers)
-* **Tactile Click Zones**: Cards act as interactive touch targets that launch case studies on both single-click and double-click events, supported by custom micro-animations.
-* **Event Propagation Guards**: Halts bubble events on nested link triggers (like GitHub, live demo, and case study links), keeping independent redirects working perfectly without trigger clashing.
+### 2. 🎨 Dynamic Theme Engine & "Color Checker" CMS
+- **Tailwind Variables bindings**: Core styles in [globals.css](file:///c:/Users/DEVINE/Downloads/navie-portfolio-revamp/divinethedev/src/app/globals.css) are bound to runtime CSS custom properties (`--color-accent`, `--bg-navy-custom`, `--bg-white-custom`).
+- **Responsive Theme Configurator** (`/admin/dashboard/theme`):
+  - **Accent Selector**: Customizes 5 preset accent colors and sets the active styling color.
+  - **Background Pickers**: Swap base background colors for both Dark and Light modes.
+  - **Live Color Checker preview**: An interactive mock frame showing project cards and button buttons against your dark/light picks in real-time.
+- Changes update sitewide instantly upon saving.
 
-### 3. 📱 Swipe-Gesture Mockup Screenshot Carousels
-* **Smartphone Device Mockup**: Renders mobile application screens (e.g. **Rebid**) inside a glossy phone container complete with an organic bezel shadow and dynamic island notch.
-* **Web Browser Mockup**: Presents web application screenshots inside a Mac-style browser dashboard tab with traffic-light action controls and address bar chrome.
-* **Framer Motion Touch Gestures**: Supports fluid drag-to-swipe transitions (drag right for next screen, drag left for previous screen) backed by elegant crossfade scales.
+### 3. 📂 Supabase Database CMS Managers
+- **Services Manager** (`/admin/dashboard/services`): Add services and assign Lucide icon names.
+- **Client Reviews** (`/admin/dashboard/testimonials`): Create and edit client testimonials with rating levels (1-5 stars) and client profiles.
+- **Conditional Visibility**: Sections automatically return `null` and hide if they have no entries in your database.
+- **Overview Seeder**: Click **"Seed Database"** to instantly reset the portfolio and settings back to original defaults.
 
-### 4. 📄 ATS-Optimized PDF CV Compiler
-* **Programmatic PDF CV Generator** (`generate_cv_pdf.py`): Custom compiler using `reportlab` to design a pixel-perfect, single-page ATS-optimized resume with exact margins, heading highlights, tabular column mappings, and clickable email/social links.
-* **Unified CV Viewer**: Hosts an in-app interactive native CV viewer dashboard mapping chronological timelines and technical skill pills, with single-click official PDF downloads.
+### 4. 🔗 n8n Workflow Visualizer
+- **SVG Connector animations**: Displays visual automation pipeline flowcharts with animated glowing pulses (`src/components/sections/Workflows.tsx`).
+- **Inspection cards**: Select different stages on the canvas to display description notes and active code parameters.
+- **Centralized presets**: Edit nodes and simulated webhook logs directly inside `workflowsConfig` in `site.ts`.
 
-### 5. 🌐 Web-Sensory Event Bridges & Viewport Throttling
-* **Dynamic Highlight Tilt**: Hovering skill badges dispatches active events (`highlight-skill`) that tilt the camera viewport of your WebGL/canvas 3D globe magnetically towards corresponding coordinates.
-* **GPU Viewport Optimization**: Hooks an `IntersectionObserver` on the 3D Canvas element. If the globe scrolls out of active viewport boundaries, it suspends all render loops to free up **100% of GPU/CPU cycles**, protecting mobile battery life.
+### 5. 🐍 Terminal ASCII Snake Game
+- Fully playable **retro Snake game** built in TypeScript directly inside the shell terminal.
+- Launch by typing `snake` in the CLI. Keeps score tracks and renders frames dynamically inside the logs.
 
 ---
 
 ## 🛠️ Technology Stack
 
-* **Frontend**: Next.js 16 (App Router / Server Components) + TypeScript + React 19
-* **Styling**: Tailwind CSS v4 + Framer Motion (premium micro-animations) + Lucide Icons
-* **Core API Integration**: Direct HTTPS standard fetch calls to Google Gemini API (zero-dependency backend route)
-* **Sensory Framework**: Custom browser CustomEvents + canvas WebGL coordinates mapping
-* **Typography**: Outfit + Fira Code (Futuristic Monospace)
+* **Core**: Next.js 16 (App Router) + TypeScript + React 19
+* **CMS Backend**: Supabase (PostgreSQL + RLS policy structures)
+* **Styling**: Tailwind CSS v4 + Framer Motion (premium tactile animations) + Lucide Icons
+* **Proxy Route**: Google Gemini Flash API Proxy Route (`/api/chat`)
+* **Typography**: Outfit (Sans-Serif) + Fira Code (Monospace)
 
 ---
 
 ## ⌨️ Shell Console CLI Cheat-Sheet
 
-Type these directly inside the interactive hacker terminal to manipulate the page environment:
+Type these directly inside the interactive hacker terminal to execute commands:
 
 | Command | Sub-arguments | Action / Operator |
 |---------|---------------|-------------------|
 | `help` | None | Lists all valid command parameters and instructions |
 | `chat` | `<your question>` | Query the secure Gemini Flash AI representative |
+| `snake` | None | Launch the playable retro ASCII snake mini-game |
 | `ls` | `projects` / None | Directories inspection (interactive list of files) |
 | `cat` | `<file_id>.md` | Display a project case study directly in monospace CLI logs |
 | `theme` | `pink` / `blue` / `red` / `orange` / `teal` / `green` | Swap global visuals and accent properties instantly |
@@ -73,9 +81,14 @@ Type these directly inside the interactive hacker terminal to manipulate the pag
    ```
 
 2. **Configure environment variables**:
-   Create a `.env.local` file in your root folder and add your Gemini API Key:
+   Create a `.env.local` file in your root folder and add your credentials:
    ```env
+   # Gemini API Key
    GEMINI_API_KEY=your_gemini_api_key_here
+
+   # Supabase Credentials
+   NEXT_PUBLIC_SUPABASE_URL=your_supabase_url_here
+   NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key_here
    ```
 
 3. **Fire up the development environment**:
@@ -83,28 +96,7 @@ Type these directly inside the interactive hacker terminal to manipulate the pag
    npm run dev
    ```
 
-4. **Verify optimized production build**:
+4. **Compile optimized production build**:
    ```bash
    npm run build
    ```
-
----
-
-## 📁 Project Directory Mapping
-
-```bash
-divinethedev/
-├── public/                 # Static assets (ATS PDF, case study screenshot suites)
-├── src/
-│   ├── app/                # Next.js App Router root layouts, sitemaps, sitemaps configurations
-│   │   ├── api/chat/       # Serverless AI route handler (Gemini Flash gateway)
-│   │   ├── globals.css     # CSS root custom theme tokens and light mode overrides
-│   │   └── page.tsx        # Pre-rendered landing page setup with dynamic client loads
-│   ├── components/
-│   │   ├── effects/        # Custom cursors, entry loaders, matrix rains, scroll tracks
-│   │   ├── layout/         # Sleek sidebar sheets and mobile nav drawer overlay panels
-│   │   ├── sections/       # Hero, About profile swappers, native CV dashboards, Projects
-│   │   └── ui/             # 3D interactive WebGL globes, TelemetryHUD selectors, Magnetics
-│   ├── hooks/              # Section visibility tracking hooks
-│   └── lib/                # Static portfolio content database configurations (siteConfig)
-```

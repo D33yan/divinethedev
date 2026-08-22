@@ -5,15 +5,30 @@ import { SiGithub } from "react-icons/si";
 import { FaLinkedin } from "react-icons/fa";
 import Link from "next/link";
 import Image from "next/image";
-import { navSections, siteConfig } from "@/lib/site";
+import { navSections, siteConfig, themeConfig } from "@/lib/site";
 import { Typewriter } from "@/components/ui/Typewriter";
 import { useActiveSection } from "@/hooks/useActiveSection";
 import { Magnetic } from "@/components/ui/Magnetic";
 import { ThemeToggle } from "@/components/effects/ThemeToggle";
 import { playHover } from "@/lib/audio";
+import { usePortfolioData } from "@/components/providers/PortfolioDataContext";
 
 export function Sidebar() {
+  const { logoUrl } = usePortfolioData();
   const active = useActiveSection();
+
+  const enabledSections = [
+    { id: "hero", label: "Home" },
+    ...themeConfig.sectionsOrder
+      .map((id) => navSections.find((sec) => sec.id === id))
+      .filter((sec): sec is typeof navSections[number] => {
+        if (!sec) return false;
+        if (sec.id === "workflows" && !themeConfig.enableWorkflows) return false;
+        if (sec.id === "services" && !themeConfig.enableServices) return false;
+        if (sec.id === "testimonials" && !themeConfig.enableTestimonials) return false;
+        return true;
+      })
+  ];
 
   return (
     <aside
@@ -22,13 +37,10 @@ export function Sidebar() {
     >
       <div>
         <Link href="#hero" className="block group/logo">
-          <Image
-            src="/logo.png"
+          <img
+            src={logoUrl}
             alt={siteConfig.name}
-            width={56}
-            height={56}
-            className="rounded-full object-cover border-2 border-[#64ffda]/30 shadow-[0_0_15px_rgba(100,255,218,0.15)] transition-transform duration-300 group-hover/logo:scale-105"
-            priority
+            className="w-14 h-14 rounded-full object-cover border-2 border-[#64ffda]/30 shadow-[0_0_15px_rgba(100,255,218,0.15)] transition-transform duration-300 group-hover/logo:scale-105"
           />
           <p className="mt-4 font-mono text-sm text-[#64ffda]">
 
@@ -39,7 +51,7 @@ export function Sidebar() {
       </div>
 
       <nav className="my-auto flex flex-col gap-4 items-end self-end pr-2 w-full" aria-label="Section navigation">
-        {navSections.map((section) => (
+        {enabledSections.map((section) => (
           <Link
             key={section.id}
             href={`#${section.id}`}

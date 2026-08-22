@@ -6,7 +6,10 @@ import Image from "next/image";
 import { siteConfig, techPills } from "@/lib/site";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 
+import { usePortfolioData } from "@/components/providers/PortfolioDataContext";
+
 export function About() {
+  const { avatar1Url, avatar2Url } = usePortfolioData();
   const [profileImg, setProfileImg] = useState<1 | 2>(1);
 
   return (
@@ -57,13 +60,10 @@ export function About() {
                 transition={{ duration: 0.25 }}
                 className="relative w-full h-full"
               >
-                <Image
-                  src={profileImg === 1 ? "/portfolioprofile1.png" : "/portfolioprofile2.jpg"}
-                  alt="Divine Chibueze Nnaji"
-                  fill
-                  className="object-cover transition-transform duration-500 group-hover:scale-103"
-                  sizes="(max-width: 768px) 100vw, 384px"
-                  priority
+                <img
+                  src={profileImg === 1 ? avatar1Url : avatar2Url}
+                  alt={siteConfig.name}
+                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-103"
                 />
               </motion.div>
             </AnimatePresence>

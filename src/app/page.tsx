@@ -13,6 +13,7 @@ import { Footer } from "@/components/layout/Footer";
 import { Hero } from "@/components/sections/Hero";
 import { BuiltInBrowser } from "@/components/ui/BuiltInBrowser";
 import { PortfolioDataProvider } from "@/components/providers/PortfolioDataContext";
+import { themeConfig } from "@/lib/site";
 
 // 1. Server-side placeholder (solid black full-screen overlay to block initial view and prevent flashes)
 function LoaderPlaceholder() {
@@ -30,9 +31,24 @@ const Experience = dynamic(() =>
   import("@/components/sections/Experience").then((m) => m.Experience)
 );
 const Projects = dynamic(() => import("@/components/sections/Projects").then((m) => m.Projects));
+const Workflows = dynamic(() => import("@/components/sections/Workflows").then((m) => m.Workflows));
 const Skills = dynamic(() => import("@/components/sections/Skills").then((m) => m.Skills));
 const Education = dynamic(() => import("@/components/sections/Education").then((m) => m.Education));
 const Contact = dynamic(() => import("@/components/sections/Contact").then((m) => m.Contact));
+const Services = dynamic(() => import("@/components/sections/Services").then((m) => m.Services));
+const Testimonials = dynamic(() => import("@/components/sections/Testimonials").then((m) => m.Testimonials));
+
+const sectionRegistry: Record<string, React.ComponentType> = {
+  about: About,
+  services: Services,
+  experience: Experience,
+  projects: Projects,
+  workflows: Workflows,
+  skills: Skills,
+  education: Education,
+  testimonials: Testimonials,
+  contact: Contact,
+};
 
 const TelemetryHUD = dynamic(
   () => import("@/components/ui/TelemetryHUD").then((m) => m.TelemetryHUD),
@@ -106,24 +122,21 @@ export default function Home() {
           <div className="lg:pl-[min(320px,28vw)]">
             <main>
               <Hero />
-              <Suspense fallback={<SectionFallback />}>
-                <About />
-              </Suspense>
-              <Suspense fallback={<SectionFallback />}>
-                <Experience />
-              </Suspense>
-              <Suspense fallback={<SectionFallback />}>
-                <Projects />
-              </Suspense>
-              <Suspense fallback={<SectionFallback />}>
-                <Skills />
-              </Suspense>
-              <Suspense fallback={<SectionFallback />}>
-                <Education />
-              </Suspense>
-              <Suspense fallback={<SectionFallback />}>
-                <Contact />
-              </Suspense>
+              {themeConfig.sectionsOrder.map((sectionId) => {
+                const Component = sectionRegistry[sectionId];
+                if (!Component) return null;
+
+                // Feature toggles check
+                if (sectionId === "workflows" && !themeConfig.enableWorkflows) return null;
+                if (sectionId === "services" && !themeConfig.enableServices) return null;
+                if (sectionId === "testimonials" && !themeConfig.enableTestimonials) return null;
+
+                return (
+                  <Suspense key={sectionId} fallback={<SectionFallback />}>
+                    <Component />
+                  </Suspense>
+                );
+              })}
             </main>
             <Footer />
           </div>
