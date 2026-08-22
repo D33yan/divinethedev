@@ -8,7 +8,7 @@ import { SystemAlert } from "@/components/ui/SystemAlert";
 import { FormInput } from "@/components/ui/FormInput";
 import { FormTextArea } from "@/components/ui/FormTextArea";
 import { FormActions } from "@/components/ui/FormActions";
-import { FolderGit2, Plus, Edit2, Trash2, X, Save, Eye, ArrowRight, Loader2, AlertCircle } from "lucide-react";
+import { FolderGit2, Plus, Edit2, Trash2, X, Save, Eye, ArrowRight, Loader2, AlertCircle, Upload } from "lucide-react";
 
 interface CaseStudy {
   problem: string;
@@ -39,6 +39,7 @@ export default function ManageProjects() {
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const [actionError, setActionError] = useState("");
   const [actionSuccess, setActionSuccess] = useState("");
 
@@ -134,6 +135,122 @@ export default function ManageProjects() {
     triggerSound("click");
     setEditingProject(null);
     setIsNew(false);
+  };
+
+  const compressImage = (file: File): Promise<File> => {
+    return new Promise((resolve) => {
+      if (!file.type.startsWith("image/")) {
+        resolve(file);
+        return;
+      }
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = (event) => {
+        const img = new Image();
+        img.src = event.target?.result as string;
+        img.onload = () => {
+          const canvas = document.createElement("canvas");
+          const ctx = canvas.getContext("2d");
+          if (!ctx) {
+            resolve(file);
+            return;
+          }
+
+          const maxWidth = 1200;
+          let width = img.width;
+          let height = img.height;
+
+          if (width > maxWidth) {
+            height = (maxWidth / width) * height;
+            width = maxWidth;
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+          ctx.drawImage(img, 0, 0, width, height);
+
+          canvas.toBlob(
+            (blob) => {
+              if (blob) {
+                const compressedFile = new File([blob], file.name.replace(/\.[^/.]+$/, "") + ".webp", {
+                  type: "image/webp",
+                  lastModified: Date.now()
+                });
+                resolve(compressedFile);
+              } else {
+                resolve(file);
+              }
+            },
+            "image/webp",
+            0.8
+          );
+        };
+        img.onerror = () => resolve(file);
+      };
+      reader.onerror = () => resolve(file);
+    });
+  };
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!supabase || !e.target.files || e.target.files.length === 0) return;
+    if (!isAdmin) {
+      triggerSound("glitch");
+      setActionError("Upload restricted: Administrator clearance required.");
+      return;
+    }
+
+    setUploading(true);
+    setActionError("");
+    setActionSuccess("");
+    triggerSound("click");
+
+    try {
+      const uploadedUrls: string[] = [];
+
+      for (let i = 0; i < e.target.files.length; i++) {
+        const rawFile = e.target.files[i];
+        // Compress image dynamically before storage upload
+        const file = await compressImage(rawFile);
+        const fileExt = file.name.split(".").pop();
+        const fileName = `${Date.now()}-${Math.random().toString(36).substring(2, 9)}.${fileExt}`;
+        const filePath = `project-images/${fileName}`;
+
+        // Upload file to 'portfolio-images' bucket
+        const { error: uploadError } = await supabase.storage
+          .from("portfolio-images")
+          .upload(filePath, file, {
+            cacheControl: "3600",
+            upsert: false
+          });
+
+        if (uploadError) throw uploadError;
+
+        // Get public URL
+        const { data } = supabase.storage
+          .from("portfolio-images")
+          .getPublicUrl(filePath);
+
+        if (data?.publicUrl) {
+          uploadedUrls.push(data.publicUrl);
+        }
+      }
+
+      if (uploadedUrls.length > 0) {
+        const existing = images.trim();
+        const delimiter = existing ? ", " : "";
+        setImages(existing + delimiter + uploadedUrls.join(", "));
+        setActionSuccess(`Successfully uploaded ${uploadedUrls.length} image(s) to Supabase Storage!`);
+        triggerSound("success");
+      }
+    } catch (err: any) {
+      console.error("Storage upload error:", err);
+      setActionError(err.message || "Failed to upload image file(s). Make sure the 'portfolio-images' storage bucket exists in Supabase.");
+      triggerSound("glitch");
+    } finally {
+      setUploading(false);
+      // Reset input
+      e.target.value = "";
+    }
   };
 
   const handleSave = async (e: React.FormEvent) => {
@@ -381,12 +498,34 @@ export default function ManageProjects() {
                 />
               </div>
 
-              <FormInput
-                label="Case Study Images (URLs, comma separated)"
-                value={images}
-                onChange={(e) => setImages(e.target.value)}
-                placeholder="https://imgur.com/image1.jpg, https://imgur.com/image2.jpg"
-              />
+              <div>
+                <FormInput
+                  label="Case Study Images (URLs, comma separated)"
+                  value={images}
+                  onChange={(e) => setImages(e.target.value)}
+                  placeholder="https://imgur.com/image1.jpg, https://imgur.com/image2.jpg"
+                />
+                
+                <div className="mt-3">
+                  <label className="inline-flex items-center gap-2 bg-white/5 hover:bg-white/10 hover:text-[#64ffda] border border-white/10 rounded-xl px-4 py-2 cursor-pointer transition-all duration-300 font-mono text-[11px] tracking-wider uppercase">
+                    <Upload className="h-3.5 w-3.5 text-[#64ffda]" />
+                    <span>Upload Image Files</span>
+                    <input
+                      type="file"
+                      multiple
+                      accept="image/*"
+                      onChange={handleImageUpload}
+                      disabled={uploading || !isAdmin}
+                      className="hidden"
+                    />
+                  </label>
+                  {uploading && (
+                    <span className="text-[10px] text-[#8892b0] ml-3 animate-pulse font-mono uppercase tracking-wide">
+                      Uploading to Supabase storage bucket...
+                    </span>
+                  )}
+                </div>
+              </div>
             </div>
 
             <FormActions onCancel={closeEditor} saving={saving} isAdmin={isAdmin} />

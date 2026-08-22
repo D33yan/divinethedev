@@ -4,6 +4,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Mail, X } from "lucide-react";
 import { SiGithub } from "react-icons/si";
 import { FaLinkedin } from "react-icons/fa";
+import { supabase } from "@/lib/supabaseClient";
 import { useState } from "react";
 import { siteConfig } from "@/lib/site";
 import { SectionHeading } from "@/components/ui/SectionHeading";
@@ -16,6 +17,20 @@ function ContactContent() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setStatus("submitting");
+
+    // Log query details directly in Supabase contact_messages table
+    try {
+      if (supabase) {
+        await supabase.from("contact_messages").insert({
+          name: formState.name,
+          email: formState.email,
+          message: formState.message
+        });
+      }
+    } catch (dbErr) {
+      console.warn("Could not log inquiries to live database table:", dbErr);
+    }
+
     try {
       const response = await fetch("https://formspree.io/f/xredppln", {
         method: "POST",

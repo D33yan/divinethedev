@@ -126,7 +126,10 @@ export function ResumeViewerModal() {
               </div>
 
               {/* Native Premium HTML CV Dashboard (Scrollable) */}
-              <div className="flex-1 overflow-y-auto p-6 md:p-8 scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent text-left select-text bg-[#030611] space-y-8 font-sans">
+              <div 
+                id="printable-cv-content"
+                className="flex-1 overflow-y-auto p-6 md:p-8 scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent text-left select-text bg-[#030611] space-y-8 font-sans"
+              >
                 
                 {/* 1. Header Information */}
                 <div className="border-b border-white/5 pb-6 text-center sm:text-left">
@@ -366,7 +369,7 @@ export function ResumeViewerModal() {
             </div>
 
             {/* Interactive Footer Action Controls */}
-            <div className="mt-auto flex items-center justify-between border-t border-white/10 pt-5 shrink-0">
+            <div className="mt-auto flex items-center justify-between border-t border-white/10 pt-5 shrink-0 print:hidden">
               <button
                 onClick={handleClose}
                 className="rounded-lg px-4 py-2.5 font-mono text-xs font-semibold text-[#8892b0] transition hover:bg-white/5 hover:text-[#64ffda] cursor-pointer"
@@ -375,15 +378,69 @@ export function ResumeViewerModal() {
                 CLOSE_VIEWER
               </button>
               
-              <button
-                onClick={handleDownload}
-                className="flex items-center gap-2 rounded-lg bg-[#64ffda] px-5 py-2.5 font-mono text-xs font-bold text-black transition hover:bg-[#64ffda]/80 cursor-pointer shadow-lg shadow-[#64ffda]/10 hover:shadow-[#64ffda]/25 active:scale-95"
-                data-cursor-hover
-              >
-                <span>DOWNLOAD_OFFICIAL_PDF</span>
-                <Download className="h-4 w-4" />
-              </button>
+              <div className="flex gap-3">
+                <button
+                  onClick={() => {
+                    playSuccess();
+                    window.print();
+                  }}
+                  className="flex items-center gap-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-white px-5 py-2.5 font-mono text-xs font-bold transition cursor-pointer"
+                  data-cursor-hover
+                >
+                  <span>PRINT_DYNAMIC_CV</span>
+                </button>
+                
+                <button
+                  onClick={handleDownload}
+                  className="flex items-center gap-2 rounded-lg bg-[#64ffda] px-5 py-2.5 font-mono text-xs font-bold text-black transition hover:bg-[#64ffda]/80 cursor-pointer shadow-lg shadow-[#64ffda]/10 hover:shadow-[#64ffda]/25 active:scale-95"
+                  data-cursor-hover
+                >
+                  <span>DOWNLOAD_OFFICIAL_PDF</span>
+                  <Download className="h-4 w-4" />
+                </button>
+              </div>
             </div>
+
+            {/* Embedded styles for browser CV printing */}
+            <style dangerouslySetInnerHTML={{__html: `
+              @media print {
+                body * {
+                  visibility: hidden !important;
+                }
+                #printable-cv-content, #printable-cv-content * {
+                  visibility: visible !important;
+                }
+                #printable-cv-content {
+                  position: absolute !important;
+                  left: 0 !important;
+                  top: 0 !important;
+                  width: 100% !important;
+                  height: auto !important;
+                  overflow: visible !important;
+                  background: white !important;
+                  color: black !important;
+                  padding: 0 !important;
+                  margin: 0 !important;
+                }
+                #printable-cv-content h1, 
+                #printable-cv-content h2, 
+                #printable-cv-content h3 {
+                  color: black !important;
+                }
+                #printable-cv-content span, 
+                #printable-cv-content p, 
+                #printable-cv-content a {
+                  color: #111 !important;
+                }
+                #printable-cv-content div {
+                  border-color: #e2e8f0 !important;
+                }
+                #printable-cv-content .bg-\\[\\#112240\\]\\/40 {
+                  background: #f8fafc !important;
+                  border: 1px solid #e2e8f0 !important;
+                }
+              }
+            `}} />
           </motion.div>
         </div>
       )}

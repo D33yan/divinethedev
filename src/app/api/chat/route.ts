@@ -1,8 +1,39 @@
 import { NextResponse } from "next/server";
 import { siteConfig } from "@/lib/site";
 
+// Sliding-window memory store for chatbot API rate limiting
+const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
+
+function isRateLimited(ip: string): boolean {
+  const now = Date.now();
+  const limit = 5; // max 5 requests per minute
+  const windowMs = 60 * 1000; // 1 minute sliding window
+
+  const record = rateLimitMap.get(ip);
+  if (!record) {
+    rateLimitMap.set(ip, { count: 1, resetTime: now + windowMs });
+    return false;
+  }
+
+  if (now > record.resetTime) {
+    rateLimitMap.set(ip, { count: 1, resetTime: now + windowMs });
+    return false;
+  }
+
+  record.count += 1;
+  return record.count > limit;
+}
+
 export async function POST(req: Request) {
   try {
+    const ip = req.headers.get("x-forwarded-for") || "anonymous";
+    if (isRateLimited(ip)) {
+      return NextResponse.json(
+        { error: "Rate limit exceeded. Synaptic cooling in progress (max 5 queries/min)." },
+        { status: 429 }
+      );
+    }
+
     const { message, history } = await req.json();
     const apiKey = process.env.GEMINI_API_KEY;
 
