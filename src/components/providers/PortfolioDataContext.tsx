@@ -158,7 +158,7 @@ export function PortfolioDataProvider({ children }: { children: React.ReactNode 
     }
 
     try {
-      // Fetch dynamic branding configuration
+      // Fetch dynamic branding 
       try {
         const { data: dbSettings } = await supabase
           .from("site_settings")
