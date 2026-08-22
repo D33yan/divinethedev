@@ -165,7 +165,7 @@ export function CaseStudyModal({ project, isOpen, onClose }: CaseStudyModalProps
                             <AnimatePresence mode="wait">
                               <motion.img
                                 key={activeImageIndex}
-                                src={images[activeImageIndex]}
+                                src={encodeURI(images[activeImageIndex])}
                                 alt={`${project.title} Phone View ${activeImageIndex + 1}`}
                                 initial={{ opacity: 0, scale: 0.95 }}
                                 animate={{ opacity: 1, scale: 1 }}
@@ -211,7 +211,7 @@ export function CaseStudyModal({ project, isOpen, onClose }: CaseStudyModalProps
                             <AnimatePresence mode="wait">
                               <motion.img
                                 key={activeImageIndex}
-                                src={images[activeImageIndex]}
+                                src={encodeURI(images[activeImageIndex])}
                                 alt={`${project.title} Desktop View ${activeImageIndex + 1}`}
                                 initial={{ opacity: 0, scale: 0.98 }}
                                 animate={{ opacity: 1, scale: 1 }}
