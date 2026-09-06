@@ -217,11 +217,25 @@ export default function WorkflowsManager() {
 
   return (
     <div className="space-y-8">
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight text-[#ccd6f6] font-mono">WORKFLOWS_MANAGER</h1>
-        <p className="text-sm text-[#8892b0] mt-1 font-mono uppercase tracking-widest">
-          Manage dynamic workflow pipeline nodes and simulated transition steps
-        </p>
+      {/* Cyber Header Banner */}
+      <div className="liquid-glass-panel relative overflow-hidden rounded-3xl p-6 sm:p-7 shadow-2xl">
+        <div className="hud-corner-tl" />
+        <div className="hud-corner-br" />
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="flex items-center gap-3.5">
+            <div className="w-11 h-11 rounded-2xl bg-[#64ffda]/10 border border-[#64ffda]/30 flex items-center justify-center text-[#64ffda] shadow-[0_0_20px_rgba(100,255,218,0.2)]">
+              <Cpu className="h-5 w-5" />
+            </div>
+            <div>
+              <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white font-mono flex items-center gap-2.5">
+                <span>WORKFLOWS_MANAGER</span>
+              </h1>
+              <p className="text-xs text-[#8892b0] mt-0.5 font-mono uppercase tracking-widest">
+                MANAGE DYNAMIC WORKFLOW PIPELINE NODES AND SIMULATED TRANSITION STEPS
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
 
       <SystemAlert type="error" message={error} />
@@ -236,7 +250,7 @@ export default function WorkflowsManager() {
           {/* Main Nodes & Steps lists */}
           <div className="lg:col-span-2 space-y-6">
             {/* Active Nodes Card */}
-            <div className="glass-card rounded-2xl border border-white/10 p-6 bg-[#0a192f]/50 backdrop-blur-md">
+            <div className="liquid-glass-panel rounded-2xl p-6 shadow-2xl">
               <h2 className="text-lg font-bold font-mono text-[#ccd6f6] mb-4 flex items-center gap-2">
                 <Cpu className="h-5 w-5 text-[#64ffda]" />
                 <span>ACTIVE_NODES</span>
@@ -281,7 +295,7 @@ export default function WorkflowsManager() {
             </div>
 
             {/* Sequence Steps Card */}
-            <div className="glass-card rounded-2xl border border-white/10 p-6 bg-[#0a192f]/50 backdrop-blur-md">
+            <div className="liquid-glass-panel rounded-2xl p-6 shadow-2xl">
               <h2 className="text-lg font-bold font-mono text-[#ccd6f6] mb-4 flex items-center gap-2">
                 <ListOrdered className="h-5 w-5 text-[#64ffda]" />
                 <span>SIMULATION_STEPS_SEQUENCE</span>
@@ -320,7 +334,7 @@ export default function WorkflowsManager() {
           {/* Form Side Column */}
           <div className="space-y-6">
             {/* Create Node Form */}
-            <div className="glass-card rounded-2xl border border-white/10 p-6 bg-[#0a192f]/50 backdrop-blur-md">
+            <div className="liquid-glass rounded-2xl p-6 shadow-2xl">
               <h2 className="text-sm font-bold font-mono text-[#ccd6f6] mb-4">CREATE_WORKFLOW_NODE</h2>
 
               <form onSubmit={handleAddNode} className="space-y-4 text-left">
@@ -332,7 +346,7 @@ export default function WorkflowsManager() {
                     value={nodeId}
                     onChange={(e) => setNodeId(e.target.value)}
                     placeholder="e.g. webhook (no spaces)"
-                    className="w-full bg-[#112240] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-[#ccd6f6] focus:border-[#64ffda] outline-none transition font-mono"
+                    className="liquid-glass-input w-full rounded-xl px-4 py-2.5 text-xs text-[#ccd6f6] outline-none transition font-mono"
                   />
                 </div>
 
@@ -344,7 +358,7 @@ export default function WorkflowsManager() {
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                     placeholder="e.g. Capture Lead"
-                    className="w-full bg-[#112240] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-[#ccd6f6] focus:border-[#64ffda] outline-none transition"
+                    className="liquid-glass-input w-full rounded-xl px-4 py-2.5 text-xs text-[#ccd6f6] outline-none transition"
                   />
                 </div>
 
@@ -354,10 +368,10 @@ export default function WorkflowsManager() {
                     <select
                       value={icon}
                       onChange={(e) => setIcon(e.target.value)}
-                      className="w-full bg-[#112240] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-[#ccd6f6] focus:border-[#64ffda] outline-none transition font-mono"
+                      className="liquid-glass-input w-full rounded-xl px-4 py-2.5 text-xs text-[#ccd6f6] outline-none transition font-mono"
                     >
                       {iconOptions.map((opt) => (
-                        <option key={opt} value={opt}>{opt}</option>
+                        <option key={opt} value={opt} className="bg-black text-white">{opt}</option>
                       ))}
                     </select>
                   </div>
@@ -366,10 +380,10 @@ export default function WorkflowsManager() {
                     <select
                       value={color}
                       onChange={(e) => setColor(e.target.value)}
-                      className="w-full bg-[#112240] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-[#ccd6f6] focus:border-[#64ffda] outline-none transition text-left"
+                      className="liquid-glass-input w-full rounded-xl px-4 py-2.5 text-xs text-[#ccd6f6] outline-none transition text-left"
                     >
                       {colorOptions.map((opt) => (
-                        <option key={opt.value} value={opt.value}>{opt.label}</option>
+                        <option key={opt.value} value={opt.value} className="bg-black text-white">{opt.label}</option>
                       ))}
                     </select>
                   </div>
@@ -383,7 +397,7 @@ export default function WorkflowsManager() {
                     onChange={(e) => setDesc(e.target.value)}
                     placeholder="Describe node execution logs..."
                     rows={3}
-                    className="w-full bg-[#112240] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-[#ccd6f6] focus:border-[#64ffda] outline-none transition resize-none text-[11px]"
+                    className="liquid-glass-input w-full rounded-xl px-4 py-2.5 text-xs text-[#ccd6f6] outline-none transition resize-none text-[11px]"
                   />
                 </div>
 
@@ -405,7 +419,7 @@ export default function WorkflowsManager() {
             </div>
 
             {/* Create Step Form */}
-            <div className="glass-card rounded-2xl border border-white/10 p-6 bg-[#0a192f]/50 backdrop-blur-md">
+            <div className="liquid-glass rounded-2xl p-6 shadow-2xl">
               <h2 className="text-sm font-bold font-mono text-[#ccd6f6] mb-4">APPEND_SIMULATION_STEP</h2>
 
               <form onSubmit={handleAddStep} className="space-y-4 text-left">
@@ -414,10 +428,10 @@ export default function WorkflowsManager() {
                   <select
                     value={stepNodeId}
                     onChange={(e) => setStepNodeId(e.target.value)}
-                    className="w-full bg-[#112240] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-[#ccd6f6] focus:border-[#64ffda] outline-none transition font-mono"
+                    className="liquid-glass-input w-full rounded-xl px-4 py-2.5 text-xs text-[#ccd6f6] outline-none transition font-mono"
                   >
                     {nodes.map((n) => (
-                      <option key={n.id} value={n.node_id}>{n.title} ({n.node_id})</option>
+                      <option key={n.id} value={n.node_id} className="bg-black text-white">{n.title} ({n.node_id})</option>
                     ))}
                   </select>
                 </div>
@@ -430,7 +444,7 @@ export default function WorkflowsManager() {
                     value={stepLog}
                     onChange={(e) => setStepLog(e.target.value)}
                     placeholder="e.g. ▸ INCOMING_WEBHOOK: parsed fields"
-                    className="w-full bg-[#112240] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-[#ccd6f6] focus:border-[#64ffda] outline-none transition font-mono"
+                    className="liquid-glass-input w-full rounded-xl px-4 py-2.5 text-xs text-[#ccd6f6] outline-none transition font-mono"
                   />
                 </div>
 

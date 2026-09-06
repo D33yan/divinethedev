@@ -344,22 +344,40 @@ export default function ManageProjects() {
 
   return (
     <div className="space-y-8">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight text-[#ccd6f6] font-mono">PROJECTS_MANAGEMENT</h1>
-          <p className="text-sm text-[#8892b0] mt-1 font-mono uppercase tracking-widest">
-            ADD, UPDATE OR ARRANGE REPOSITORIES AND CASE STUDIES
-          </p>
+      {/* Cyber Header Banner */}
+      <div className="liquid-glass-panel relative overflow-hidden rounded-3xl p-6 sm:p-7 shadow-2xl">
+        <div className="hud-corner-tl" />
+        <div className="hud-corner-br" />
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="flex items-center gap-3.5">
+            <div className="w-11 h-11 rounded-2xl bg-[#64ffda]/10 border border-[#64ffda]/30 flex items-center justify-center text-[#64ffda] shadow-[0_0_20px_rgba(100,255,218,0.2)]">
+              <FolderGit2 className="h-5 w-5" />
+            </div>
+            <div>
+              <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white font-mono flex items-center gap-2.5">
+                <span>PROJECTS_&_CASES_STUDIO</span>
+              </h1>
+              <p className="text-xs text-[#8892b0] mt-0.5 font-mono uppercase tracking-widest">
+                MANAGE REPOSITORIES, LIVE URLS, TECH STACKS & ATS CASE STUDIES
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-3 font-mono text-xs">
+            <span className="liquid-glass-pill px-3.5 py-1.5 rounded-full font-mono text-xs text-[#8892b0]">
+              TOTAL: {projects.length}
+            </span>
+            {!editingProject && (
+              <button
+                onClick={openNew}
+                className="flex items-center gap-2 bg-[#64ffda] text-black px-4 py-2.5 rounded-xl font-mono text-xs font-bold tracking-wider hover:bg-[#64ffda]/90 transition-all shadow-md shadow-[#64ffda]/20 cursor-pointer"
+              >
+                <Plus className="h-4 w-4" />
+                <span>NEW_PROJECT</span>
+              </button>
+            )}
+          </div>
         </div>
-        {!editingProject && (
-          <button
-            onClick={openNew}
-            className="flex items-center gap-2 bg-[#64ffda]/10 hover:bg-[#64ffda]/20 border border-[#64ffda] text-[#64ffda] px-4 py-2.5 rounded-xl font-mono text-xs tracking-wider transition-all"
-          >
-            <Plus className="h-4 w-4" />
-            NEW_PROJECT
-          </button>
-        )}
       </div>
 
       <SystemAlert type="error" message={actionError} />
@@ -367,7 +385,7 @@ export default function ManageProjects() {
 
       {editingProject ? (
         /* Form Editor Box */
-        <div className="glass-card rounded-2xl border border-white/10 p-6 md:p-8 bg-[#0a192f]/40 backdrop-blur-md">
+        <div className="liquid-glass-panel rounded-2xl p-6 md:p-8 shadow-2xl">
           <div className="flex justify-between items-center mb-6 pb-4 border-b border-white/5">
             <h2 className="text-lg font-bold font-mono text-[#ccd6f6]">
               {isNew ? "CREATE_NEW_PROJECT_RECORD" : `EDIT_RECORD: ${editingProject.title}`}
@@ -453,7 +471,7 @@ export default function ManageProjects() {
                 id="featured"
                 checked={featured}
                 onChange={(e) => setFeatured(e.target.checked)}
-                className="w-4 h-4 rounded border-white/10 bg-[#112240] text-[#64ffda] focus:ring-[#64ffda]/30 focus:ring-2 focus:ring-offset-0"
+                className="w-4 h-4 rounded border-white/10 bg-[#0c0c0c] text-[#64ffda] focus:ring-[#64ffda]/30 focus:ring-2 focus:ring-offset-0"
               />
               <label htmlFor="featured" className="text-xs font-mono text-[#ccd6f6] uppercase tracking-wider cursor-pointer">
                 Feature project prominently in project highlights deck
@@ -540,7 +558,7 @@ export default function ManageProjects() {
               <span>reading live database project schemas...</span>
             </div>
           ) : projects.length === 0 ? (
-            <div className="glass-card rounded-2xl border border-white/5 p-12 text-center bg-[#0a192f]/20 font-mono">
+            <div className="liquid-glass rounded-2xl p-12 text-center font-mono">
               <FolderGit2 className="h-12 w-12 text-[#8892b0]/30 mx-auto mb-4" />
               <p className="text-sm text-[#ccd6f6]">Database holds 0 project records.</p>
               <p className="text-xs text-[#8892b0] mt-1">Visit Overview to seed database with initial records in one click.</p>
@@ -549,24 +567,29 @@ export default function ManageProjects() {
             projects.map((project) => (
               <div
                 key={project.id}
-                className="glass-card rounded-2xl border border-white/5 p-6 bg-[#112240]/20 hover:border-white/10 transition-all flex flex-col md:flex-row md:items-center justify-between gap-6"
+                className="liquid-glass relative overflow-hidden rounded-2xl p-6 hover:border-[#64ffda]/50 hover:shadow-[0_0_30px_rgba(100,255,218,0.15)] transition-all duration-300 flex flex-col md:flex-row md:items-center justify-between gap-6"
               >
-                <div className="space-y-2">
-                  <div className="flex items-center gap-3">
-                    <h3 className="text-lg font-bold text-[#ccd6f6]">{project.title}</h3>
-                    <span className="font-mono text-[9px] bg-white/5 border border-white/5 px-2 py-0.5 rounded text-[#8892b0]">
+                <div className="space-y-2.5">
+                  <div className="flex flex-wrap items-center gap-2.5">
+                    <h3 className="text-lg font-bold text-[#ccd6f6] font-mono">{project.title}</h3>
+                    <span className="liquid-glass-pill font-mono text-[9px] px-2.5 py-0.5 rounded-full text-[#8892b0]">
                       {project.slug}
                     </span>
                     {project.featured && (
-                      <span className="font-mono text-[9px] bg-[#64ffda]/10 text-[#64ffda] px-2 py-0.5 rounded border border-[#64ffda]/20">
+                      <span className="liquid-glass-pill font-mono text-[9px] text-[#64ffda] px-2.5 py-0.5 rounded-full font-bold shadow-[0_0_8px_rgba(100,255,218,0.2)]">
                         FEATURED
                       </span>
                     )}
+                    {project.badge && (
+                      <span className="liquid-glass-pill font-mono text-[9px] text-purple-300 px-2.5 py-0.5 rounded-full border border-purple-500/20">
+                        {project.badge}
+                      </span>
+                    )}
                   </div>
-                  <p className="text-xs text-[#8892b0] max-w-2xl">{project.description}</p>
-                  <div className="flex flex-wrap gap-2 pt-1">
+                  <p className="text-xs text-[#8892b0] max-w-2xl leading-relaxed font-sans">{project.description}</p>
+                  <div className="flex flex-wrap gap-1.5 pt-1">
                     {project.tech.map((t) => (
-                      <span key={t} className="font-mono text-[10px] bg-[#64ffda]/5 text-[#64ffda]/80 border border-[#64ffda]/10 px-2 py-0.5 rounded-full">
+                      <span key={t} className="liquid-glass-pill font-mono text-[10px] text-[#64ffda]/90 px-2.5 py-0.5 rounded-full">
                         {t}
                       </span>
                     ))}
@@ -576,7 +599,7 @@ export default function ManageProjects() {
                 <div className="flex items-center gap-2 shrink-0 self-end md:self-auto">
                   <button
                     onClick={() => openEdit(project)}
-                    className="p-3 bg-white/5 border border-white/10 hover:border-[#64ffda]/30 rounded-xl hover:bg-[#64ffda]/5 text-[#8892b0] hover:text-[#64ffda] transition"
+                    className="p-3 bg-white/5 border border-white/10 hover:border-[#64ffda]/40 rounded-xl hover:bg-[#64ffda]/10 text-[#8892b0] hover:text-[#64ffda] transition cursor-pointer"
                     title="Edit Record"
                   >
                     <Edit2 className="h-4 w-4" />
@@ -584,7 +607,7 @@ export default function ManageProjects() {
                   <button
                     onClick={() => handleDelete(project.id, project.title)}
                     disabled={!isAdmin}
-                    className="p-3 bg-white/5 border border-white/10 hover:border-red-500/30 rounded-xl hover:bg-red-500/5 text-[#8892b0] hover:text-red-400 transition disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:border-white/10"
+                    className="p-3 bg-white/5 border border-white/10 hover:border-red-500/40 rounded-xl hover:bg-red-500/10 text-[#8892b0] hover:text-red-400 transition disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:border-white/10 cursor-pointer"
                     title="Delete Record"
                   >
                     <Trash2 className="h-4 w-4" />

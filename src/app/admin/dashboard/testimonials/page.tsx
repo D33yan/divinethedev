@@ -125,11 +125,25 @@ export default function TestimonialsManager() {
 
   return (
     <div className="space-y-8">
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight text-[#ccd6f6] font-mono">TESTIMONIALS_MANAGER</h1>
-        <p className="text-sm text-[#8892b0] mt-1 font-mono uppercase tracking-widest">
-          Manage client feedback and reviews displayed on your landing page
-        </p>
+      {/* Cyber Header Banner */}
+      <div className="liquid-glass-panel relative overflow-hidden rounded-3xl p-6 sm:p-7 shadow-2xl">
+        <div className="hud-corner-tl" />
+        <div className="hud-corner-br" />
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="flex items-center gap-3.5">
+            <div className="w-11 h-11 rounded-2xl bg-[#64ffda]/10 border border-[#64ffda]/30 flex items-center justify-center text-[#64ffda] shadow-[0_0_20px_rgba(100,255,218,0.2)]">
+              <Star className="h-5 w-5" />
+            </div>
+            <div>
+              <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white font-mono flex items-center gap-2.5">
+                <span>TESTIMONIALS_MANAGER</span>
+              </h1>
+              <p className="text-xs text-[#8892b0] mt-0.5 font-mono uppercase tracking-widest">
+                MANAGE CLIENT FEEDBACK AND REVIEWS DISPLAYED ON YOUR LANDING PAGE
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
 
       <SystemAlert type="error" message={error} />
@@ -138,7 +152,7 @@ export default function TestimonialsManager() {
       <div className="grid gap-8 lg:grid-cols-3">
         {/* Testimonials List Column */}
         <div className="lg:col-span-2 space-y-4">
-          <div className="glass-card rounded-2xl border border-white/10 p-6 bg-[#0a192f]/50 backdrop-blur-md">
+          <div className="liquid-glass-panel rounded-2xl p-6 shadow-2xl">
             <h2 className="text-lg font-bold font-mono text-[#ccd6f6] mb-4">CLIENT_REVIEWS</h2>
 
             {loading ? (
@@ -154,7 +168,7 @@ export default function TestimonialsManager() {
                 {testimonials.map((item) => (
                   <div key={item.id} className="pt-4 first:pt-0 flex items-start justify-between gap-4">
                     <div className="flex gap-4">
-                      <div className="h-10 w-10 rounded-full border border-[#64ffda]/30 overflow-hidden bg-navy-light shrink-0">
+                      <div className="h-10 w-10 rounded-full border border-[#64ffda]/30 overflow-hidden bg-black/40 shrink-0">
                         <img src={item.avatar} alt={item.author} className="w-full h-full object-cover" />
                       </div>
                       <div className="space-y-1 text-left">
@@ -187,7 +201,7 @@ export default function TestimonialsManager() {
 
         {/* Add Testimonial Column */}
         <div className="space-y-4">
-          <div className="glass-card rounded-2xl border border-white/10 p-6 bg-[#0a192f]/50 backdrop-blur-md">
+          <div className="liquid-glass rounded-2xl p-6 shadow-2xl">
             <h2 className="text-lg font-bold font-mono text-[#ccd6f6] mb-4">ADD_NEW_REVIEW</h2>
 
             <form onSubmit={handleAddTestimonial} className="space-y-4 text-left">
@@ -199,7 +213,7 @@ export default function TestimonialsManager() {
                   value={author}
                   onChange={(e) => setAuthor(e.target.value)}
                   placeholder="e.g. John Doe"
-                  className="w-full bg-[#112240] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-[#ccd6f6] focus:border-[#64ffda] outline-none transition"
+                  className="liquid-glass-input w-full rounded-xl px-4 py-2.5 text-xs text-[#ccd6f6] outline-none transition"
                 />
               </div>
 
@@ -212,7 +226,7 @@ export default function TestimonialsManager() {
                     value={role}
                     onChange={(e) => setRole(e.target.value)}
                     placeholder="e.g. CEO"
-                    className="w-full bg-[#112240] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-[#ccd6f6] focus:border-[#64ffda] outline-none transition"
+                    className="liquid-glass-input w-full rounded-xl px-4 py-2.5 text-xs text-[#ccd6f6] outline-none transition"
                   />
                 </div>
                 <div className="space-y-1">
@@ -222,8 +236,8 @@ export default function TestimonialsManager() {
                     required
                     value={company}
                     onChange={(e) => setCompany(e.target.value)}
-                    placeholder="e.g. Google"
-                    className="w-full bg-[#112240] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-[#ccd6f6] focus:border-[#64ffda] outline-none transition"
+                    placeholder="e.g. Acme Corp"
+                    className="liquid-glass-input w-full rounded-xl px-4 py-2.5 text-xs text-[#ccd6f6] outline-none transition"
                   />
                 </div>
               </div>
@@ -234,7 +248,7 @@ export default function TestimonialsManager() {
                   <select
                     value={stars}
                     onChange={(e) => setStars(Number(e.target.value))}
-                    className="w-full bg-[#112240] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-[#ccd6f6] focus:border-[#64ffda] outline-none transition"
+                    className="w-full bg-[#0c0c0c] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-[#ccd6f6] focus:border-[#64ffda] outline-none transition"
                   >
                     {[5, 4, 3, 2, 1].map((s) => (
                       <option key={s} value={s}>{s} Stars</option>
@@ -249,7 +263,7 @@ export default function TestimonialsManager() {
                     value={avatar}
                     onChange={(e) => setAvatar(e.target.value)}
                     placeholder="/portfolioprofile1.png"
-                    className="w-full bg-[#112240] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-[#ccd6f6] focus:border-[#64ffda] outline-none transition"
+                    className="w-full bg-[#0c0c0c] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-[#ccd6f6] focus:border-[#64ffda] outline-none transition"
                   />
                 </div>
               </div>
@@ -262,7 +276,7 @@ export default function TestimonialsManager() {
                   onChange={(e) => setQuote(e.target.value)}
                   placeholder="Insert client quote here..."
                   rows={4}
-                  className="w-full bg-[#112240] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-[#ccd6f6] focus:border-[#64ffda] outline-none transition resize-none"
+                  className="w-full bg-[#0c0c0c] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-[#ccd6f6] focus:border-[#64ffda] outline-none transition resize-none"
                 />
               </div>
 

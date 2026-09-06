@@ -28,7 +28,7 @@ export function Services() {
               viewport={{ once: true, margin: "-85px" }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
               whileHover={{ y: -6, borderColor: "rgba(100,255,218,0.3)" }}
-              className="glass-card rounded-2xl border border-white/10 p-6 bg-[#0a192f]/30 backdrop-blur-md flex flex-col justify-between items-start transition-all duration-300 group hover:shadow-[0_10px_30px_-15px_rgba(100,255,218,0.1)]"
+              className="glass-card rounded-2xl border border-white/10 p-6 backdrop-blur-md flex flex-col justify-between items-start transition-all duration-300 group hover:shadow-[0_10px_30px_-15px_rgba(100,255,218,0.1)]"
             >
               <div className="space-y-4">
                 <div className="w-12 h-12 rounded-xl bg-[#64ffda]/10 border border-[#64ffda]/20 flex items-center justify-center text-[#64ffda] group-hover:bg-[#64ffda]/20 group-hover:text-white transition-colors duration-300">

@@ -140,11 +140,31 @@ export default function ManageMessages() {
 
   return (
     <div className="space-y-8">
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight text-[#ccd6f6] font-mono">INBOX_MESSAGES</h1>
-        <p className="text-sm text-[#8892b0] mt-1 font-mono uppercase tracking-widest">
-          READ AND MANAGE USER INQUIRIES SUBMITTED FROM CONTACT PAGE
-        </p>
+      {/* Cyber Header Banner */}
+      <div className="liquid-glass-panel relative overflow-hidden rounded-3xl p-6 sm:p-7 shadow-2xl">
+        <div className="hud-corner-tl" />
+        <div className="hud-corner-br" />
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="flex items-center gap-3.5">
+            <div className="w-11 h-11 rounded-2xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400 shadow-[0_0_20px_rgba(168,85,247,0.2)]">
+              <Mail className="h-5 w-5" />
+            </div>
+            <div>
+              <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white font-mono flex items-center gap-2.5">
+                <span>INBOX_LEADS_MATRIX</span>
+              </h1>
+              <p className="text-xs text-[#8892b0] mt-0.5 font-mono uppercase tracking-widest">
+                INCOMING RECRUITER & CLIENT MESSAGES · TELEGRAM BOT UPLINK
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2 font-mono text-xs">
+            <span className="liquid-glass-pill px-3.5 py-1.5 rounded-full font-mono text-xs text-[#64ffda] font-bold shadow-[0_0_12px_rgba(100,255,218,0.15)]">
+              TOTAL: {messages.length} INQUIRIES
+            </span>
+          </div>
+        </div>
       </div>
 
       <SystemAlert type="error" message={actionError} />
@@ -156,10 +176,10 @@ export default function ManageMessages() {
           <span>reading live contact inquiries...</span>
         </div>
       ) : messages.length === 0 ? (
-        <div className="glass-card rounded-2xl border border-white/5 p-12 text-center bg-[#0a192f]/20 font-mono">
+        <div className="liquid-glass relative overflow-hidden rounded-3xl p-12 text-center font-mono">
           <Mail className="h-12 w-12 text-[#8892b0]/30 mx-auto mb-4" />
-          <p className="text-sm text-[#ccd6f6]">Your Inbox is empty.</p>
-          <p className="text-xs text-[#8892b0] mt-1">Incoming inquiries from the contact form will show up here.</p>
+          <p className="text-sm text-[#ccd6f6] font-bold">Your Inbox is currently clear.</p>
+          <p className="text-xs text-[#8892b0] mt-1">Incoming inquiries from your portfolio contact form will display here in real time.</p>
         </div>
       ) : (
         <div className="grid gap-6">
@@ -171,7 +191,7 @@ export default function ManageMessages() {
             return (
               <div 
                 key={msg.id} 
-                className="glass-card rounded-2xl border border-white/10 p-6 bg-[#112240]/20 backdrop-blur-md hover:border-[#64ffda]/20 transition-all duration-300 flex flex-col justify-between"
+                className="liquid-glass relative overflow-hidden rounded-2xl p-6 hover:border-[#64ffda]/50 hover:shadow-[0_0_30px_rgba(100,255,218,0.15)] transition-all duration-300 flex flex-col justify-between"
               >
                 <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 pb-4 border-b border-white/5">
                   <div className="space-y-1">
@@ -237,7 +257,7 @@ export default function ManageMessages() {
                         className="overflow-hidden mt-3 text-left space-y-3 font-mono"
                       >
                         <div className="flex items-center gap-2">
-                          <span className="text-[9px] bg-white/5 px-2 py-0.5 rounded text-[#8892b0] tracking-wider">
+                          <span className="liquid-glass-pill text-[9px] px-2.5 py-0.5 rounded-full text-[#8892b0] tracking-wider">
                             TEMPLATE: {draft.category}
                           </span>
                           <span className="text-[9px] text-[#64ffda] tracking-widest uppercase">
@@ -249,7 +269,7 @@ export default function ManageMessages() {
                           value={draft.text}
                           onChange={(e) => handleDraftTextChange(msg.id, e.target.value)}
                           rows={8}
-                          className="w-full bg-black/40 border border-white/10 rounded-xl p-4 text-[11px] text-white/80 focus:border-[#64ffda] outline-none transition resize-none leading-relaxed"
+                          className="liquid-glass-input w-full rounded-xl p-4 text-[11px] text-white/90 outline-none transition resize-none leading-relaxed"
                           placeholder="Edit the reply draft..."
                         />
 

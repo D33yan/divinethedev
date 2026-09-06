@@ -193,7 +193,7 @@ export function CaseStudyModal({ project, isOpen, onClose }: CaseStudyModalProps
                         </div>
                       ) : (
                         /* Desktop Browser Mockup Frame */
-                        <div className="w-full rounded-xl border border-white/15 bg-[#0a192f]/40 backdrop-blur-md shadow-[0_20px_50px_rgba(0,0,0,0.6)] overflow-hidden">
+                        <div className="w-full rounded-xl border border-white/15 bg-[#080808]/90 backdrop-blur-md shadow-[0_20px_50px_rgba(0,0,0,0.6)] overflow-hidden">
                           {/* Browser Window Title Bar */}
                           <div className="flex items-center gap-1.5 px-4 py-2.5 bg-navy-light/90 border-b border-white/10">
                             <div className="w-2 h-2 rounded-full bg-[#ff5f56]" />

@@ -327,7 +327,7 @@ export function ResumeViewerModal() {
                         [SEC-05] // ACADEMIC RECORD
                       </h2>
                     </div>
-                    <div className="bg-[#112240]/40 border border-white/5 rounded-xl p-5 space-y-4">
+                    <div className="bg-black/60 border border-white/5 rounded-xl p-5 space-y-4">
                       {education.map((edu, eduIdx) => (
                         <div key={edu.id || eduIdx} className={eduIdx > 0 ? "border-t border-white/5 pt-3" : ""}>
                           <h3 className="text-sm font-bold text-[#ccd6f6]">
@@ -352,7 +352,7 @@ export function ResumeViewerModal() {
                         [SEC-06] // SYSTEM CERTIFICATIONS
                       </h2>
                     </div>
-                    <div className="bg-[#112240]/40 border border-white/5 rounded-xl p-5 space-y-3">
+                    <div className="bg-black/60 border border-white/5 rounded-xl p-5 space-y-3">
                       {certifications.map((cert, certIdx) => (
                         <div key={cert.id || certIdx} className="flex gap-2 text-xs">
                           <CheckCircle2 className="h-3.5 w-3.5 text-[#64ffda] shrink-0 mt-0.5" />
@@ -437,7 +437,7 @@ export function ResumeViewerModal() {
                 #printable-cv-content div {
                   border-color: #e2e8f0 !important;
                 }
-                #printable-cv-content .bg-\\[\\#112240\\]\\/40 {
+                #printable-cv-content .bg-black\\/60 {
                   background: #f8fafc !important;
                   border: 1px solid #e2e8f0 !important;
                 }

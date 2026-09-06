@@ -14,7 +14,7 @@ export function FormInput({ label, id, ...props }: FormInputProps) {
       )}
       <input
         id={id}
-        className="w-full bg-[#112240] border border-white/10 rounded-xl py-3 px-4 text-[#ccd6f6] placeholder-[#8892b0]/40 focus:outline-none focus:border-[#64ffda] transition font-mono text-sm"
+        className="w-full liquid-glass-input rounded-xl py-3 px-4 text-[#ccd6f6] placeholder-[#8892b0]/40 focus:outline-none focus:border-[#64ffda] transition font-mono text-sm"
         {...props}
       />
     </div>

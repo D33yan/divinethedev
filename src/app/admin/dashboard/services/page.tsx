@@ -5,7 +5,7 @@ import { supabase } from "@/lib/supabaseClient";
 import { useTactileAudio } from "@/hooks/useTactileAudio";
 import { useUserRole } from "@/hooks/useUserRole";
 import { SystemAlert } from "@/components/ui/SystemAlert";
-import { Loader2, Plus, Trash2, Award, HelpCircle } from "lucide-react";
+import { Loader2, Plus, Trash2, Award, HelpCircle, Sparkles } from "lucide-react";
 import * as Icons from "lucide-react";
 
 interface ServiceItem {
@@ -21,27 +21,24 @@ export default function ServicesManager() {
 
   const [services, setServices] = useState<ServiceItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
-  // Form states
   const [title, setTitle] = useState("");
   const [desc, setDesc] = useState("");
   const [icon, setIcon] = useState("Code");
-  const [submitting, setSubmitting] = useState(false);
 
   const fetchServices = async () => {
     if (!supabase) return;
     setLoading(true);
     try {
-      const { data, error: err } = await supabase
-        .from("services")
-        .select("*")
-        .order("created_at", { ascending: true });
-      if (err) throw err;
+      const { data, error } = await supabase.from("services").select("*").order("created_at", { ascending: true });
+      if (error) throw error;
       setServices(data || []);
-    } catch (e: any) {
-      setError(e.message || "Failed to load services.");
+    } catch (err: any) {
+      console.error(err);
+      setError(err.message || "Failed to load services.");
     } finally {
       setLoading(false);
     }
@@ -53,61 +50,65 @@ export default function ServicesManager() {
 
   const handleAddService = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!supabase || !isAdmin) {
+    if (!supabase) return;
+    if (!isAdmin) {
       triggerSound("glitch");
-      setError("Admin write privilege required.");
+      setError("Write permissions restricted: Administrator clearance required.");
       return;
     }
 
-    setSubmitting(true);
+    setSaving(true);
     setError("");
     setSuccess("");
     triggerSound("click");
 
     try {
-      const { error: err } = await supabase.from("services").insert({
+      const { error: insertError } = await supabase.from("services").insert({
         title,
         desc,
         icon
       });
-      if (err) throw err;
+      if (insertError) throw insertError;
 
-      setSuccess("Service created successfully!");
+      setSuccess(`Service "${title}" successfully published.`);
+      triggerSound("success");
       setTitle("");
       setDesc("");
       setIcon("Code");
-      triggerSound("success");
       await fetchServices();
     } catch (err: any) {
-      setError(err.message || "Could not create service.");
+      console.error(err);
+      setError(err.message || "Failed to insert service.");
       triggerSound("glitch");
     } finally {
-      setSubmitting(false);
+      setSaving(false);
     }
   };
 
   const handleDeleteService = async (id: string) => {
-    if (!supabase || !isAdmin) {
+    if (!supabase) return;
+    if (!isAdmin) {
       triggerSound("glitch");
-      setError("Admin write privilege required to delete.");
+      setError("Write permissions restricted: Administrator clearance required.");
       return;
     }
 
-    if (!confirm("Are you sure you want to delete this service?")) return;
+    if (!confirm("Are you sure you want to permanently delete this service?")) return;
 
+    triggerSound("click");
     setError("");
     setSuccess("");
-    triggerSound("click");
 
     try {
-      const { error: err } = await supabase.from("services").delete().eq("id", id);
-      if (err) throw err;
+      const { error: deleteError } = await supabase.from("services").delete().eq("id", id);
+      if (deleteError) throw deleteError;
 
       setSuccess("Service deleted successfully.");
       triggerSound("success");
       await fetchServices();
     } catch (err: any) {
-      setError(err.message || "Could not delete service.");
+      console.error(err);
+      setError(err.message || "Failed to delete service.");
       triggerSound("glitch");
     }
   };
@@ -116,11 +117,25 @@ export default function ServicesManager() {
 
   return (
     <div className="space-y-8">
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight text-[#ccd6f6] font-mono">SERVICES_MANAGER</h1>
-        <p className="text-sm text-[#8892b0] mt-1 font-mono uppercase tracking-widest">
-          Manage professional service listings displayed on your landing page
-        </p>
+      {/* Cyber Header Banner */}
+      <div className="liquid-glass-panel relative overflow-hidden rounded-3xl p-6 sm:p-7 shadow-2xl">
+        <div className="hud-corner-tl" />
+        <div className="hud-corner-br" />
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="flex items-center gap-3.5">
+            <div className="w-11 h-11 rounded-2xl bg-[#64ffda]/10 border border-[#64ffda]/30 flex items-center justify-center text-[#64ffda] shadow-[0_0_20px_rgba(100,255,218,0.2)]">
+              <Sparkles className="h-5 w-5" />
+            </div>
+            <div>
+              <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white font-mono flex items-center gap-2.5">
+                <span>SERVICES_MANAGER</span>
+              </h1>
+              <p className="text-xs text-[#8892b0] mt-0.5 font-mono uppercase tracking-widest">
+                MANAGE PROFESSIONAL SERVICE LISTINGS DISPLAYED ON YOUR LANDING PAGE
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
 
       <SystemAlert type="error" message={error} />
@@ -129,7 +144,7 @@ export default function ServicesManager() {
       <div className="grid gap-8 lg:grid-cols-3">
         {/* Services List Column */}
         <div className="lg:col-span-2 space-y-4">
-          <div className="glass-card rounded-2xl border border-white/10 p-6 bg-[#0a192f]/50 backdrop-blur-md">
+          <div className="liquid-glass-panel rounded-2xl p-6 shadow-2xl">
             <h2 className="text-lg font-bold font-mono text-[#ccd6f6] mb-4">ACTIVE_SERVICES</h2>
 
             {loading ? (
@@ -150,10 +165,10 @@ export default function ServicesManager() {
                         <div className="w-10 h-10 rounded-lg bg-[#64ffda]/10 border border-[#64ffda]/20 flex items-center justify-center text-[#64ffda] shrink-0">
                           <IconComponent className="h-5 w-5" />
                         </div>
-                        <div className="space-y-1">
+                        <div className="space-y-1 text-left">
                           <h3 className="text-sm font-bold font-mono text-[#ccd6f6]">{service.title}</h3>
                           <p className="text-xs text-[#8892b0] leading-relaxed">{service.desc}</p>
-                          <div className="text-[10px] text-white/20 font-mono">ICON: {service.icon}</div>
+                          <div className="text-[10px] text-white/40 font-mono">ICON: {service.icon}</div>
                         </div>
                       </div>
 
@@ -175,7 +190,7 @@ export default function ServicesManager() {
 
         {/* Add Service Column */}
         <div className="space-y-4">
-          <div className="glass-card rounded-2xl border border-white/10 p-6 bg-[#0a192f]/50 backdrop-blur-md">
+          <div className="liquid-glass rounded-2xl p-6 shadow-2xl">
             <h2 className="text-lg font-bold font-mono text-[#ccd6f6] mb-4">ADD_NEW_SERVICE</h2>
 
             <form onSubmit={handleAddService} className="space-y-4 text-left">
@@ -187,7 +202,7 @@ export default function ServicesManager() {
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
                   placeholder="e.g. Fullstack Development"
-                  className="w-full bg-[#112240] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-[#ccd6f6] focus:border-[#64ffda] outline-none transition"
+                  className="liquid-glass-input w-full rounded-xl px-4 py-2.5 text-xs text-[#ccd6f6] outline-none transition"
                 />
               </div>
 
@@ -196,10 +211,10 @@ export default function ServicesManager() {
                 <select
                   value={icon}
                   onChange={(e) => setIcon(e.target.value)}
-                  className="w-full bg-[#112240] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-[#ccd6f6] focus:border-[#64ffda] outline-none transition"
+                  className="liquid-glass-input w-full rounded-xl px-4 py-2.5 text-xs text-[#ccd6f6] outline-none transition"
                 >
                   {iconOptions.map((opt) => (
-                    <option key={opt} value={opt}>{opt}</option>
+                    <option key={opt} value={opt} className="bg-black text-white">{opt}</option>
                   ))}
                 </select>
               </div>
@@ -212,16 +227,16 @@ export default function ServicesManager() {
                   onChange={(e) => setDesc(e.target.value)}
                   placeholder="Summarize the value and features of this service..."
                   rows={4}
-                  className="w-full bg-[#112240] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-[#ccd6f6] focus:border-[#64ffda] outline-none transition resize-none"
+                  className="liquid-glass-input w-full rounded-xl px-4 py-2.5 text-xs text-[#ccd6f6] outline-none transition resize-none"
                 />
               </div>
 
               <button
                 type="submit"
-                disabled={submitting || !isAdmin}
+                disabled={saving || !isAdmin}
                 className="w-full flex items-center justify-center gap-2 rounded-xl bg-[#64ffda] text-black hover:bg-[#64ffda]/80 font-bold font-mono text-xs py-3 px-4 shadow-lg shadow-[#64ffda]/10 transition disabled:opacity-50 cursor-pointer"
               >
-                {submitting ? (
+                {saving ? (
                   <Loader2 className="h-4 w-4 animate-spin" />
                 ) : (
                   <>

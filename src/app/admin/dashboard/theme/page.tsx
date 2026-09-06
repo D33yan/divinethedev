@@ -138,11 +138,43 @@ export default function ThemeSettingsManager() {
 
   return (
     <div className="space-y-8">
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight text-[#ccd6f6] font-mono">THEME_SETTINGS_MANAGER</h1>
-        <p className="text-sm text-[#8892b0] mt-1 font-mono uppercase tracking-widest">
-          Personalize typography accent preset colors and responsive page background schemes
-        </p>
+      {/* Cyber Header Banner */}
+      <div className="liquid-glass-panel relative overflow-hidden rounded-3xl p-6 sm:p-7 shadow-2xl">
+        <div className="hud-corner-tl" />
+        <div className="hud-corner-br" />
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="flex items-center gap-3.5">
+            <div className="w-11 h-11 rounded-2xl bg-[#64ffda]/10 border border-[#64ffda]/30 flex items-center justify-center text-[#64ffda] shadow-[0_0_20px_rgba(100,255,218,0.2)]">
+              <Palette className="h-5 w-5" />
+            </div>
+            <div>
+              <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white font-mono flex items-center gap-2.5">
+                <span>THEME_&_ACCENT_ENGINE</span>
+              </h1>
+              <p className="text-xs text-[#8892b0] mt-0.5 font-mono uppercase tracking-widest">
+                CUSTOMIZE REAL-TIME NEON ACCENTS, BASE CANVASES & PALETTES
+              </p>
+            </div>
+          </div>
+
+          <button
+            onClick={handleSaveTheme}
+            disabled={saving || !isAdmin}
+            className="flex items-center gap-2 bg-[#64ffda] text-black px-5 py-2.5 rounded-xl font-mono text-xs font-bold tracking-wider hover:bg-[#64ffda]/90 transition-all shadow-md shadow-[#64ffda]/20 cursor-pointer disabled:opacity-50"
+          >
+            {saving ? (
+              <>
+                <Loader2 className="h-4 w-4 animate-spin text-black" />
+                <span>SAVING...</span>
+              </>
+            ) : (
+              <>
+                <Save className="h-4 w-4" />
+                <span>SAVE_THEME_CONFIG</span>
+              </>
+            )}
+          </button>
+        </div>
       </div>
 
       <SystemAlert type="error" message={error} />
@@ -157,7 +189,7 @@ export default function ThemeSettingsManager() {
           {/* Customizations Controls */}
           <div className="space-y-6">
             {/* Background Colors Control Card */}
-            <div className="glass-card rounded-2xl border border-white/10 p-6 bg-[#0a192f]/50 backdrop-blur-md space-y-4">
+            <div className="liquid-glass rounded-2xl p-6 space-y-4">
               <h2 className="text-lg font-bold font-mono text-[#ccd6f6] flex items-center gap-2">
                 <Palette className="h-5 w-5 text-[#64ffda]" />
                 <span>BACKGROUND_SCHEMES</span>
@@ -177,7 +209,7 @@ export default function ThemeSettingsManager() {
                       type="text"
                       value={darkBgColor}
                       onChange={(e) => setDarkBgColor(e.target.value)}
-                      className="flex-1 bg-[#112240] border border-white/10 rounded-lg px-3 py-2 text-[#ccd6f6] outline-none text-xs"
+                      className="liquid-glass-input flex-1 rounded-lg px-3 py-2 text-[#ccd6f6] outline-none text-xs"
                     />
                   </div>
                 </div>
@@ -195,7 +227,7 @@ export default function ThemeSettingsManager() {
                       type="text"
                       value={lightBgColor}
                       onChange={(e) => setLightBgColor(e.target.value)}
-                      className="flex-1 bg-[#112240] border border-white/10 rounded-lg px-3 py-2 text-[#ccd6f6] outline-none text-xs"
+                      className="liquid-glass-input flex-1 rounded-lg px-3 py-2 text-[#ccd6f6] outline-none text-xs"
                     />
                   </div>
                 </div>
@@ -203,7 +235,7 @@ export default function ThemeSettingsManager() {
             </div>
 
             {/* Accent Presets Control Card */}
-            <div className="glass-card rounded-2xl border border-white/10 p-6 bg-[#0a192f]/50 backdrop-blur-md space-y-4">
+            <div className="liquid-glass rounded-2xl p-6 space-y-4">
               <h2 className="text-lg font-bold font-mono text-[#ccd6f6]">ACCENT_COLOR_PRESETS (LIMIT 5)</h2>
               <p className="text-xs text-[#8892b0] leading-relaxed">
                 Define 5 presets of accent color. Click on a color bubble below to assign it as the active sitewide accent color.
@@ -266,7 +298,7 @@ export default function ThemeSettingsManager() {
 
           {/* Real-time Color Checker Mockup Preview */}
           <div className="space-y-4">
-            <div className="glass-card rounded-2xl border border-white/10 p-6 bg-[#0a192f]/50 backdrop-blur-md space-y-4 flex flex-col h-full">
+            <div className="liquid-glass-panel rounded-2xl p-6 space-y-4 flex flex-col h-full shadow-2xl">
               <div className="flex items-center justify-between">
                 <h2 className="text-lg font-bold font-mono text-[#ccd6f6] flex items-center gap-2">
                   <Eye className="h-5 w-5 text-[#64ffda]" />

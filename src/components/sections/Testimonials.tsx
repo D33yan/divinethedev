@@ -23,7 +23,7 @@ export function Testimonials() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-85px" }}
             transition={{ duration: 0.5, delay: index * 0.15 }}
-            className="glass-card rounded-2xl border border-white/10 p-8 bg-[#0a192f]/30 backdrop-blur-md flex flex-col justify-between items-start relative hover:border-white/20 transition-all duration-300"
+            className="glass-card rounded-2xl border border-white/10 p-8 backdrop-blur-md flex flex-col justify-between items-start relative hover:border-white/20 transition-all duration-300"
           >
             {/* Quote watermark icon */}
             <div className="absolute top-6 right-6 text-white/5 pointer-events-none">

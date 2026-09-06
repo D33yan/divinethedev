@@ -245,11 +245,25 @@ export default function SeoAndCvManager() {
 
   return (
     <div className="space-y-8">
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight text-[#ccd6f6] font-mono">SEO_&_CV_COMPILER</h1>
-        <p className="text-sm text-[#8892b0] mt-1 font-mono uppercase tracking-widest">
-          Configure dynamic search meta-tags, analytical measurement scripts, and compile PDF CVs
-        </p>
+      {/* Cyber Header Banner */}
+      <div className="liquid-glass-panel relative overflow-hidden rounded-3xl p-6 sm:p-7 shadow-2xl">
+        <div className="hud-corner-tl" />
+        <div className="hud-corner-br" />
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="flex items-center gap-3.5">
+            <div className="w-11 h-11 rounded-2xl bg-blue-500/10 border border-blue-500/30 flex items-center justify-center text-blue-400 shadow-[0_0_20px_rgba(59,130,246,0.2)]">
+              <Globe className="h-5 w-5" />
+            </div>
+            <div>
+              <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white font-mono flex items-center gap-2.5">
+                <span>SEO_&_CV_COMPILER</span>
+              </h1>
+              <p className="text-xs text-[#8892b0] mt-0.5 font-mono uppercase tracking-widest">
+                CONFIGURE DYNAMIC SEARCH META-TAGS, ANALYTICAL SCRIPTS & PDF CV COMPILATION
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
 
       <SystemAlert type="error" message={error} />
@@ -262,7 +276,7 @@ export default function SeoAndCvManager() {
       ) : (
         <div className="grid gap-8 lg:grid-cols-2">
           {/* SEO & Meta Form */}
-          <div className="glass-card rounded-2xl border border-white/10 p-6 bg-[#0a192f]/50 backdrop-blur-md space-y-4">
+          <div className="liquid-glass-panel rounded-2xl p-6 shadow-2xl space-y-4">
             <h2 className="text-lg font-bold font-mono text-[#ccd6f6] flex items-center gap-2">
               <Globe className="h-5 w-5 text-[#64ffda]" />
               <span>SEARCH_ENGINE_OPTIMIZATION</span>
@@ -277,7 +291,7 @@ export default function SeoAndCvManager() {
                   value={seoTitle}
                   onChange={(e) => setSeoTitle(e.target.value)}
                   placeholder="e.g. Divine Chibueze Nnaji — Fullstack Software Engineer"
-                  className="w-full bg-[#112240] border border-white/10 rounded-xl px-4 py-2.5 text-[#ccd6f6] focus:border-[#64ffda] outline-none transition"
+                  className="liquid-glass-input w-full rounded-xl px-4 py-2.5 text-[#ccd6f6] outline-none transition"
                 />
               </div>
 
@@ -289,12 +303,12 @@ export default function SeoAndCvManager() {
                   value={seoKeywords}
                   onChange={(e) => setSeoKeywords(e.target.value)}
                   placeholder="Developer, Fullstack, AI, NextJS"
-                  className="w-full bg-[#112240] border border-white/10 rounded-xl px-4 py-2.5 text-[#ccd6f6] focus:border-[#64ffda] outline-none transition font-mono"
+                  className="liquid-glass-input w-full rounded-xl px-4 py-2.5 text-[#ccd6f6] outline-none transition font-mono"
                 />
               </div>
 
               {/* Social OG Image Card */}
-              <div className="space-y-2 border border-white/10 rounded-xl p-4 bg-[#112240]/40">
+              <div className="space-y-2 border border-white/10 rounded-xl p-4 bg-black/60">
                 <div className="flex items-center justify-between">
                   <label className="text-[10px] font-bold font-mono text-[#64ffda] uppercase tracking-wider block">
                     Social Share Image (Open Graph Preview)
@@ -345,7 +359,7 @@ export default function SeoAndCvManager() {
                         value={seoOgImage}
                         onChange={(e) => setSeoOgImage(e.target.value)}
                         placeholder="/og_image.png or https://..."
-                        className="w-full bg-[#112240] border border-white/10 rounded-lg px-3 py-2 text-[#ccd6f6] focus:border-[#64ffda] outline-none transition font-mono text-[11px]"
+                        className="w-full bg-[#0c0c0c] border border-white/10 rounded-lg px-3 py-2 text-[#ccd6f6] focus:border-[#64ffda] outline-none transition font-mono text-[11px]"
                       />
                     </div>
                   </div>
@@ -359,7 +373,7 @@ export default function SeoAndCvManager() {
                   value={analyticsId}
                   onChange={(e) => setAnalyticsId(e.target.value)}
                   placeholder="G-XXXXXX"
-                  className="w-full bg-[#112240] border border-white/10 rounded-xl px-4 py-2.5 text-[#ccd6f6] focus:border-[#64ffda] outline-none transition font-mono"
+                  className="w-full bg-[#0c0c0c] border border-white/10 rounded-xl px-4 py-2.5 text-[#ccd6f6] focus:border-[#64ffda] outline-none transition font-mono"
                 />
               </div>
 
@@ -371,7 +385,7 @@ export default function SeoAndCvManager() {
                   onChange={(e) => setSeoDesc(e.target.value)}
                   placeholder="Insert meta tag details..."
                   rows={4}
-                  className="w-full bg-[#112240] border border-white/10 rounded-xl px-4 py-2.5 text-[#ccd6f6] focus:border-[#64ffda] outline-none transition resize-none leading-relaxed text-xs"
+                  className="w-full bg-[#0c0c0c] border border-white/10 rounded-xl px-4 py-2.5 text-[#ccd6f6] focus:border-[#64ffda] outline-none transition resize-none leading-relaxed text-xs"
                 />
               </div>
 
@@ -382,7 +396,7 @@ export default function SeoAndCvManager() {
                   onChange={(e) => setSidebarBio(e.target.value)}
                   placeholder="I design and engineer interactive frontend interfaces..."
                   rows={2}
-                  className="w-full bg-[#112240] border border-white/10 rounded-xl px-4 py-2.5 text-[#ccd6f6] focus:border-[#64ffda] outline-none transition resize-none leading-relaxed text-xs"
+                  className="w-full bg-[#0c0c0c] border border-white/10 rounded-xl px-4 py-2.5 text-[#ccd6f6] focus:border-[#64ffda] outline-none transition resize-none leading-relaxed text-xs"
                 />
               </div>
 
@@ -393,7 +407,7 @@ export default function SeoAndCvManager() {
                   onChange={(e) => setAboutBio(e.target.value)}
                   placeholder="I'm Divine Chibueze Nnaji — a Fullstack Software Engineer..."
                   rows={4}
-                  className="w-full bg-[#112240] border border-white/10 rounded-xl px-4 py-2.5 text-[#ccd6f6] focus:border-[#64ffda] outline-none transition resize-none leading-relaxed text-xs"
+                  className="w-full bg-[#0c0c0c] border border-white/10 rounded-xl px-4 py-2.5 text-[#ccd6f6] focus:border-[#64ffda] outline-none transition resize-none leading-relaxed text-xs"
                 />
               </div>
 
@@ -430,7 +444,7 @@ export default function SeoAndCvManager() {
           </div>
 
           {/* CV Compiler Dashboard Card */}
-          <div className="glass-card rounded-2xl border border-white/10 p-6 bg-[#0a192f]/50 backdrop-blur-md flex flex-col justify-between">
+          <div className="liquid-glass-panel rounded-2xl p-6 shadow-2xl flex flex-col justify-between">
             <div className="space-y-4">
               <h2 className="text-lg font-bold font-mono text-[#ccd6f6] flex items-center gap-2">
                 <FileText className="h-5 w-5 text-[#64ffda]" />
@@ -442,7 +456,7 @@ export default function SeoAndCvManager() {
               </p>
 
               {/* Status and output logs box */}
-              <div className="border border-white/10 rounded-xl bg-black/40 p-4 font-mono text-xs text-left min-h-[140px] flex flex-col justify-between">
+              <div className="liquid-glass rounded-xl p-4 font-mono text-xs text-left min-h-[140px] flex flex-col justify-between">
                 <div className="space-y-2">
                   <div className="text-[10px] text-[#8892b0] uppercase tracking-wider block font-bold">COMPILER_OUTPUT_LOGS:</div>
                   <div className="text-white/80 select-all whitespace-pre-wrap">{compilerOutput}</div>

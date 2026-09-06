@@ -62,7 +62,7 @@ export default function AdminLoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0a192f] text-[#ccd6f6] flex flex-col justify-center items-center px-4 relative overflow-hidden font-sans">
+    <div className="min-h-screen bg-[#000000] text-[#ccd6f6] flex flex-col justify-center items-center px-4 relative overflow-hidden font-sans">
       {/* Ambient background glow */}
       <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-[#64ffda]/5 rounded-full blur-[150px] -z-10" />
       <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-[#00e5ff]/5 rounded-full blur-[120px] -z-10" />
@@ -72,7 +72,7 @@ export default function AdminLoginPage() {
 
       <div className="w-full max-w-md">
         {/* Terminal Header */}
-        <div className="glass-card rounded-t-2xl border border-white/10 border-b-0 px-6 py-3 bg-[#112240]/80 backdrop-blur-md flex items-center justify-between">
+        <div className="glass-card rounded-t-2xl border border-white/10 border-b-0 px-6 py-3 bg-[#080808]/90 backdrop-blur-md flex items-center justify-between">
           <div className="flex gap-2">
             <span className="w-3 h-3 rounded-full bg-[#ff5f56]" />
             <span className="w-3 h-3 rounded-full bg-[#ffbd2e]" />
@@ -82,7 +82,7 @@ export default function AdminLoginPage() {
         </div>
 
         {/* Login Body */}
-        <div className="glass-card rounded-b-2xl border border-white/10 p-8 bg-[#0a192f]/95 backdrop-blur-md shadow-[0_12px_40px_rgba(2,12,27,0.8)]">
+        <div className="glass-card rounded-b-2xl border border-white/10 p-8 bg-[#050505]/95 backdrop-blur-md shadow-[0_12px_40px_rgba(0,0,0,0.9)]">
           <div className="flex flex-col items-center mb-8">
             <div className="w-16 h-16 rounded-2xl bg-[#64ffda]/10 border border-[#64ffda]/30 flex items-center justify-center mb-4 shadow-[0_0_20px_rgba(100,255,218,0.15)] animate-pulse">
               <Shield className="h-8 w-8 text-[#64ffda]" />
@@ -110,7 +110,7 @@ export default function AdminLoginPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="admin@divinethedev.com"
-                  className="w-full bg-[#112240] border border-white/10 rounded-xl py-3 pl-11 pr-4 text-[#ccd6f6] placeholder-[#8892b0]/55 focus:outline-none focus:border-[#64ffda] focus:shadow-[0_0_15px_rgba(100,255,218,0.1)] transition-all font-mono text-sm"
+                  className="w-full bg-[#0c0c0c] border border-white/10 rounded-xl py-3 pl-11 pr-4 text-[#ccd6f6] placeholder-[#8892b0]/55 focus:outline-none focus:border-[#64ffda] focus:shadow-[0_0_15px_rgba(100,255,218,0.1)] transition-all font-mono text-sm"
                 />
               </div>
             </div>
@@ -129,7 +129,7 @@ export default function AdminLoginPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••••••"
-                  className="w-full bg-[#112240] border border-white/10 rounded-xl py-3 pl-11 pr-4 text-[#ccd6f6] placeholder-[#8892b0]/55 focus:outline-none focus:border-[#64ffda] focus:shadow-[0_0_15px_rgba(100,255,218,0.1)] transition-all font-mono text-sm"
+                  className="w-full bg-[#0c0c0c] border border-white/10 rounded-xl py-3 pl-11 pr-4 text-[#ccd6f6] placeholder-[#8892b0]/55 focus:outline-none focus:border-[#64ffda] focus:shadow-[0_0_15px_rgba(100,255,218,0.1)] transition-all font-mono text-sm"
                 />
               </div>
             </div>

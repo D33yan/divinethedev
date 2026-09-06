@@ -66,52 +66,89 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${outfit.variable} ${firaCode.variable}`}>
       <head>
-        {/* Dynamic JSON-LD Structured Data Schema for AI Search & LLM Engines Optimization (LLMO) */}
+        {/* Schema.org JSON-LD Structured Data for Google Search Rich Results and Knowledge Graph */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
             __html: JSON.stringify({
               "@context": "https://schema.org",
-              "@type": "Person",
-              "name": "Divine Chibueze Nnaji",
-              "alternateName": "Navie",
-              "jobTitle": "Fullstack Software Engineer & AI Builder",
-              "url": "https://divinethe.dev",
-              "image": "https://divinethe.dev/logo.png",
-              "sameAs": [
-                "https://github.com/D33yan",
-                "https://www.linkedin.com/in/divine-nnaji-23b771393"
-              ],
-              "knowsAbout": [
-                "Fullstack Web Development",
-                "Mobile App Development",
-                "React Native",
-                "Expo",
-                "Next.js",
-                "Supabase",
-                "Express.js",
-                "n8n Workflow Automation",
-                "Python Programming",
-                "Data Science",
-                "Machine Learning",
-                "GoHighLevel CRM"
-              ],
-              "description": "Divine Chibueze Nnaji (Navie) is a premium Fullstack Software Engineer, Mobile Developer, and AI Systems Builder based in Nigeria, recognized for engineering high-performance web/mobile applications and complex workflow automations.",
-              "nationality": {
-                "@type": "Country",
-                "name": "Nigeria"
-              },
-              "alumniOf": {
-                "@type": "EducationalOrganization",
-                "name": "University of Abuja"
-              }
+              "@graph": [
+                {
+                  "@type": "Person",
+                  "@id": "https://divinethe.dev/#person",
+                  "name": "Divine Chibueze Nnaji",
+                  "alternateName": ["Navie", "Divine Nnaji"],
+                  "jobTitle": "Fullstack Software Engineer & AI Builder",
+                  "url": "https://divinethe.dev",
+                  "image": "https://divinethe.dev/logo.png",
+                  "email": "mailto:dnnaji26@gmail.com",
+                  "sameAs": [
+                    "https://github.com/D33yan",
+                    "https://www.linkedin.com/in/divine-nnaji-23b771393",
+                    "https://t.me/Callmenavi3"
+                  ],
+                  "knowsAbout": [
+                    "Next.js",
+                    "React",
+                    "React Native",
+                    "TypeScript",
+                    "Supabase",
+                    "PostgreSQL",
+                    "Python",
+                    "n8n Automation",
+                    "Gemini AI & LangChain",
+                    "Mobile App Development",
+                    "Fullstack Web Engineering"
+                  ],
+                  "description": "Divine Chibueze Nnaji (Navie) is a Fullstack Software Engineer & AI Builder engineering high-performance web applications, mobile experiences, and automated AI systems.",
+                  "nationality": {
+                    "@type": "Country",
+                    "name": "Nigeria"
+                  },
+                  "alumniOf": {
+                    "@type": "EducationalOrganization",
+                    "name": "University of Abuja"
+                  }
+                },
+                {
+                  "@type": "WebSite",
+                  "@id": "https://divinethe.dev/#website",
+                  "url": "https://divinethe.dev",
+                  "name": "Divine Chibueze Nnaji | Portfolio",
+                  "description": "Official engineering portfolio of Divine Chibueze Nnaji (Navie) - Fullstack Software Engineer & AI Systems Builder.",
+                  "publisher": {
+                    "@id": "https://divinethe.dev/#person"
+                  },
+                  "inLanguage": "en"
+                },
+                {
+                  "@type": "ProfilePage",
+                  "@id": "https://divinethe.dev/#profilepage",
+                  "url": "https://divinethe.dev",
+                  "name": "About Divine Chibueze Nnaji",
+                  "isPartOf": {
+                    "@id": "https://divinethe.dev/#website"
+                  },
+                  "mainEntity": {
+                    "@id": "https://divinethe.dev/#person"
+                  }
+                }
+              ]
             }),
           }}
         />
       </head>
-      <body className="font-sans antialiased">
-        <div className="grain-overlay" aria-hidden />
-        {children}
+      <body className="font-sans antialiased relative bg-[#000000] text-[#ccd6f6]">
+        {/* Ambient Fluid Glow Meshes for Liquid Glass Refraction */}
+        <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden" aria-hidden>
+          <div className="absolute -top-32 -left-32 w-[600px] h-[600px] rounded-full bg-[radial-gradient(circle,rgba(var(--color-accent-rgb,100,255,218),0.07)_0%,transparent_70%)] blur-[120px]" />
+          <div className="absolute top-1/3 -right-32 w-[650px] h-[650px] rounded-full bg-[radial-gradient(circle,rgba(0,229,255,0.05)_0%,transparent_70%)] blur-[140px]" />
+          <div className="absolute top-2/3 -left-32 w-[550px] h-[550px] rounded-full bg-[radial-gradient(circle,rgba(168,85,247,0.04)_0%,transparent_70%)] blur-[130px]" />
+          <div className="absolute -bottom-32 right-1/4 w-[600px] h-[600px] rounded-full bg-[radial-gradient(circle,rgba(var(--color-accent-rgb,100,255,218),0.06)_0%,transparent_70%)] blur-[120px]" />
+        </div>
+        <div className="relative z-[2]">
+          {children}
+        </div>
       </body>
     </html>
   );

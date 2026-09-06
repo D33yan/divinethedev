@@ -160,22 +160,40 @@ export default function ManageSkills() {
 
   return (
     <div className="space-y-8">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight text-[#ccd6f6] font-mono">SKILLS_MANAGEMENT</h1>
-          <p className="text-sm text-[#8892b0] mt-1 font-mono uppercase tracking-widest">
-            CATEGORIES, CAPABILITIES AND TECH STACK LISTINGS
-          </p>
+      {/* Cyber Header Banner */}
+      <div className="liquid-glass-panel relative overflow-hidden rounded-3xl p-6 sm:p-7 shadow-2xl">
+        <div className="hud-corner-tl" />
+        <div className="hud-corner-br" />
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="flex items-center gap-3.5">
+            <div className="w-11 h-11 rounded-2xl bg-[#64ffda]/10 border border-[#64ffda]/30 flex items-center justify-center text-[#64ffda] shadow-[0_0_20px_rgba(100,255,218,0.2)]">
+              <Cpu className="h-5 w-5" />
+            </div>
+            <div>
+              <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white font-mono flex items-center gap-2.5">
+                <span>SKILLS_MANAGEMENT</span>
+              </h1>
+              <p className="text-xs text-[#8892b0] mt-0.5 font-mono uppercase tracking-widest">
+                CATEGORIES, CAPABILITIES AND TECH STACK LISTINGS
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-3 font-mono text-xs">
+            <span className="liquid-glass-pill px-3.5 py-1.5 rounded-full font-mono text-xs text-[#8892b0]">
+              TOTAL: {skillGroups.length}
+            </span>
+            {!editingGroup && (
+              <button
+                onClick={openNew}
+                className="flex items-center gap-2 bg-[#64ffda] text-black px-4 py-2.5 rounded-xl font-mono text-xs font-bold tracking-wider hover:bg-[#64ffda]/90 transition-all shadow-md shadow-[#64ffda]/20 cursor-pointer"
+              >
+                <Plus className="h-4 w-4" />
+                <span>NEW_CATEGORY</span>
+              </button>
+            )}
+          </div>
         </div>
-        {!editingGroup && (
-          <button
-            onClick={openNew}
-            className="flex items-center gap-2 bg-[#64ffda]/10 hover:bg-[#64ffda]/20 border border-[#64ffda] text-[#64ffda] px-4 py-2.5 rounded-xl font-mono text-xs tracking-wider transition-all"
-          >
-            <Plus className="h-4 w-4" />
-            NEW_CATEGORY
-          </button>
-        )}
       </div>
 
       <SystemAlert type="error" message={actionError} />
@@ -183,7 +201,7 @@ export default function ManageSkills() {
 
       {editingGroup ? (
         /* Form Editor Box */
-        <div className="glass-card rounded-2xl border border-white/10 p-6 md:p-8 bg-[#0a192f]/40 backdrop-blur-md">
+        <div className="liquid-glass-panel rounded-2xl p-6 md:p-8 shadow-2xl">
           <div className="flex justify-between items-center mb-6 pb-4 border-b border-white/5">
             <h2 className="text-lg font-bold font-mono text-[#ccd6f6]">
               {isNew ? "CREATE_NEW_SKILLS_CATEGORY" : `EDIT_RECORD: ${editingGroup.title}`}
@@ -222,7 +240,7 @@ export default function ManageSkills() {
               <span>reading skills tables...</span>
             </div>
           ) : skillGroups.length === 0 ? (
-            <div className="glass-card rounded-2xl border border-white/5 p-12 text-center bg-[#0a192f]/20 font-mono col-span-2">
+            <div className="liquid-glass rounded-2xl p-12 text-center font-mono col-span-2">
               <Cpu className="h-12 w-12 text-[#8892b0]/30 mx-auto mb-4" />
               <p className="text-sm text-[#ccd6f6]">Database holds 0 skills records.</p>
               <p className="text-xs text-[#8892b0] mt-1">Visit Overview to seed database with initial records in one click.</p>
@@ -231,7 +249,7 @@ export default function ManageSkills() {
             skillGroups.map((group) => (
               <div
                 key={group.id}
-                className="glass-card rounded-2xl border border-white/5 p-6 bg-[#112240]/20 hover:border-white/10 transition-all flex flex-col justify-between gap-4"
+                className="liquid-glass relative overflow-hidden rounded-2xl p-6 hover:border-[#64ffda]/50 hover:shadow-[0_0_30px_rgba(100,255,218,0.15)] transition-all flex flex-col justify-between gap-4"
               >
                 <div>
                   <h3 className="text-sm font-mono uppercase tracking-widest text-[#64ffda] border-b border-white/5 pb-2 mb-3">
@@ -239,7 +257,7 @@ export default function ManageSkills() {
                   </h3>
                   <div className="flex flex-wrap gap-1.5">
                     {group.skills.map((s) => (
-                      <span key={s} className="text-xs bg-white/5 border border-white/5 text-[#ccd6f6] px-2.5 py-1 rounded-lg">
+                      <span key={s} className="liquid-glass-pill text-xs text-[#ccd6f6] px-3 py-1 rounded-full">
                         {s}
                       </span>
                     ))}

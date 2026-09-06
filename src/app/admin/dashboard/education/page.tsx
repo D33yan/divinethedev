@@ -204,11 +204,25 @@ export default function ManageAcademicRecords() {
 
   return (
     <div className="space-y-8">
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight text-[#ccd6f6] font-mono">ACADEMIC_&_CERTIFICATIONS</h1>
-        <p className="text-sm text-[#8892b0] mt-1 font-mono uppercase tracking-widest">
-          MANAGE EDUCATION TRACKS AND SYSTEM CERTIFICATES
-        </p>
+      {/* Cyber Header Banner */}
+      <div className="liquid-glass-panel relative overflow-hidden rounded-3xl p-6 sm:p-7 shadow-2xl">
+        <div className="hud-corner-tl" />
+        <div className="hud-corner-br" />
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="flex items-center gap-3.5">
+            <div className="w-11 h-11 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 shadow-[0_0_20px_rgba(245,158,11,0.2)]">
+              <GraduationCap className="h-5 w-5" />
+            </div>
+            <div>
+              <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white font-mono flex items-center gap-2.5">
+                <span>ACADEMIC_&_CERTIFICATIONS</span>
+              </h1>
+              <p className="text-xs text-[#8892b0] mt-0.5 font-mono uppercase tracking-widest">
+                MANAGE EDUCATION TRACKS AND SYSTEM CERTIFICATES
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
 
       <SystemAlert type="error" message={actionError} />
@@ -216,7 +230,7 @@ export default function ManageAcademicRecords() {
 
       {editMode ? (
         /* Form Editor Box */
-        <div className="glass-card rounded-2xl border border-white/10 p-6 md:p-8 bg-[#0a192f]/40 backdrop-blur-md">
+        <div className="liquid-glass-panel rounded-2xl p-6 md:p-8 shadow-2xl">
           <div className="flex justify-between items-center mb-6 pb-4 border-b border-white/5">
             <h2 className="text-lg font-bold font-mono text-[#ccd6f6]">
               {isNew ? `NEW_${editMode === "edu" ? "EDUCATION" : "CERTIFICATION"}_RECORD` : `EDIT_${editMode === "edu" ? "EDUCATION" : "CERTIFICATION"}_RECORD`}
@@ -241,30 +255,30 @@ export default function ManageAcademicRecords() {
                 required
                 value={org}
                 onChange={(e) => setOrg(e.target.value)}
-                placeholder={editMode === "edu" ? "e.g. University of Abuja" : "e.g. AWS, EarlyCode"}
+                placeholder={editMode === "edu" ? "e.g. University of Lagos" : "e.g. Meta / Coursera"}
               />
             </div>
 
             <FormInput
-              label="Period / Date"
+              label="Timeline / Year"
               required
               value={period}
               onChange={(e) => setPeriod(e.target.value)}
-              placeholder={editMode === "edu" ? "e.g. 2023 – Present" : "e.g. May – June 2022"}
+              placeholder="e.g. 2021 — 2025 or 2024"
             />
 
             <FormActions onCancel={closeEditor} saving={saving} isAdmin={isAdmin} />
           </form>
         </div>
       ) : (
-        /* Double Column List Views */
+        /* Dual Column Overview */
         <div className="grid gap-8 md:grid-cols-2">
           {/* Education Column */}
           <div className="space-y-6">
             <div className="flex items-center justify-between border-b border-white/5 pb-3">
               <div className="flex items-center gap-2 text-[#ccd6f6]">
                 <GraduationCap className="h-5 w-5 text-[#64ffda]" />
-                <h2 className="text-md font-mono uppercase tracking-wider font-bold">Academic Record</h2>
+                <h2 className="text-md font-mono uppercase tracking-wider font-bold">Formal Education</h2>
               </div>
               <button
                 onClick={() => openNew("edu")}
@@ -284,7 +298,7 @@ export default function ManageAcademicRecords() {
                 </div>
               ) : (
                 education.map((item) => (
-                  <div key={item.id} className="glass-card rounded-xl p-4 border border-white/5 bg-[#112240]/10 flex items-center justify-between gap-4">
+                  <div key={item.id} className="liquid-glass rounded-xl p-4 flex items-center justify-between gap-4">
                     <div>
                       <h4 className="text-xs font-bold text-[#ccd6f6]">{item.title}</h4>
                       <p className="text-[11px] text-[#64ffda] font-mono mt-0.5">{item.org}</p>
@@ -336,7 +350,7 @@ export default function ManageAcademicRecords() {
                 </div>
               ) : (
                 certifications.map((item) => (
-                  <div key={item.id} className="glass-card rounded-xl p-4 border border-white/5 bg-[#112240]/10 flex items-center justify-between gap-4">
+                  <div key={item.id} className="liquid-glass rounded-xl p-4 flex items-center justify-between gap-4">
                     <div>
                       <h4 className="text-xs font-bold text-[#ccd6f6]">{item.title}</h4>
                       <p className="text-[11px] text-amber-400 font-mono mt-0.5">{item.org}</p>

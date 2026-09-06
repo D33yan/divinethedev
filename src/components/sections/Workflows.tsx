@@ -93,7 +93,7 @@ export function Workflows() {
 
       <div className="max-w-5xl mx-auto mt-6 grid gap-8 lg:grid-cols-3">
         {/* Connection pipeline canvas */}
-        <div className="lg:col-span-2 glass-card rounded-2xl border border-white/10 p-6 bg-[#0a192f]/30 backdrop-blur-md relative overflow-hidden flex flex-col justify-between min-h-[380px]">
+        <div className="lg:col-span-2 glass-card rounded-2xl border border-white/10 p-6 backdrop-blur-md relative overflow-hidden flex flex-col justify-between min-h-[380px]">
           {/* Animated SVG Connector pipes */}
           <div className="absolute inset-0 z-0 pointer-events-none hidden sm:block">
             <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
@@ -164,7 +164,7 @@ export function Workflows() {
                   className={`flex flex-col items-center justify-center p-4 rounded-xl border text-center transition-all duration-300 relative group cursor-pointer max-w-[160px] mx-auto w-full ${
                     activeNode === node.id
                       ? "border-[#64ffda] bg-[#64ffda]/5 shadow-[0_0_15px_rgba(100,255,218,0.1)]"
-                      : "border-white/5 bg-[#0a192f]/45 hover:border-white/15"
+                      : "border-white/5 bg-black/60 hover:border-white/15"
                   }`}
                 >
                   {/* Pipeline Status Indicator */}
@@ -217,7 +217,7 @@ export function Workflows() {
                 initial={{ opacity: 0, x: 12 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -12 }}
-                className="glass-card rounded-2xl border border-white/10 p-6 bg-[#0a192f]/30 backdrop-blur-md space-y-4 h-full flex flex-col justify-start"
+                className="glass-card rounded-2xl border border-white/10 p-6 backdrop-blur-md space-y-4 h-full flex flex-col justify-start"
               >
                 <div className="flex items-center gap-3">
                   <div className="p-2 rounded-lg bg-white/5 border border-white/10 text-[#64ffda]">
@@ -245,7 +245,7 @@ export function Workflows() {
                 </div>
               </motion.div>
             ) : (
-              <div className="glass-card rounded-2xl border border-white/5 p-6 bg-[#0a192f]/20 text-left font-mono text-xs text-[#8892b0]/55 flex items-center justify-center min-h-[160px] border-dashed border-2 h-full">
+              <div className="glass-card rounded-2xl border border-white/5 p-6 bg-black/40 text-left font-mono text-xs text-[#8892b0]/55 flex items-center justify-center min-h-[160px] border-dashed border-2 h-full">
                 <p className="text-center text-[11px] leading-relaxed uppercase tracking-wider">
                   SELECT ANY NODE ON THE WORKFLOW CANVAS TO INSPECT ACTIVE CODE PARAMETERS
                 </p>
