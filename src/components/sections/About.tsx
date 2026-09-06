@@ -9,7 +9,7 @@ import { SectionHeading } from "@/components/ui/SectionHeading";
 import { usePortfolioData } from "@/components/providers/PortfolioDataContext";
 
 export function About() {
-  const { avatar1Url, avatar2Url } = usePortfolioData();
+  const { avatar1Url, avatar2Url, aboutBio } = usePortfolioData();
   const [profileImg, setProfileImg] = useState<1 | 2>(1);
 
   return (
@@ -22,7 +22,7 @@ export function About() {
           viewport={{ once: true, margin: "-80px" }}
           transition={{ duration: 0.6 }}
         >
-          <p className="text-lg leading-relaxed text-[#8892b0]">{siteConfig.aboutBio}</p>
+          <p className="text-lg leading-relaxed text-[#8892b0]">{aboutBio || siteConfig.aboutBio}</p>
           <div className="mt-10 flex flex-wrap gap-2">
             {techPills.map((tech) => (
               <motion.span

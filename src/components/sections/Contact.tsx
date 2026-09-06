@@ -36,6 +36,17 @@ function ContactContent() {
       console.warn("Could not log inquiries to live database table:", dbErr);
     }
 
+    // Dispatch instant push notification to phone via Telegram engine (non-blocking)
+    try {
+      fetch("/api/notify", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formState),
+      }).catch((notifyErr) => console.warn("Telegram notification dispatch notice:", notifyErr));
+    } catch (e) {
+      console.warn("Could not trigger notification endpoint:", e);
+    }
+
     try {
       const response = await fetch("https://formspree.io/f/xredppln", {
         method: "POST",

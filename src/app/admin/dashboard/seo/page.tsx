@@ -36,27 +36,55 @@ export default function SeoAndCvManager() {
       const fileExt = file.name.split(".").pop();
       const fileName = `og-image-${Date.now()}.${fileExt}`;
       const filePath = `branding/${fileName}`;
+      let publicUrl = "";
 
-      // Upload to 'portfolio-images' storage bucket
-      const { error: uploadError } = await supabase.storage
-        .from("portfolio-images")
-        .upload(filePath, file, {
-          cacheControl: "3600",
-          upsert: true
-        });
+      // 1. Try uploading to portfolio-assets
+      try {
+        const { error: uploadError } = await supabase.storage
+          .from("portfolio-assets")
+          .upload(filePath, file, {
+            cacheControl: "3600",
+            upsert: true
+          });
 
-      if (uploadError) throw uploadError;
-
-      // Get public URL
-      const { data } = supabase.storage
-        .from("portfolio-images")
-        .getPublicUrl(filePath);
-
-      if (data?.publicUrl) {
-        setSeoOgImage(data.publicUrl);
-        setSuccess("Open Graph social preview image uploaded successfully!");
-        triggerSound("success");
+        if (!uploadError) {
+          const { data } = supabase.storage
+            .from("portfolio-assets")
+            .getPublicUrl(filePath);
+          if (data?.publicUrl) {
+            publicUrl = data.publicUrl;
+          }
+        }
+      } catch (err) {
+        console.warn("Upload to portfolio-assets failed, trying fallback...", err);
       }
+
+      // 2. Fallback to portfolio-images bucket under project-images folder (to bypass RLS limits)
+      if (!publicUrl) {
+        const fallbackPath = `project-images/${fileName}`;
+        const { error: fallbackError } = await supabase.storage
+          .from("portfolio-images")
+          .upload(fallbackPath, file, {
+            cacheControl: "3600",
+            upsert: true
+          });
+
+        if (fallbackError) throw fallbackError;
+
+        const { data } = supabase.storage
+          .from("portfolio-images")
+          .getPublicUrl(fallbackPath);
+
+        if (data?.publicUrl) {
+          publicUrl = data.publicUrl;
+        } else {
+          throw new Error("Could not retrieve public URL for fallback storage upload.");
+        }
+      }
+
+      setSeoOgImage(publicUrl);
+      setSuccess("Open Graph social preview image uploaded successfully!");
+      triggerSound("success");
     } catch (err: any) {
       console.error(err);
       setError(err.message || "Failed to upload social preview image.");
@@ -71,8 +99,11 @@ export default function SeoAndCvManager() {
   const [seoTitle, setSeoTitle] = useState("");
   const [seoDesc, setSeoDesc] = useState("");
   const [seoKeywords, setSeoKeywords] = useState("");
-  const [seoOgImage, setSeoOgImage] = useState("/og_image.png");
+  const [seoOgImage, setSeoOgImage] = useState("/logo.png");
   const [analyticsId, setAnalyticsId] = useState("");
+  const [aboutBio, setAboutBio] = useState("");
+  const [sidebarBio, setSidebarBio] = useState("");
+  const [needMigration, setNeedMigration] = useState(false);
 
   // CV Compiler states
   const [compilerLoading, setCompilerLoading] = useState(false);
@@ -96,8 +127,10 @@ export default function SeoAndCvManager() {
         setSeoTitle(data.seo_title || "");
         setSeoDesc(data.seo_description || "");
         setSeoKeywords(data.seo_keywords || "");
-        setSeoOgImage(data.seo_og_image || "/og_image.png");
+        setSeoOgImage(data.seo_og_image || "/logo.png");
         setAnalyticsId(data.analytics_id || "");
+        setAboutBio(data.about_bio || "");
+        setSidebarBio(data.sidebar_bio || "");
       }
     } catch (e: any) {
       setError(e.message || "Failed to load SEO parameters.");
@@ -124,23 +157,46 @@ export default function SeoAndCvManager() {
     triggerSound("click");
 
     try {
+      const updatePayload: any = {
+        seo_title: seoTitle,
+        seo_description: seoDesc,
+        seo_keywords: seoKeywords,
+        seo_og_image: seoOgImage,
+        analytics_id: analyticsId
+      };
+
       const { error: err } = await supabase
         .from("site_settings")
         .update({
-          seo_title: seoTitle,
-          seo_description: seoDesc,
-          seo_keywords: seoKeywords,
-          seo_og_image: seoOgImage,
-          analytics_id: analyticsId
+          ...updatePayload,
+          about_bio: aboutBio,
+          sidebar_bio: sidebarBio
         })
         .eq("id", "primary");
 
-      if (err) throw err;
+      if (err) {
+        // Check if error is due to missing columns in site_settings
+        if (err.message.includes("about_bio") || err.message.includes("column")) {
+          const { error: fallbackErr } = await supabase
+            .from("site_settings")
+            .update(updatePayload)
+            .eq("id", "primary");
 
-      setSuccess("SEO settings saved successfully! Document headers will update dynamically.");
-      triggerSound("success");
+          if (fallbackErr) throw fallbackErr;
+          
+          setSuccess("SEO settings saved. Note: To enable dynamic 'About Me' and 'Hero Bio' edits, please execute the database schema migration shown below.");
+          setNeedMigration(true);
+          triggerSound("success");
+        } else {
+          throw err;
+        }
+      } else {
+        setSuccess("SEO & Bio settings saved successfully! Page content and headers will update dynamically.");
+        setNeedMigration(false);
+        triggerSound("success");
+      }
     } catch (err: any) {
-      setError(err.message || "Could not save SEO settings.");
+      setError(err.message || "Could not save settings.");
       triggerSound("glitch");
     } finally {
       setSaving(false);
@@ -237,24 +293,41 @@ export default function SeoAndCvManager() {
                 />
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div className="space-y-1">
-                  <label className="text-[10px] font-bold font-mono text-[#8892b0] uppercase tracking-wider block">Social OG Image URL</label>
-                  <div className="flex gap-2">
-                    <input
-                      type="text"
-                      required
-                      value={seoOgImage}
-                      onChange={(e) => setSeoOgImage(e.target.value)}
-                      placeholder="/og_image.png"
-                      className="flex-1 bg-[#112240] border border-white/10 rounded-xl px-4 py-2.5 text-[#ccd6f6] focus:border-[#64ffda] outline-none transition font-mono"
-                    />
-                    <label className="flex items-center justify-center p-2.5 rounded-xl border border-[#64ffda]/30 bg-[#64ffda]/10 text-[#64ffda] hover:bg-[#64ffda]/20 transition cursor-pointer shrink-0" title="Upload OG Image">
+              {/* Social OG Image Card */}
+              <div className="space-y-2 border border-white/10 rounded-xl p-4 bg-[#112240]/40">
+                <div className="flex items-center justify-between">
+                  <label className="text-[10px] font-bold font-mono text-[#64ffda] uppercase tracking-wider block">
+                    Social Share Image (Open Graph Preview)
+                  </label>
+                  <span className="text-[9px] font-mono text-[#8892b0]">1200 × 630px recommended</span>
+                </div>
+
+                <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
+                  {/* Thumbnail Preview */}
+                  <div className="w-32 h-20 rounded-lg overflow-hidden border border-white/15 bg-black/50 shrink-0 flex items-center justify-center">
+                    {seoOgImage ? (
+                      <img 
+                        src={seoOgImage} 
+                        alt="Social OG Preview" 
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          (e.currentTarget as HTMLImageElement).style.display = "none";
+                        }}
+                      />
+                    ) : (
+                      <span className="text-[9px] font-mono text-[#8892b0]">No Preview</span>
+                    )}
+                  </div>
+
+                  {/* Upload Button and Info */}
+                  <div className="space-y-2 flex-1 w-full">
+                    <label className="inline-flex items-center gap-2 px-4 py-2 bg-[#64ffda]/10 hover:bg-[#64ffda]/20 border border-[#64ffda]/40 rounded-xl cursor-pointer text-xs font-mono font-bold text-[#64ffda] transition select-none shadow-sm">
                       {uploading ? (
                         <Loader2 className="h-4 w-4 animate-spin" />
                       ) : (
                         <Upload className="h-4 w-4" />
                       )}
+                      <span>{uploading ? "UPLOADING_IMAGE..." : "UPLOAD_NEW_OG_IMAGE"}</span>
                       <input
                         type="file"
                         accept="image/*"
@@ -263,18 +336,31 @@ export default function SeoAndCvManager() {
                         disabled={uploading || !isAdmin}
                       />
                     </label>
+
+                    <div className="space-y-1">
+                      <span className="text-[9px] font-mono text-[#8892b0] block">Direct URL / Storage Link:</span>
+                      <input
+                        type="text"
+                        required
+                        value={seoOgImage}
+                        onChange={(e) => setSeoOgImage(e.target.value)}
+                        placeholder="/og_image.png or https://..."
+                        className="w-full bg-[#112240] border border-white/10 rounded-lg px-3 py-2 text-[#ccd6f6] focus:border-[#64ffda] outline-none transition font-mono text-[11px]"
+                      />
+                    </div>
                   </div>
                 </div>
-                <div className="space-y-1">
-                  <label className="text-[10px] font-bold font-mono text-[#8892b0] uppercase tracking-wider block">Google Analytics ID</label>
-                  <input
-                    type="text"
-                    value={analyticsId}
-                    onChange={(e) => setAnalyticsId(e.target.value)}
-                    placeholder="G-XXXXXX"
-                    className="w-full bg-[#112240] border border-white/10 rounded-xl px-4 py-2.5 text-[#ccd6f6] focus:border-[#64ffda] outline-none transition font-mono"
-                  />
-                </div>
+              </div>
+
+              <div className="space-y-1">
+                <label className="text-[10px] font-bold font-mono text-[#8892b0] uppercase tracking-wider block">Google Analytics ID</label>
+                <input
+                  type="text"
+                  value={analyticsId}
+                  onChange={(e) => setAnalyticsId(e.target.value)}
+                  placeholder="G-XXXXXX"
+                  className="w-full bg-[#112240] border border-white/10 rounded-xl px-4 py-2.5 text-[#ccd6f6] focus:border-[#64ffda] outline-none transition font-mono"
+                />
               </div>
 
               <div className="space-y-1">
@@ -288,6 +374,43 @@ export default function SeoAndCvManager() {
                   className="w-full bg-[#112240] border border-white/10 rounded-xl px-4 py-2.5 text-[#ccd6f6] focus:border-[#64ffda] outline-none transition resize-none leading-relaxed text-xs"
                 />
               </div>
+
+              <div className="space-y-1">
+                <label className="text-[10px] font-bold font-mono text-[#8892b0] uppercase tracking-wider block">Hero Subtitle Bio (Dynamic copy)</label>
+                <textarea
+                  value={sidebarBio}
+                  onChange={(e) => setSidebarBio(e.target.value)}
+                  placeholder="I design and engineer interactive frontend interfaces..."
+                  rows={2}
+                  className="w-full bg-[#112240] border border-white/10 rounded-xl px-4 py-2.5 text-[#ccd6f6] focus:border-[#64ffda] outline-none transition resize-none leading-relaxed text-xs"
+                />
+              </div>
+
+              <div className="space-y-1">
+                <label className="text-[10px] font-bold font-mono text-[#8892b0] uppercase tracking-wider block">About Me Bio Description (Dynamic copy)</label>
+                <textarea
+                  value={aboutBio}
+                  onChange={(e) => setAboutBio(e.target.value)}
+                  placeholder="I'm Divine Chibueze Nnaji — a Fullstack Software Engineer..."
+                  rows={4}
+                  className="w-full bg-[#112240] border border-white/10 rounded-xl px-4 py-2.5 text-[#ccd6f6] focus:border-[#64ffda] outline-none transition resize-none leading-relaxed text-xs"
+                />
+              </div>
+
+              {needMigration && (
+                <div className="border border-[#f59e0b]/30 bg-[#f59e0b]/5 rounded-xl p-4 space-y-2 text-left font-mono text-[10px] text-[#f59e0b]">
+                  <div className="flex items-center gap-2 font-bold uppercase tracking-wider">
+                    <AlertTriangle className="h-4 w-4 shrink-0 animate-pulse" />
+                    <span>Database Migration Required</span>
+                  </div>
+                  <p className="font-sans leading-relaxed text-[#ccd6f6]/70">
+                    To enable saving the <strong>About Me Bio</strong> and <strong>Hero Subtitle</strong> in the database, please execute this SQL block in your Supabase SQL Editor:
+                  </p>
+                  <pre className="bg-black/40 border border-white/10 rounded p-2 text-white/90 select-all cursor-pointer font-bold" title="Click to copy">
+                    {`ALTER TABLE site_settings \nADD COLUMN IF NOT EXISTS about_bio text,\nADD COLUMN IF NOT EXISTS sidebar_bio text;`}
+                  </pre>
+                </div>
+              )}
 
               <button
                 type="submit"

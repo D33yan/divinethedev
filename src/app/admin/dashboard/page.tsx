@@ -52,6 +52,7 @@ export default function DashboardOverview() {
   const [avatar1Preview, setAvatar1Preview] = useState("/portfolioprofile1.png");
   const [avatar2Preview, setAvatar2Preview] = useState("/portfolioprofile2.jpg");
   const [resumePreview, setResumePreview] = useState("");
+  const [ogPreview, setOgPreview] = useState("/og_image.png");
 
   const fetchBranding = async () => {
     if (!supabase) return;
@@ -67,13 +68,14 @@ export default function DashboardOverview() {
         if (data.avatar1_url) setAvatar1Preview(data.avatar1_url);
         if (data.avatar2_url) setAvatar2Preview(data.avatar2_url);
         if (data.resume_url) setResumePreview(data.resume_url);
+        if (data.seo_og_image) setOgPreview(data.seo_og_image);
       }
     } catch (err) {
       console.warn("Could not query branding settings:", err);
     }
   };
 
-  const handleAssetUpload = async (e: React.ChangeEvent<HTMLInputElement>, type: "logo" | "avatar1" | "avatar2" | "resume") => {
+  const handleAssetUpload = async (e: React.ChangeEvent<HTMLInputElement>, type: "logo" | "avatar1" | "avatar2" | "resume" | "og_image") => {
     if (!supabase || !e.target.files || e.target.files.length === 0) return;
     if (!isAdmin) {
       triggerSound("glitch");
@@ -127,6 +129,7 @@ export default function DashboardOverview() {
       if (type === "avatar1") updateData.avatar1_url = publicUrl;
       if (type === "avatar2") updateData.avatar2_url = publicUrl;
       if (type === "resume") updateData.resume_url = publicUrl;
+      if (type === "og_image") updateData.seo_og_image = publicUrl;
 
       const { error: dbError } = await supabase
         .from("site_settings")
@@ -140,6 +143,7 @@ export default function DashboardOverview() {
       if (type === "avatar1") setAvatar1Preview(publicUrl);
       if (type === "avatar2") setAvatar2Preview(publicUrl);
       if (type === "resume") setResumePreview(publicUrl);
+      if (type === "og_image") setOgPreview(publicUrl);
 
       setBrandingSuccess(`Branding asset [${type.toUpperCase()}] updated successfully!`);
       triggerSound("success");
@@ -600,7 +604,7 @@ export default function DashboardOverview() {
         <SystemAlert type="error" message={brandingError} />
         <SystemAlert type="success" message={brandingSuccess} />
 
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4 mt-6">
+        <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 mt-6">
           {/* 1. App Logo */}
           <div className="border border-white/5 bg-white/5 rounded-xl p-4 flex flex-col justify-between items-center text-center">
             <span className="font-mono text-[10px] tracking-wider text-[#8892b0] uppercase mb-3">Navigation Logo</span>
@@ -687,6 +691,25 @@ export default function DashboardOverview() {
                 />
               </label>
             </div>
+          </div>
+
+          {/* 5. Social Share OG Image */}
+          <div className="border border-white/5 bg-white/5 rounded-xl p-4 flex flex-col justify-between items-center text-center">
+            <span className="font-mono text-[10px] tracking-wider text-[#8892b0] uppercase mb-3">Social OG Image</span>
+            <div className="w-20 h-14 rounded-lg overflow-hidden border border-white/10 flex items-center justify-center bg-navy mb-4">
+              <img src={ogPreview} alt="Social OG" className="w-full h-full object-cover" />
+            </div>
+            <label className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg cursor-pointer text-[10px] font-mono text-[#64ffda] uppercase select-none transition">
+              <Upload className="h-3.5 w-3.5" />
+              <span>Select OG Image</span>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={(e) => handleAssetUpload(e, "og_image")}
+                disabled={brandingLoading || !isAdmin}
+                className="hidden"
+              />
+            </label>
           </div>
         </div>
       </div>

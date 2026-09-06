@@ -7,7 +7,6 @@ import { useTactileAudio } from "@/hooks/useTactileAudio";
 import { useUserRole } from "@/hooks/useUserRole";
 import { SystemAlert } from "@/components/ui/SystemAlert";
 import { Mail, Trash2, Calendar, User, MessageSquare, Loader2, Sparkles, Send, ExternalLink } from "lucide-react";
-import { usePortfolioData } from "@/components/providers/PortfolioDataContext";
 
 interface ContactMessage {
   id: string;
@@ -20,7 +19,6 @@ interface ContactMessage {
 export default function ManageMessages() {
   const { isAdmin } = useUserRole();
   const { triggerSound } = useTactileAudio();
-  const { logEvent } = usePortfolioData();
   const [messages, setMessages] = useState<ContactMessage[]>([]);
   const [loading, setLoading] = useState(true);
   const [deletingId, setDeletingId] = useState<string | null>(null);
@@ -261,7 +259,6 @@ export default function ManageMessages() {
                             href={`mailto:${msg.email}?subject=Re: Portfolio Inquiry&body=${encodeURIComponent(draft.text)}`}
                             onClick={() => {
                               triggerSound("success");
-                              logEvent("command_executed", `Mailto reply to: ${msg.name}`);
                             }}
                             className="inline-flex items-center gap-1.5 rounded bg-[#64ffda] text-black hover:bg-[#64ffda]/80 font-bold px-4 py-2 transition"
                           >
@@ -275,7 +272,6 @@ export default function ManageMessages() {
                             rel="noopener noreferrer"
                             onClick={() => {
                               triggerSound("success");
-                              logEvent("command_executed", `Gmail tab reply to: ${msg.name}`);
                             }}
                             className="inline-flex items-center gap-1.5 rounded border border-white/10 hover:border-white/20 bg-white/5 text-white px-4 py-2 transition"
                           >

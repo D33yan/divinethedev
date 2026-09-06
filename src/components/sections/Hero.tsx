@@ -7,8 +7,10 @@ import { siteConfig } from "@/lib/site";
 import { Magnetic } from "@/components/ui/Magnetic";
 import { Typewriter } from "@/components/ui/Typewriter";
 import { FuturisticGlobe } from "@/components/ui/FuturisticGlobe";
+import { usePortfolioData } from "@/components/providers/PortfolioDataContext";
 
 export function Hero() {
+  const { sidebarBio } = usePortfolioData();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -64,7 +66,7 @@ export function Hero() {
             <Typewriter phrases={siteConfig.typewriterRoles} className="text-[#ccd6f6]" />.
           </p>
           <p className="mb-10 max-w-xl text-base sm:text-lg md:text-xl leading-relaxed text-[#8892b0]">
-            {siteConfig.sidebarBio}
+            {sidebarBio || siteConfig.sidebarBio}
           </p>
 
           <div className="flex flex-wrap gap-4">

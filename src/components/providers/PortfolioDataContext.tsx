@@ -108,6 +108,8 @@ interface PortfolioDataContextType {
   seoKeywords: string;
   seoOgImage: string;
   analyticsId: string;
+  aboutBio: string;
+  sidebarBio: string;
   loading: boolean;
   refreshData: () => Promise<void>;
   logEvent: (eventType: string, eventDetails?: string) => Promise<void>;
@@ -145,6 +147,8 @@ export function PortfolioDataProvider({ children }: { children: React.ReactNode 
   const [seoKeywords, setSeoKeywords] = useState("Developer, Fullstack, AI Builder, Automation, Portfolio");
   const [seoOgImage, setSeoOgImage] = useState("/og_image.png");
   const [analyticsId, setAnalyticsId] = useState("");
+  const [aboutBio, setAboutBio] = useState("");
+  const [sidebarBio, setSidebarBio] = useState("");
   
   const [loading, setLoading] = useState(true);
   const [isUsingLiveDb, setIsUsingLiveDb] = useState(false);
@@ -179,6 +183,8 @@ export function PortfolioDataProvider({ children }: { children: React.ReactNode 
           if (dbSettings.seo_keywords) setSeoKeywords(dbSettings.seo_keywords);
           if (dbSettings.seo_og_image) setSeoOgImage(dbSettings.seo_og_image);
           if (dbSettings.analytics_id) setAnalyticsId(dbSettings.analytics_id);
+          if (dbSettings.about_bio) setAboutBio(dbSettings.about_bio);
+          if (dbSettings.sidebar_bio) setSidebarBio(dbSettings.sidebar_bio);
           if (dbSettings.accent_presets) {
             try {
               const presets = typeof dbSettings.accent_presets === "string" 
@@ -471,6 +477,8 @@ export function PortfolioDataProvider({ children }: { children: React.ReactNode 
       seoKeywords,
       seoOgImage,
       analyticsId,
+      aboutBio,
+      sidebarBio,
       loading,
       refreshData: fetchData,
       logEvent,
